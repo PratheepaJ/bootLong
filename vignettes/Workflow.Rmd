@@ -1,0 +1,239 @@
+---
+title: "Workflow : The Block Bootstrap Method for Longitudinal Microbiome Data"
+author: "Pratheepa Jeganathan"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+
+Install packages: 
+```{r }
+pkgs <- c("ggplot2","doParallel","foreach","reshape2","dplyr","gridExtra","phyloseq","DESeq2","tidyr","BiocParallel","ggfortify","R.utils","edgeR","limma","ashr")
+
+#   installed packages that were not installed already
+# source("http://bioconductor.org/biocLite.R")
+# biocLite(setdiff(pkgs,installed.packages()))
+#devtools::install_github("PratheepaJ/bbootLong")
+```
+
+load packages:
+```{r }
+lpckges<-pkgs%in%(.packages())
+if(any(!lpckges)){
+    sapply(pkgs[!lpckges],require,character.only=TRUE)
+}
+library(bbootLong)
+```
+
+#   Read data
+```{r eval=FALSE}
+ps <- pssim
+```
+
+#   sumamry of data
+
+```{r eval=FALSE}
+table(sample_data(ps)$SubjectID)
+```
+
+#   sampling schedule
+
+```{r eval=FALSE}
+samdf <- sample_data(ps)
+theme_set(theme_bw())
+set.theme <- theme_update(panel.border = element_blank(),
+                    panel.grid = element_line(size = .8),
+                    axis.ticks = element_blank(),
+                    legend.title = element_text(size = 8),
+                    legend.text = element_text(size = 6),
+                    axis.text = element_text(size = 8),
+                    axis.title = element_text(size = 8),
+                    strip.background = element_blank(),
+                    strip.text = element_text(size = 8),
+                    legend.key = element_blank())
+p <- ggplot(samdf)+
+    geom_point(aes(x = Time, y = SubjectID, color=Preterm), position = position_jitter(width = .2,height = .1),size = 2,alpha=.8)+
+    theme_set(set.theme)+
+    facet_wrap(~Preterm)+
+    scale_color_discrete(name  ="Group",breaks=c("FALSE", "TRUE"),labels=c("Term", "Preterm"))
+
+ggsave("./sampling_schedule.pdf",plot=p,width = 8,height = 5.5)
+```
+
+#   Preprocessig
+```{r eval=FALSE}
+#   Filter taxa
+ps <- prune_taxa((apply(otu_table(ps),1,function(x){sum(x>0)}))>.1*nsamples(ps),ps)
+```
+
+```{r }
+#   make a common legend
+plot.legend <- function(p){
+    gg.fea <- ggplot_gtable(ggplot_build(p))
+    gg.fea.l.box <- which(sapply(gg.fea$grobs, function(x) x$name) == "guide-box")
+    l <- gg.fea$grobs[[gg.fea.l.box]]
+    return(l)
+}
+```
+
+#   EDA: correlogram
+```{r eval=FALSE}
+ps.tr <- ps_trans(ps,factors="Preterm") 
+p.all <- LMic_correloram_multaxa(ps.tr, factors="Preterm",time="Time",1,6,taxlevel = "Genus")
+
+#   Change the legend labels
+p.all <- lapply(p.all, function(x){x+scale_fill_discrete(name  ="Group",breaks=c("FALSE", "TRUE"),labels=c("Term", "Preterm"))})
+
+#   add only a common legend for all taxa
+leg <- plot.legend(p.all[[1]])
+plist <- lapply(p.all,function(x){x+theme(legend.position="none")})
+
+pp1 <-grid.arrange(arrangeGrob(grobs=plist,nrow=2,widths=c(3,3,3)),leg,ncol=2,widths=c(10,2))
+ggsave("./core_Sim.eps",plot=pp1,width = 8,height = 5.5)
+```
+
+#   EDA: lag-plot for each taxa
+```{r eval=FALSE}
+lags <- as.list(seq(1,8))
+p.lags <- lapply(lags,function(x){LMic_lagged(ps.tr,factors="Preterm",time="Time",taxon=1,x,taxlevel="Genus")})
+
+#   Change the legend labels
+p.lags <- lapply(p.lags, function(x){x+scale_color_discrete(name  ="Group",breaks=c("FALSE", "TRUE"),labels=c("Term", "Preterm"))})
+
+leg <- plot.legend(p.lags[[1]])
+plist <- lapply(p.lags,function(x){x+theme(legend.position="none")})
+
+pp2 <- grid.arrange(arrangeGrob(grobs=plist,nrow=2,widths=c(3,3,3,3)),leg,ncol=2,widths=c(10,2))
+
+ggsave("./lag_sim.eps",plot=pp2,width = 8,height = 5.5)
+
+```
+
+#   EDA: explore correlation structure using variogram
+```{r eval=FALSE}
+p.all <- LMic_vario_multaxa(ps.tr, factors="Preterm",time="Time",1,6,taxlevel = "Genus")
+
+#   Change the legend labels
+p.all <- lapply(p.all, function(x){x+scale_color_discrete(name  ="Group",breaks=c("FALSE", "TRUE"),labels=c("Term", "Preterm "))})
+
+leg <- plot.legend(p.all[[1]])
+plist <- lapply(p.all,function(x){x+theme(legend.position="none")})
+
+pp3 <- grid.arrange(arrangeGrob(grobs=plist,nrow=2,widths=c(3,3,3)),leg,ncol=2,widths=c(10,2))
+
+ggsave("./vario_sim.eps",plot=pp3,width = 8,height = 5.5)
+```
+
+#   Run subsampling procedure with initial block size 
+```{r eval=FALSE}
+R <- 100
+RR <- 25
+factors <- "Preterm"
+time <- "Time"
+lI <- 5
+omega <- .6
+system.time(mse_results <- bboot_optblocksize(ps,R=R,RR=RR,factors=factors,time=time,subjectidvar="SubjectID",lI=lI,omega=omega))
+saveRDS(mse_results,"./bboot_sim.rds")
+```
+
+#   Inspect MSE plot
+```{r eval=FALSE}
+omega <- .6
+mse_results <- readRDS("./bboot_sim.rds")
+blks <- length(mse_results)
+mse <- list();for(i in 1:blks){mse[[i]] <- mse_results[[i]]$MSE_i}
+
+mse.avg <- lapply(mse,function(x){mean(x,na.rm=T)})
+mse.sum <- lapply(mse,function(x){sum(x,na.rm=T)})
+
+mse <- unlist(mse.sum)
+lblk <- seq(1,length(mse),by=1)
+lblk.f <- as.factor(lblk)
+dfp <- data.frame(mse=mse,lblk=lblk.f)
+
+p.mse <- ggplot(dfp,aes(x=lblk,y=mse,group=1))+
+    geom_point()+
+    geom_line()+
+    xlab("block size")+
+    ylab("Mean squared error")+
+    ggtitle(paste("MSE for Simulation",omega*100,"%","subsample"))+theme(plot.title = element_text(hjust = 0.5))
+
+ggsave("./mse_sim.eps",plot=p.mse,width = 8,height = 5.5)
+
+l.M <- lblk[mse==min(mse)]
+l.M
+l.opt <- ceiling((100/(omega*100))^(1/5)*l.M) 
+l.opt
+```
+
+#   Run MBB with the optimal block size
+```{r eval=FALSE}
+R <- 200
+RR <- 50
+factors <- "Preterm"
+time <- "Time"
+
+system.time(bboot_res <- bboot_LMic(ps,b=l.opt,R=R,RR=RR,factors=factors,time=time))
+saveRDS(bboot_res,"./bboot_sim.rds")
+```
+
+#   Inspect the results
+
+```{r eval=FALSE}
+bboot_res <- readRDS("./bboot_sim.rds")
+FDR <- .05
+taxalevel <- "Genus"
+out <- bboot_res[[1]] 
+
+#   bootstrap values
+T.star_obs <- bboot_res[[5]] 
+
+#  filter by FDR
+out <- dplyr::filter(out,pvalue.adj <= FDR)
+   
+#   replace ASV by taxalevel
+taxaName <- as.character(tax_table(ps)[as.character(out$ASV),taxalevel])
+
+#   if you want to append Species names to Genus taxalevel
+specName <- as.character(tax_table(ps)[as.character(out$ASV),"Species"])
+tog <- character()
+
+for(i in 1:length(taxaName)){
+    if(!is.na(specName[i])){
+    tog[i] <- paste(taxaName[i],specName[i])
+    }else{
+        tog[i] <- taxaName[i]
+    }
+}
+
+
+#   to remove taxa with no taxalevel name
+ind.na <- which(is.na(tog))
+
+#   to add sequence variants
+taxaN <- paste("SV",seq(1,length(out$ASV)),sep="")
+tn <- paste(tog,taxaN,sep=".")
+
+out$ASV <- tn #taxalevel name and variant number
+#out$ASV <- taxaName    #   only taxalevel names
+#out$ASV <- tog #   taxalevel and Species name
+out <- out[-ind.na,]
+
+#   arrange by observed lfc
+out <- dplyr::arrange(out,desc(stat))
+#   dropped observed values of T
+out <- out[,-6]
+
+out <- dplyr::filter(out,!is.na(pvalue.adj))
+
+#out <- filter(out,abs(stat)>1)
+
+#   write the results table in latex
+library(xtable)
+print(xtable(out, type = "latex",digits = 3), file = "./bboot_sim.tex")
+```
+
