@@ -1,0 +1,25 @@
+Package: bbootLong
+Type: Package
+Title: The Block Bootstrap Method for Longitudinal Microbiome Data 
+Version: 0.1.0
+Author: Pratheepa Jeganathan
+Maintainer: Pratheepa Jeganathan <pjeganat@stanford.edu>
+Description: Extension of the bootstrap method that enables inference on longitudinal microbiome data. 
+             Creates block bootstrap samples. Computes optimal block length to use block bootstrap method using subsampling method. 
+             Computes adjusted p-values and confidence limits.
+License: CCO
+Encoding: UTF-8
+LazyData: true
+Imports:
+    limma,
+    edgeR,
+    DESeq2,
+    phyloseq,
+    dplyr,
+    tidyr,
+    lazyeval,
+    ashr,
+    BiocParallel,
+    parallel,
+    doParallel
+RoxygenNote: 6.0.1
