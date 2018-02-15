@@ -90,7 +90,7 @@ bboot_LMic <- function(ps,b,R,RR,factors,time,FDR=.1){
     #txnames <- taxa_names(ps)
     txnames <- dplyr::select(res.obs,ASV)
     out <- data.frame(Taxa=txnames,stat=res.obs[,1],pvalue.adj=pvalue.adj)
-    names(out)[which(names(out)=="stat"] <- stat.name
+    names(out)[which(names(out)=="stat")] <- stat.name
     #   compute confidence interval: not the simultaneous CI so will be wider than expected
     lcl <- apply(stat.star,1,FUN=function(x){quantile(x,probs=FDR/2,na.rm=TRUE)})
     ucl <- apply(stat.star,1,FUN=function(x){quantile(x,probs=(1-FDR/2),na.rm=TRUE)})
