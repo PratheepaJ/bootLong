@@ -51,6 +51,8 @@ LMic_vario <- function(ps,factors,time,taxon,point=FALSE,taxlevel="Species"){
     df.taxa <- data.frame(sample_data(ps),otu=as.numeric(t(otu_table(ps)[taxon,])))
     names(df.taxa)[names(df.taxa)==factors] <- "Group"
     names(df.taxa)[names(df.taxa)==time] <- "Time"
+    
+    if(!is.numeric(df.taxa$Time)){df.taxa$Time <- as.numeric(df.taxa$Time)}
     #   split by the levels of a factor
     df.taxa.sep <- split(df.taxa,df.taxa$Group)
     #   compute variogram for each level
