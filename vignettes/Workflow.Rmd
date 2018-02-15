@@ -26,7 +26,7 @@ lpckges<-pkgs%in%(.packages())
 if(any(!lpckges)){
     sapply(pkgs[!lpckges],require,character.only=TRUE)
 }
-library(bbootLong)
+#library(bootLong)
 ```
 
 #   Read data

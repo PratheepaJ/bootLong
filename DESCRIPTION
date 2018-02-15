@@ -1,4 +1,4 @@
-Package: bbootLong
+Package: bootLong
 Type: Package
 Title: The Block Bootstrap Method for Longitudinal Microbiome Data 
 Version: 0.1.0
