@@ -50,7 +50,8 @@ ComputeMSE <- function(ps,qj,Wj,b,R,RR,factors,time,Khat.obs=NULL,T.obs.full=NUL
         })
         sub.sam.i <- do.call("rbind",sub.sam.i)
         subsam.id <- sub.sam.i$SampleID
-        ps.sub[[i]] <- subset_samples(ps,SampleID%in%subsam.id)
+        subsam.id <- as.character(subsam.id)
+        ps.sub[[i]] <- prune_samples(subsam.id,ps)
         #names(sample_data(ps.sub[[i]]))[names(sample_data(ps.sub[[i]]))=="Time"] <- time
     }
 
