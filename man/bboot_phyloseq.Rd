@@ -7,15 +7,15 @@
 bboot_phyloseq(ps, b, time)
 }
 \arguments{
-\item{ps}{Observed \code{phyloseq} class object.}
+\item{ps}{a \code{phyloseq} object.}
 
-\item{b}{Block lenght to account for dependence within-subject.}
+\item{b}{a numeric. Block size.}
 
-\item{time}{Time variable at repeated measures.}
+\item{time}{a character. Name of the time variable.}
 }
 \value{
-Block bootstrap phyloseq object as a list.
+a \code{phyloseq} object. This will be a block bootstrap realization of input \code{ps}.
 }
 \description{
-Creates block bootstrap phyloseq object.
+Creates block bootstrap realizations as \code{phyloseq} objects.
 }

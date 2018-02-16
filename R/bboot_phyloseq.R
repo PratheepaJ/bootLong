@@ -1,12 +1,12 @@
 #' bboot_phyloseq
 #'
-#' Creates block bootstrap phyloseq object.
+#' Creates block bootstrap realizations as \code{phyloseq} objects.
 #'
-#' @param ps Observed \code{phyloseq} class object.
-#' @param b Block lenght to account for dependence within-subject.
-#' @param time Time variable at repeated measures.
+#' @param ps a \code{phyloseq} object.
+#' @param b a numeric. Block size.
+#' @param time a character. Name of the time variable.
 #'
-#' @return Block bootstrap phyloseq object as a list.
+#' @return a \code{phyloseq} object. This will be a block bootstrap realization of input \code{ps}.
 #' @export
 bboot_phyloseq <- function(ps,b,time){
 

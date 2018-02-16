@@ -7,20 +7,19 @@
 bboot_indices(x, b, time, k, blks_first_index)
 }
 \arguments{
-\item{x}{Dataframe for each subject with repeated samples with \code{Index} variable inserted.}
+\item{x}{a data frame. It must have \code{Index} column that will be added by \code{bboot_phyloseq}.}
 
-\item{b}{Block lenght to account for dependence within-subject.}
+\item{b}{a numeric. Block size.}
 
-\item{time}{Time variable at repeated measures.}
+\item{time}{a character. Name of the time variable.}
 
-\item{k}{number of overlapping blocks per sample}
+\item{k}{a numeric. Number of overlapping blocks per subject that will be added by \code{bboot_phyloseq}.}
 
-\item{blks_first_index}{randomly select first index of each block (same for all subjects)}
+\item{blks_first_index}{a vector of positive integer. This will be added by \code{bboot_phyloseq} (same for all subjects.)}
 }
 \value{
-For each subject, this method returns indices of repeated samples for the block bootstrap sample as a list.
+A list of indices to include in the block bootstrap realization.
 }
 \description{
-This function is called within \code{bboot_phyloseq} after
-creating \code{Index} for samples within each subject
+This function is called within \code{bboot_phyloseq} for each subject's data frame.
 }

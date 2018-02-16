@@ -1,15 +1,15 @@
 #' bboot_indices
 #'
-#' This function is called within \code{bboot_phyloseq} after
-#' creating \code{Index} for samples within each subject
+#' This function is called within \code{bboot_phyloseq} for each subject's data frame.
 #'
-#' @param x Dataframe for each subject with repeated samples with \code{Index} variable inserted.
-#' @param b Block lenght to account for dependence within-subject.
-#' @param time Time variable at repeated measures.
-#' @param k number of overlapping blocks per sample
-#' @param blks_first_index randomly select first index of each block (same for all subjects)
 #'
-#' @return For each subject, this method returns indices of repeated samples for the block bootstrap sample as a list.
+#' @param x a data frame. It must have \code{Index} column that will be added by \code{bboot_phyloseq}.
+#' @param b a numeric. Block size.
+#' @param time a character. Name of the time variable.
+#' @param k a numeric. Number of overlapping blocks per subject that will be added by \code{bboot_phyloseq}.
+#' @param blks_first_index a vector of positive integer. This will be added by \code{bboot_phyloseq} (same for all subjects.)
+#'
+#' @return A list of indices to include in the block bootstrap realization.
 #' @export
 bboot_indices <- function(x,b,time,k,blks_first_index){
 
@@ -35,7 +35,7 @@ bboot_indices <- function(x,b,time,k,blks_first_index){
         }else{
                 howrep <- c(rep(1:num.of.rep.obs.x,times=(k-num.of.blks)/num.of.rep.obs.x),1:((k-num.of.blks)%%num.of.rep.obs.x))
         }
-        
+
         expand.x <- bind_rows(x,x[howrep,])
         x <- expand.x
         }

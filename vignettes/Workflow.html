@@ -12,7 +12,7 @@
 
 <meta name="author" content="Pratheepa Jeganathan" />
 
-<meta name="date" content="2018-02-13" />
+<meta name="date" content="2018-02-16" />
 
 <title>Workflow : The Block Bootstrap Method for Longitudinal Microbiome Data</title>
 
@@ -70,7 +70,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">Workflow : The Block Bootstrap Method for Longitudinal Microbiome Data</h1>
 <h4 class="author"><em>Pratheepa Jeganathan</em></h4>
-<h4 class="date"><em>2018-02-13</em></h4>
+<h4 class="date"><em>2018-02-16</em></h4>
 
 
 
@@ -86,171 +86,13 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <span class="cf">if</span>(<span class="kw">any</span>(<span class="op">!</span>lpckges)){
     <span class="kw">sapply</span>(pkgs[<span class="op">!</span>lpckges],require,<span class="dt">character.only=</span><span class="ot">TRUE</span>)
 }</code></pre></div>
-<pre><code>## Loading required package: ggplot2</code></pre>
-<pre><code>## Loading required package: doParallel</code></pre>
-<pre><code>## Loading required package: foreach</code></pre>
-<pre><code>## Loading required package: iterators</code></pre>
-<pre><code>## Loading required package: parallel</code></pre>
-<pre><code>## Loading required package: reshape2</code></pre>
-<pre><code>## Loading required package: dplyr</code></pre>
-<pre><code>## 
-## Attaching package: 'dplyr'</code></pre>
-<pre><code>## The following objects are masked from 'package:stats':
-## 
-##     filter, lag</code></pre>
-<pre><code>## The following objects are masked from 'package:base':
-## 
-##     intersect, setdiff, setequal, union</code></pre>
-<pre><code>## Loading required package: gridExtra</code></pre>
-<pre><code>## 
-## Attaching package: 'gridExtra'</code></pre>
-<pre><code>## The following object is masked from 'package:dplyr':
-## 
-##     combine</code></pre>
-<pre><code>## Loading required package: phyloseq</code></pre>
-<pre><code>## Loading required package: DESeq2</code></pre>
-<pre><code>## Loading required package: S4Vectors</code></pre>
-<pre><code>## Loading required package: stats4</code></pre>
-<pre><code>## Loading required package: BiocGenerics</code></pre>
-<pre><code>## 
-## Attaching package: 'BiocGenerics'</code></pre>
-<pre><code>## The following object is masked from 'package:gridExtra':
-## 
-##     combine</code></pre>
-<pre><code>## The following objects are masked from 'package:dplyr':
-## 
-##     combine, intersect, setdiff, union</code></pre>
-<pre><code>## The following objects are masked from 'package:parallel':
-## 
-##     clusterApply, clusterApplyLB, clusterCall, clusterEvalQ,
-##     clusterExport, clusterMap, parApply, parCapply, parLapply,
-##     parLapplyLB, parRapply, parSapply, parSapplyLB</code></pre>
-<pre><code>## The following objects are masked from 'package:stats':
-## 
-##     IQR, mad, sd, var, xtabs</code></pre>
-<pre><code>## The following objects are masked from 'package:base':
-## 
-##     anyDuplicated, append, as.data.frame, cbind, colMeans,
-##     colnames, colSums, do.call, duplicated, eval, evalq, Filter,
-##     Find, get, grep, grepl, intersect, is.unsorted, lapply,
-##     lengths, Map, mapply, match, mget, order, paste, pmax,
-##     pmax.int, pmin, pmin.int, Position, rank, rbind, Reduce,
-##     rowMeans, rownames, rowSums, sapply, setdiff, sort, table,
-##     tapply, union, unique, unsplit, which, which.max, which.min</code></pre>
-<pre><code>## 
-## Attaching package: 'S4Vectors'</code></pre>
-<pre><code>## The following objects are masked from 'package:dplyr':
-## 
-##     first, rename</code></pre>
-<pre><code>## The following object is masked from 'package:base':
-## 
-##     expand.grid</code></pre>
-<pre><code>## Loading required package: IRanges</code></pre>
-<pre><code>## 
-## Attaching package: 'IRanges'</code></pre>
-<pre><code>## The following object is masked from 'package:phyloseq':
-## 
-##     distance</code></pre>
-<pre><code>## The following objects are masked from 'package:dplyr':
-## 
-##     collapse, desc, slice</code></pre>
-<pre><code>## Loading required package: GenomicRanges</code></pre>
-<pre><code>## Loading required package: GenomeInfoDb</code></pre>
-<pre><code>## Loading required package: SummarizedExperiment</code></pre>
-<pre><code>## Loading required package: Biobase</code></pre>
-<pre><code>## Welcome to Bioconductor
-## 
-##     Vignettes contain introductory material; view with
-##     'browseVignettes()'. To cite Bioconductor, see
-##     'citation(&quot;Biobase&quot;)', and for packages 'citation(&quot;pkgname&quot;)'.</code></pre>
-<pre><code>## 
-## Attaching package: 'Biobase'</code></pre>
-<pre><code>## The following object is masked from 'package:phyloseq':
-## 
-##     sampleNames</code></pre>
-<pre><code>## Loading required package: DelayedArray</code></pre>
-<pre><code>## Loading required package: matrixStats</code></pre>
-<pre><code>## 
-## Attaching package: 'matrixStats'</code></pre>
-<pre><code>## The following objects are masked from 'package:Biobase':
-## 
-##     anyMissing, rowMedians</code></pre>
-<pre><code>## The following object is masked from 'package:dplyr':
-## 
-##     count</code></pre>
-<pre><code>## 
-## Attaching package: 'DelayedArray'</code></pre>
-<pre><code>## The following objects are masked from 'package:matrixStats':
-## 
-##     colMaxs, colMins, colRanges, rowMaxs, rowMins, rowRanges</code></pre>
-<pre><code>## The following object is masked from 'package:base':
-## 
-##     apply</code></pre>
-<pre><code>## Loading required package: tidyr</code></pre>
-<pre><code>## 
-## Attaching package: 'tidyr'</code></pre>
-<pre><code>## The following object is masked from 'package:S4Vectors':
-## 
-##     expand</code></pre>
-<pre><code>## The following object is masked from 'package:reshape2':
-## 
-##     smiths</code></pre>
-<pre><code>## Loading required package: BiocParallel</code></pre>
-<pre><code>## Loading required package: ggfortify</code></pre>
-<pre><code>## Loading required package: R.utils</code></pre>
-<pre><code>## Loading required package: R.oo</code></pre>
-<pre><code>## Loading required package: R.methodsS3</code></pre>
-<pre><code>## R.methodsS3 v1.7.1 (2016-02-15) successfully loaded. See ?R.methodsS3 for help.</code></pre>
-<pre><code>## R.oo v1.21.0 (2016-10-30) successfully loaded. See ?R.oo for help.</code></pre>
-<pre><code>## 
-## Attaching package: 'R.oo'</code></pre>
-<pre><code>## The following object is masked from 'package:SummarizedExperiment':
-## 
-##     trim</code></pre>
-<pre><code>## The following object is masked from 'package:GenomicRanges':
-## 
-##     trim</code></pre>
-<pre><code>## The following object is masked from 'package:IRanges':
-## 
-##     trim</code></pre>
-<pre><code>## The following objects are masked from 'package:methods':
-## 
-##     getClasses, getMethods</code></pre>
-<pre><code>## The following objects are masked from 'package:base':
-## 
-##     attach, detach, gc, load, save</code></pre>
-<pre><code>## R.utils v2.6.0 (2017-11-04) successfully loaded. See ?R.utils for help.</code></pre>
-<pre><code>## 
-## Attaching package: 'R.utils'</code></pre>
-<pre><code>## The following object is masked from 'package:tidyr':
-## 
-##     extract</code></pre>
-<pre><code>## The following object is masked from 'package:utils':
-## 
-##     timestamp</code></pre>
-<pre><code>## The following objects are masked from 'package:base':
-## 
-##     cat, commandArgs, getOption, inherits, isOpen, parse, warnings</code></pre>
-<pre><code>## Loading required package: edgeR</code></pre>
-<pre><code>## Loading required package: limma</code></pre>
-<pre><code>## 
-## Attaching package: 'limma'</code></pre>
-<pre><code>## The following object is masked from 'package:DESeq2':
-## 
-##     plotMA</code></pre>
-<pre><code>## The following object is masked from 'package:BiocGenerics':
-## 
-##     plotMA</code></pre>
-<pre><code>## Loading required package: ashr</code></pre>
 <pre><code>##      ggplot2   doParallel      foreach     reshape2        dplyr 
 ##         TRUE         TRUE         TRUE         TRUE         TRUE 
 ##    gridExtra     phyloseq       DESeq2        tidyr BiocParallel 
 ##         TRUE         TRUE         TRUE         TRUE         TRUE 
 ##    ggfortify      R.utils        edgeR        limma         ashr 
 ##         TRUE         TRUE         TRUE         TRUE         TRUE</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(bbootLong)</code></pre></div>
-<pre><code>## Warning: replacing previous import 'DESeq2::plotMA' by 'limma::plotMA' when
-## loading 'bbootLong'</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#library(bootLong)</span></code></pre></div>
 <div id="read-data" class="section level1">
 <h1>Read data</h1>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ps &lt;-<span class="st"> </span>pssim</code></pre></div>
@@ -339,8 +181,8 @@ pp3 &lt;-<span class="st"> </span><span class="kw">grid.arrange</span>(<span cla
 </div>
 <div id="run-subsampling-procedure-with-initial-block-size" class="section level1">
 <h1>Run subsampling procedure with initial block size</h1>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">R &lt;-<span class="st"> </span><span class="dv">100</span>
-RR &lt;-<span class="st"> </span><span class="dv">25</span>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">R &lt;-<span class="st"> </span><span class="dv">2</span>
+RR &lt;-<span class="st"> </span><span class="dv">2</span>
 factors &lt;-<span class="st"> &quot;Preterm&quot;</span>
 time &lt;-<span class="st"> &quot;Time&quot;</span>
 lI &lt;-<span class="st"> </span><span class="dv">5</span>
