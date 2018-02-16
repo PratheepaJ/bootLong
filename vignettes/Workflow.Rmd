@@ -21,7 +21,7 @@ pkgs <- c("ggplot2","doParallel","foreach","reshape2","dplyr","gridExtra","phylo
 ```
 
 load packages:
-```{r }
+```{r message=FALSE,warning=FALSE}
 lpckges<-pkgs%in%(.packages())
 if(any(!lpckges)){
     sapply(pkgs[!lpckges],require,character.only=TRUE)
@@ -130,8 +130,8 @@ ggsave("./vario_sim.eps",plot=pp3,width = 8,height = 5.5)
 
 #   Run subsampling procedure with initial block size 
 ```{r eval=FALSE}
-R <- 100
-RR <- 25
+R <- 2
+RR <- 2
 factors <- "Preterm"
 time <- "Time"
 lI <- 5

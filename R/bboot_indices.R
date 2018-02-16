@@ -21,20 +21,21 @@ bboot_indices <- function(x,b,time,k,blks_first_index){
     }
 
     #   Number of repeated biological samples from a subject
-    num.of.rep.obs <- dim(x)[1]
+    num.of.rep.obs.x <- dim(x)[1]
 
     #   number of ovelapping blocks within a subject
-    num.of.blks <- num.of.rep.obs-b+1
+    num.of.blks <- num.of.rep.obs.x-b+1
     # k <- num.of.blks
 
     if(k>num.of.blks){
         # how many rows should be added or how many times repeated
-        # rows.x <- num.of.rep.obs
-        if((k-num.of.blks)%%num.of.rep.obs==0){
-            howrep <- rep(1:num.of.rep.obs,times=(k-num.of.blks)/num.of.rep.obs)
+        # rows.x <- num.of.rep.obs.x
+        if((k-num.of.blks)%%num.of.rep.obs.x==0){
+            howrep <- rep(1:num.of.rep.obs.x,times=(k-num.of.blks)/num.of.rep.obs.x)
         }else{
-                howrep <- c(rep(1:num.of.rep.obs,times=(k-num.of.blks)/num.of.rep.obs),1:((k-num.of.blks)%%num.of.rep.obs))
-            }
+                howrep <- c(rep(1:num.of.rep.obs.x,times=(k-num.of.blks)/num.of.rep.obs.x),1:((k-num.of.blks)%%num.of.rep.obs.x))
+        }
+        
         expand.x <- bind_rows(x,x[howrep,])
         x <- expand.x
         }
@@ -56,7 +57,7 @@ bboot_indices <- function(x,b,time,k,blks_first_index){
         subject.sample.indices <- x$Index[unlist(lapply(blks_first_index,FUN=function(y){y:(y+b-1)}))]
         #   number of repeated observations in the bootstrap samples
         #   should be same as in the observed number of repeated observations
-        subject.sample.indices <- subject.sample.indices[1:num.of.rep.obs]
+        subject.sample.indices <- subject.sample.indices[1:num.of.rep.obs.x]
     }
     return(list(subject.sample.indices))
 }

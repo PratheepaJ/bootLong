@@ -23,36 +23,70 @@ ComputeMSE <- function(ps,qj,Wj,b,R,RR,factors,time,Khat.obs=NULL,T.obs.full=NUL
     if(is.null(Khat.obs)){stop("User needs to run ComputeK() function with initial block length ")}
     if(is.null(T.obs.full)){stop("User needs to provide observed test statistic")}
 
+    #names(sample_data(ps))[names(sample_data(ps))==time] <- "Time"
     #   Create many ((max(qj)-max(Wj)+1) number of sub-seires) phyloseq with sub-series to compute MSE with block size "b"
     samdf <- data.frame(sample_data(ps))
     samdf <- split(samdf,samdf$SubjectID)
     num.sub.sam <- max(qj)-max(Wj)+1
 
-    if(num.sub.sam<5){stop("decrease the percentage of repeated observation use to make subsample")}
+    samdf.q.W <- mapply(samdf,as.list(qj),as.list(Wj),FUN=list,SIMPLIFY = FALSE)
 
-    Khat <- lapply(seq_len(num.sub.sam),function(i){
-        short.samdf <- lapply(samdf,function(x){x[min(qj[which(names(qj)%in%unique(x$SubjectID))]-Wj[which(names(Wj)%in%unique(x$SubjectID))]+1,i):min(qj[which(names(qj)%in%unique(x$SubjectID))],Wj[which(names(Wj)%in%unique(x$SubjectID))]+i-1),]})
+    samdf.q.W.or <- lapply(samdf.q.W,function(x){
+        if(!(is.numeric(x[[1]][,time]))){x[[1]][,time] <- as.numeric(x[[1]][,time])}
+        x[[1]] <- dplyr::arrange_(x[[1]],time)
+        return(x)
+    })
 
-        short.samdf <- do.call("rbind",short.samdf)
 
-        mSampleID <- short.samdf$SampleID
+    if(num.sub.sam<5){stop("decrease omega")}
 
-        rm(short.samdf)
+    ps.sub <- list()
+    for(i in 1:num.sub.sam){
+        sub.sam.i <- lapply(samdf.q.W.or,function(x){
+            xd <- x[[1]]
+            W <- x[[3]]
+            ss <- data.frame(dplyr::slice(x[[1]],i:(W+i-1)))
+            return(ss)
+        })
+        sub.sam.i <- do.call("rbind",sub.sam.i)
+        subsam.id <- sub.sam.i$SampleID
+        ps.sub[[i]] <- subset_samples(ps,SampleID%in%subsam.id)
+        #names(sample_data(ps.sub[[i]]))[names(sample_data(ps.sub[[i]]))=="Time"] <- time
+    }
 
-        ps.m <- prune_samples(mSampleID,ps)
-
-        rm(mSampleID)
-
-        k.hat <- ComputeK(ps.m,b=b,R=R,RR=RR,factors=factors,time=time,T.obs.full=T.obs.full)
+    Khat <- lapply(ps.sub,function(x){
+        k.hat <- ComputeK(x,b=b,R=R,RR=RR,factors=factors,time=time,T.obs.full=T.obs.full)
         k.hat <- k.hat[[1]]
-
-        rm(ps.m)
-
         return(k.hat)
     })
 
+    # Khat <- lapply(subsam.num,function(i){
+    #
+    #     sub.samdf <- lapply(samdf,function(x){x[min(qj[which(names(qj)%in%unique(x$SubjectID))]-Wj[which(names(Wj)%in%unique(x$SubjectID))]+1,i):min(qj[which(names(qj)%in%unique(x$SubjectID))],Wj[which(names(Wj)%in%unique(x$SubjectID))]+i-1),]})
+    #
+    #     sub.samdf <- do.call("rbind",sub.samdf)
+    #
+    #     sub.SampleID <- as.character(sub.samdf$SampleID)
+    #
+    #     ps.m <- prune_samples(sub.SampleID,ps)
+    #
+    #     k.hat <- ComputeK(ps.m,b=b,R=R,RR=RR,factors=factors,time=time,T.obs.full=T.obs.full)
+    #     k.hat <- k.hat[[1]]
+    #
+    #     rm(sub.samdf)
+    #     rm(sub.SampleID)
+    #     rm(ps.m)
+    #
+    #    return(k.hat)
+    # })
+
+
     rm(ps)
     rm(samdf)
+    rm(samdf.q.W)
+    rm(samdf.q.W.or)
+    rm(ps.sub)
+
 
     #deviation squared between two-tailed probability with block lengths lI and lC
     Khat.squared.diff <- lapply(Khat,FUN=function(w){(w-Khat.obs)^2})

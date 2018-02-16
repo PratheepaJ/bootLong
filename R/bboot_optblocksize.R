@@ -22,6 +22,8 @@ bboot_optblocksize <- function(ps,R,RR,factors,time,subjectidvar="SubjectID",lI,
     BiocParallel::register(BiocParallel::DoparParam())
 
     names(sample_data(ps))[names(sample_data(ps))==subjectidvar] <- "SubjectID"
+    #names(sample_data(ps))[names(sample_data(ps))==time] <- "Time"
+
     #   number of repeated samples per subject
     qj <- table(sample_data(ps)$SubjectID)
 

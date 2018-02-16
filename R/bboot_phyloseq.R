@@ -35,7 +35,7 @@ bboot_phyloseq <- function(ps,b,time){
     blks.first.index <- sample(1:k,k,replace = T)
 
     #   Sampling blocks within each subject
-    sampling.blks.within.subject.indices <- lapply(samdf.split.by.subjects,FUN=function(q){bboot_indices(q,b,time,k,blks.first.index)})
+    sampling.blks.within.subject.indices <- lapply(samdf.split.by.subjects,FUN=function(q){bboot_indices(q,b,time,k,blks_first_index =blks.first.index)})
 
     #   Indices are first element of the list
     sampling.blks.within.subject.indices <- lapply(sampling.blks.within.subject.indices,"[[",1)
@@ -47,6 +47,7 @@ bboot_phyloseq <- function(ps,b,time){
     blk.boot.otu.tab <- otu.tab[,boot.sample.indices]
     blk.boot.samdf <- samdf[boot.sample.indices,]
     colnames(blk.boot.otu.tab) <- rownames(blk.boot.samdf)
+    rownames(blk.boot.otu.tab) <- taxa_names(ps)
     #sum(rownames(blk.boot.otu.tab)==rownames(tax.tab))
     ps.boot <- merge_phyloseq(X=otu_table(blk.boot.otu.tab,taxa_are_rows = T),sample_data(blk.boot.samdf),tax_table(tax.tab))
     return(list(ps.boot))
