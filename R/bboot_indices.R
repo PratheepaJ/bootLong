@@ -13,23 +13,21 @@
 #' @export
 bboot_indices <- function(x,b,time,k,blks_first_index){
 
-    #   if samples are not ordered by 'time'
+    #   if repeated samples are not ordered by 'time'
     if(!is.unsorted(x[,time])){# argument for `is.unsorted()` must be 1-dim
         x <- x
     }else{
         x <- arrange_(x,time)
     }
 
-    #   Number of repeated biological samples from a subject
+    #   number of repeated biological samples per subject
     num.of.rep.obs.x <- dim(x)[1]
 
-    #   number of ovelapping blocks within a subject
+    #   number of ovelapping blocks per subject
     num.of.blks <- num.of.rep.obs.x-b+1
-    # k <- num.of.blks
 
     if(k>num.of.blks){
         # how many rows should be added or how many times repeated
-        # rows.x <- num.of.rep.obs.x
         if((k-num.of.blks)%%num.of.rep.obs.x==0){
             howrep <- rep(1:num.of.rep.obs.x,times=(k-num.of.blks)/num.of.rep.obs.x)
         }else{
@@ -45,14 +43,12 @@ bboot_indices <- function(x,b,time,k,blks_first_index){
     subject.sample.indices <- numeric(0)
 
     #   if there is less number of repeated observations
-    #   than the block length (can happen for unbalanced design),
+    #   than the block size (can happen for an unbalanced design),
     #   choose all the observations to the bootstrap sample
     if(k<=0){
         subject.sample.indices <- x$Index
 
     }else{
-        # randomly select first index of each block
-        #blks.first.index <- sample(1:k,k,replace = T)
         #   consecutive indices
         subject.sample.indices <- x$Index[unlist(lapply(blks_first_index,FUN=function(y){y:(y+b-1)}))]
         #   number of repeated observations in the bootstrap samples

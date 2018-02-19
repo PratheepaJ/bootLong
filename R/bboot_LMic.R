@@ -8,7 +8,7 @@
 #' @param time Time variable at repeated observations.
 #' @param FDR False discovery rate
 #'
-#' @return list of dataframe with ASV, observed stat, adjusted pvalues, lcl, ucl, observed pivotal quantity; stat.obs; stat.star; stat.star.star; T.star_obs
+#' @return list of dataframe with ASV, observed stat, pvalues, adjusted pvalues, lcl, ucl, observed pivotal quantity; stat.obs; stat.star; stat.star.star; T.star_obs.
 #' @export
 #'
 bboot_LMic <- function(ps,b,R,RR,factors,time,FDR=.1){
@@ -89,7 +89,7 @@ bboot_LMic <- function(ps,b,R,RR,factors,time,FDR=.1){
     # output taxa names, stat, adj pvalues
     #txnames <- taxa_names(ps)
     txnames <- dplyr::select(res.obs,ASV)
-    out <- data.frame(Taxa=txnames,stat=res.obs[,1],pvalue.adj=pvalue.adj)
+    out <- data.frame(Taxa=txnames,stat=res.obs[,1],pvalue=pvalue,pvalue.adj=pvalue.adj)
     names(out)[which(names(out)=="stat")] <- stat.name
     #   compute confidence interval: not the simultaneous CI so will be wider than expected
     lcl <- apply(stat.star,1,FUN=function(x){quantile(x,probs=FDR/2,na.rm=TRUE)})
@@ -98,5 +98,6 @@ bboot_LMic <- function(ps,b,R,RR,factors,time,FDR=.1){
     out <- dplyr::bind_cols(out,lcl=lcl,ucl=ucl,T.obs=T.obs[,1])
 
     rt <- list(out,stat.obs,stat.star,stat.star.star,T.star_obs)
+    names(rt) <- c("summary","beta.hat","beta.hat.star","beta.hat.star.star","T.obs")
     return(rt)
 }
