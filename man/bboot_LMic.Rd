@@ -22,7 +22,7 @@ bboot_LMic(ps, b, R, RR, factors, time, FDR = 0.1)
 \item{FDR}{False discovery rate}
 }
 \value{
-list of dataframe with ASV, observed stat, adjusted pvalues, lcl, ucl, observed pivotal quantity; stat.obs; stat.star; stat.star.star; T.star_obs
+list of dataframe with ASV, observed stat, pvalues, adjusted pvalues, lcl, ucl, observed pivotal quantity; stat.obs; stat.star; stat.star.star; T.star_obs.
 }
 \description{
 bboot_LMic
