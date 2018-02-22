@@ -6,12 +6,12 @@
 #' @param x a data frame. It must have \code{Index} column that will be added by \code{bboot_phyloseq}.
 #' @param b a numeric. Block size.
 #' @param time a character. Name of the time variable.
-#' @param k a numeric. Number of overlapping blocks per subject that will be added by \code{bboot_phyloseq}.
+#' @param L a numeric. Number of overlapping blocks per subject that will be added by \code{bboot_phyloseq}.
 #' @param blks_first_index a vector of positive integer. This will be added by \code{bboot_phyloseq} (same for all subjects.)
 #'
 #' @return A list of indices to include in the block bootstrap realization.
 #' @export
-bboot_indices <- function(x,b,time,k,blks_first_index){
+bboot_indices <- function(x,b,time,L,blks_first_index){
 
     #   if repeated samples are not ordered by 'time'
     if(!is.unsorted(x[,time])){# argument for `is.unsorted()` must be 1-dim
@@ -26,12 +26,12 @@ bboot_indices <- function(x,b,time,k,blks_first_index){
     #   number of ovelapping blocks per subject
     num.of.blks <- num.of.rep.obs.x-b+1
 
-    if(k>num.of.blks){
+    if(L>num.of.blks){
         # how many rows should be added or how many times repeated
-        if((k-num.of.blks)%%num.of.rep.obs.x==0){
-            howrep <- rep(1:num.of.rep.obs.x,times=(k-num.of.blks)/num.of.rep.obs.x)
+        if((L-num.of.blks)%%num.of.rep.obs.x==0){
+            howrep <- rep(1:num.of.rep.obs.x,times=(L-num.of.blks)/num.of.rep.obs.x)
         }else{
-                howrep <- c(rep(1:num.of.rep.obs.x,times=(k-num.of.blks)/num.of.rep.obs.x),1:((k-num.of.blks)%%num.of.rep.obs.x))
+                howrep <- c(rep(1:num.of.rep.obs.x,times=(L-num.of.blks)/num.of.rep.obs.x),1:((L-num.of.blks)%%num.of.rep.obs.x))
         }
 
         expand.x <- bind_rows(x,x[howrep,])
@@ -45,7 +45,7 @@ bboot_indices <- function(x,b,time,k,blks_first_index){
     #   if there is less number of repeated observations
     #   than the block size (can happen for an unbalanced design),
     #   choose all the observations to the bootstrap sample
-    if(k<=0){
+    if(L<=0){
         subject.sample.indices <- x$Index
 
     }else{

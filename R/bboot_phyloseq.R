@@ -30,11 +30,11 @@ bboot_phyloseq <- function(ps,b,time){
 
     #   number of ovelapping blocks per subject
     num.of.blks <- lapply(num.of.rep.obs,function(x){x-b+1})
-    k <- max(unlist(num.of.blks))
-    blks.first.index <- sample(1:k,k,replace = T)
+    L <- max(unlist(num.of.blks))
+    blks.first.index <- sample(1:L,L,replace = T)
 
     #   block bootstrap samples' indices
-    sampling.blks.within.subject.indices <- lapply(samdf.split.by.subjects,FUN=function(q){bboot_indices(q,b,time,k,blks_first_index =blks.first.index)})
+    sampling.blks.within.subject.indices <- lapply(samdf.split.by.subjects,FUN=function(q){bboot_indices(q,b,time,L,blks_first_index =blks.first.index)})
 
     #   indices are first element of the list
     sampling.blks.within.subject.indices <- lapply(sampling.blks.within.subject.indices,"[[",1)
