@@ -24,7 +24,7 @@ ComputeMSE(ps, qj, Wj, b, R, RR, factors, time, Khat.obs = NULL,
 
 \item{time}{Time variable at repeated observations.}
 
-\item{Khat.obs}{second element of the output of \code{ComputeK} evaluated using the initial block length and full data}
+\item{Khat.obs}{second element of the output of \code{bootLongPsi} evaluated using the initial block length and full data}
 
 \item{T.obs.full}{If observed statistic is already computed}
 
