@@ -12,7 +12,7 @@
 
 <meta name="author" content="Pratheepa Jeganathan" />
 
-<meta name="date" content="2018-02-16" />
+<meta name="date" content="2018-02-22" />
 
 <title>Workflow : The Block Bootstrap Method for Longitudinal Microbiome Data</title>
 
@@ -70,12 +70,13 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">Workflow : The Block Bootstrap Method for Longitudinal Microbiome Data</h1>
 <h4 class="author"><em>Pratheepa Jeganathan</em></h4>
-<h4 class="date"><em>2018-02-16</em></h4>
+<h4 class="date"><em>2018-02-22</em></h4>
 
 
 
 <p>Install packages:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">pkgs &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;ggplot2&quot;</span>,<span class="st">&quot;doParallel&quot;</span>,<span class="st">&quot;foreach&quot;</span>,<span class="st">&quot;reshape2&quot;</span>,<span class="st">&quot;dplyr&quot;</span>,<span class="st">&quot;gridExtra&quot;</span>,<span class="st">&quot;phyloseq&quot;</span>,<span class="st">&quot;DESeq2&quot;</span>,<span class="st">&quot;tidyr&quot;</span>,<span class="st">&quot;BiocParallel&quot;</span>,<span class="st">&quot;ggfortify&quot;</span>,<span class="st">&quot;R.utils&quot;</span>,<span class="st">&quot;edgeR&quot;</span>,<span class="st">&quot;limma&quot;</span>,<span class="st">&quot;ashr&quot;</span>)
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">pkgs &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;ggplot2&quot;</span>,<span class="st">&quot;dplyr&quot;</span>,<span class="st">&quot;tidyr&quot;</span>,<span class="st">&quot;phyloseq&quot;</span>,<span class="st">&quot;DESeq2&quot;</span>,<span class="st">&quot;BiocParallel&quot;</span>,<span class="st">&quot;edgeR&quot;</span>,<span class="st">&quot;limma&quot;</span>,<span class="st">&quot;ashr&quot;</span>,<span class="st">&quot;gridExtra&quot;</span>)
+<span class="co">#pkgs &lt;- c(&quot;doParallel&quot;,&quot;foreach&quot;,&quot;reshape2&quot;,&quot;gridExtra&quot;,&quot;ggfortify&quot;,&quot;R.utils&quot;)</span>
 
 <span class="co">#   installed packages that were not installed already</span>
 <span class="co"># source(&quot;http://bioconductor.org/biocLite.R&quot;)</span>
@@ -86,11 +87,9 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <span class="cf">if</span>(<span class="kw">any</span>(<span class="op">!</span>lpckges)){
     <span class="kw">sapply</span>(pkgs[<span class="op">!</span>lpckges],require,<span class="dt">character.only=</span><span class="ot">TRUE</span>)
 }</code></pre></div>
-<pre><code>##      ggplot2   doParallel      foreach     reshape2        dplyr 
+<pre><code>##      ggplot2        dplyr        tidyr     phyloseq       DESeq2 
 ##         TRUE         TRUE         TRUE         TRUE         TRUE 
-##    gridExtra     phyloseq       DESeq2        tidyr BiocParallel 
-##         TRUE         TRUE         TRUE         TRUE         TRUE 
-##    ggfortify      R.utils        edgeR        limma         ashr 
+## BiocParallel        edgeR        limma         ashr    gridExtra 
 ##         TRUE         TRUE         TRUE         TRUE         TRUE</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#library(bootLong)</span></code></pre></div>
 <div id="read-data" class="section level1">
@@ -121,7 +120,7 @@ p &lt;-<span class="st"> </span><span class="kw">ggplot</span>(samdf)<span class
 <span class="st">    </span><span class="kw">facet_wrap</span>(<span class="op">~</span>Preterm)<span class="op">+</span>
 <span class="st">    </span><span class="kw">scale_color_discrete</span>(<span class="dt">name  =</span><span class="st">&quot;Group&quot;</span>,<span class="dt">breaks=</span><span class="kw">c</span>(<span class="st">&quot;FALSE&quot;</span>, <span class="st">&quot;TRUE&quot;</span>),<span class="dt">labels=</span><span class="kw">c</span>(<span class="st">&quot;Term&quot;</span>, <span class="st">&quot;Preterm&quot;</span>))
 
-<span class="kw">ggsave</span>(<span class="st">&quot;./sampling_schedule.pdf&quot;</span>,<span class="dt">plot=</span>p,<span class="dt">width =</span> <span class="dv">8</span>,<span class="dt">height =</span> <span class="fl">5.5</span>)</code></pre></div>
+<span class="co">#ggsave(&quot;./sampling_schedule.pdf&quot;,plot=p,width = 8,height = 5.5)</span></code></pre></div>
 </div>
 <div id="preprocessig" class="section level1">
 <h1>Preprocessig</h1>
@@ -148,7 +147,7 @@ leg &lt;-<span class="st"> </span><span class="kw">plot.legend</span>(p.all[[<sp
 plist &lt;-<span class="st"> </span><span class="kw">lapply</span>(p.all,<span class="cf">function</span>(x){x<span class="op">+</span><span class="kw">theme</span>(<span class="dt">legend.position=</span><span class="st">&quot;none&quot;</span>)})
 
 pp1 &lt;-<span class="kw">grid.arrange</span>(<span class="kw">arrangeGrob</span>(<span class="dt">grobs=</span>plist,<span class="dt">nrow=</span><span class="dv">2</span>,<span class="dt">widths=</span><span class="kw">c</span>(<span class="dv">3</span>,<span class="dv">3</span>,<span class="dv">3</span>)),leg,<span class="dt">ncol=</span><span class="dv">2</span>,<span class="dt">widths=</span><span class="kw">c</span>(<span class="dv">10</span>,<span class="dv">2</span>))
-<span class="kw">ggsave</span>(<span class="st">&quot;./core_Sim.eps&quot;</span>,<span class="dt">plot=</span>pp1,<span class="dt">width =</span> <span class="dv">8</span>,<span class="dt">height =</span> <span class="fl">5.5</span>)</code></pre></div>
+<span class="co">#ggsave(&quot;./core_Sim.eps&quot;,plot=pp1,width = 8,height = 5.5)</span></code></pre></div>
 </div>
 <div id="eda-lag-plot-for-each-taxa" class="section level1">
 <h1>EDA: lag-plot for each taxa</h1>

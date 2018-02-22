@@ -1,5 +1,6 @@
 ## ------------------------------------------------------------------------
-pkgs <- c("ggplot2","doParallel","foreach","reshape2","dplyr","gridExtra","phyloseq","DESeq2","tidyr","BiocParallel","ggfortify","R.utils","edgeR","limma","ashr")
+pkgs <- c("ggplot2","dplyr","tidyr","phyloseq","DESeq2","BiocParallel","edgeR","limma","ashr","gridExtra")
+#pkgs <- c("doParallel","foreach","reshape2","gridExtra","ggfortify","R.utils")
 
 #   installed packages that were not installed already
 # source("http://bioconductor.org/biocLite.R")
@@ -38,7 +39,7 @@ if(any(!lpckges)){
 #      facet_wrap(~Preterm)+
 #      scale_color_discrete(name  ="Group",breaks=c("FALSE", "TRUE"),labels=c("Term", "Preterm"))
 #  
-#  ggsave("./sampling_schedule.pdf",plot=p,width = 8,height = 5.5)
+#  #ggsave("./sampling_schedule.pdf",plot=p,width = 8,height = 5.5)
 
 ## ----eval=FALSE----------------------------------------------------------
 #  #   Filter taxa
@@ -65,7 +66,7 @@ plot.legend <- function(p){
 #  plist <- lapply(p.all,function(x){x+theme(legend.position="none")})
 #  
 #  pp1 <-grid.arrange(arrangeGrob(grobs=plist,nrow=2,widths=c(3,3,3)),leg,ncol=2,widths=c(10,2))
-#  ggsave("./core_Sim.eps",plot=pp1,width = 8,height = 5.5)
+#  #ggsave("./core_Sim.eps",plot=pp1,width = 8,height = 5.5)
 
 ## ----eval=FALSE----------------------------------------------------------
 #  lags <- as.list(seq(1,8))
