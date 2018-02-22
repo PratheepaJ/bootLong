@@ -26,16 +26,23 @@ bboot_phyloseq <- function(ps,b,time){
     #   split data frame by subjects ---
     samdf.split.by.subjects <- split(samdf,samdf$SubjectID)
 
-    #   number of repeated biological samples per subject
-    num.of.rep.obs <- lapply(samdf.split.by.subjects,function(x){dim(x)[1]})
+    num.of.blks <- lapply(samdf.split.by.subjects,function(y){
+        num.of.rep.obs <- dim(y)[1]
+        return(num.of.rep.obs-b+1)
+    })
+    # #   number of repeated biological samples per subject
+    # num.of.rep.obs <- lapply(samdf.split.by.subjects,function(x){dim(x)[1]})
+    #
+    # #   number of ovelapping blocks per subject
+    # num.of.blks <- lapply(num.of.rep.obs,function(x){x-b+1})
 
-    #   number of ovelapping blocks per subject
-    num.of.blks <- lapply(num.of.rep.obs,function(x){x-b+1})
+    #   number of blocks per Subject if it is a balanced-design
     L <- max(unlist(num.of.blks))
     blks.first.index <- sample(1:L,L,replace = T)
 
     boot.sample.indices <- lapply(samdf.split.by.subjects,function(y){
         sampling.blks.within.subject.indices <- bootLongIndices(x=y,b=b,time=time,L=L,blks_first_index = blks.first.index)[[1]]
+        return(sampling.blks.within.subject.indices)
     })
 
     #   all sample indices
