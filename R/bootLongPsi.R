@@ -1,6 +1,6 @@
-#' ComputeK
+#' bootLongPsi
 #'
-#' Compute K=two-sided probability with given block size
+#' Compute \eqn{\psi} = two-sided probability with a given block size
 #'
 #' @param ps Observed \code{phyloseq} class object.
 #' @param b numeric, block size to account for dependence within-subject.
@@ -14,27 +14,52 @@
 #'         second element ``observed statistic``
 #'
 #' @export
-ComputeK <- function(ps,b,R,RR,factors,time,T.obs.full=NULL){
+bootLongPsi <- function(ps,b,R,RR,factors,time,T.obs.full=NULL){
     #   otu table of observed phyloseq: rows taxa; columns samples
     if(dim(otu_table(ps))[1]==nsamples(ps)){
         otu_table(ps) <- t(otu_table(ps,taxa_are_rows = T))
     }
 
     #   compute observed statistic
-    res.obs <- compute_stat(ps,factors)
+    res.obs <- compute_stat(ps=ps,factors=factors)
 
     boot.results <- list()
 
+    # ps.boot <- lapply(seq_len(R),FUN=function(i){
+    #     bootLongPhyloseq(ps=ps,b=b,time=time)[[1]]
+    # })
+    #
+    # df.boot <- lapply(ps.boot,FUN=function(pb){
+    #     compute_stat(pb,factors)
+    # })
+    #
+    # #ps.boot <- mapply(append, ps.boot, RR, SIMPLIFY = FALSE)
+    #
+    # boot.results.bb <- lapply(ps.boot,FUN=function(k){
+    #     ps.boot.bb <- bootLongPhyloseq(k,b,time)
+    #     return(ps.boot.bb)
+    #
+    # })
+
+    # boot.results.bb <- lapply(seq_len(RR),FUN=function(j){
+    #     ps.boot.bb <- bootLongPhyloseq(ps.boot,b,time)
+    #     ps.boot.bb <- ps.boot.bb[[1]]
+    #     df.boot.bb <- compute_stat(ps.boot.bb,factors)
+    #     rm(ps.boot.bb)
+    #     return(df.boot.bb)
+    # })
+
+
     boot.results <- lapply(seq_len(R),FUN=function(i){
-        ps.boot <- bootLongPhyloseq(ps,b,time)
-        ps.boot <- ps.boot[[1]]
+        ps.boot <- bootLongPhyloseq(ps,b,time)[[1]]
+
 
         df.boot <- compute_stat(ps.boot,factors)
 
         #   double MBB
         boot.results.bb <- lapply(seq_len(RR),FUN=function(j){
-            ps.boot.bb <- bootLongPhyloseq(ps.boot,b,time)
-            ps.boot.bb <- ps.boot.bb[[1]]
+            ps.boot.bb <- bootLongPhyloseq(ps.boot,b,time)[[1]]
+
             df.boot.bb <- compute_stat(ps.boot.bb,factors)
             rm(ps.boot.bb)
             return(df.boot.bb)

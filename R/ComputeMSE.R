@@ -9,7 +9,7 @@
 #' @param R Number of block bootstrap realization.
 #' @param RR Number of double block bootstrap realization.
 #' @param factors vector of factor variable(s) in the sample data of ps.
-#' @param Khat.obs second element of the output of \code{ComputeK} evaluated using the initial block length and full data
+#' @param Khat.obs second element of the output of \code{bootLongPsi} evaluated using the initial block length and full data
 #' @param time Time variable at repeated observations.
 #' @param T.obs.full If observed statistic is already computed
 #' @param compute_stat
@@ -20,7 +20,7 @@
 #' @export
 ComputeMSE <- function(ps,qj,Wj,b,R,RR,factors,time,Khat.obs=NULL,T.obs.full=NULL){
 
-    if(is.null(Khat.obs)){stop("User needs to run ComputeK() function with initial block length ")}
+    if(is.null(Khat.obs)){stop("User needs to run bootLongPsi() function with initial block length ")}
     if(is.null(T.obs.full)){stop("User needs to provide observed test statistic")}
 
     #names(sample_data(ps))[names(sample_data(ps))==time] <- "Time"
@@ -56,7 +56,7 @@ ComputeMSE <- function(ps,qj,Wj,b,R,RR,factors,time,Khat.obs=NULL,T.obs.full=NUL
     }
 
     Khat <- lapply(ps.sub,function(x){
-        k.hat <- ComputeK(x,b=b,R=R,RR=RR,factors=factors,time=time,T.obs.full=T.obs.full)
+        k.hat <- bootLongPsi(x,b=b,R=R,RR=RR,factors=factors,time=time,T.obs.full=T.obs.full)
         k.hat <- k.hat[[1]]
         return(k.hat)
     })
@@ -71,7 +71,7 @@ ComputeMSE <- function(ps,qj,Wj,b,R,RR,factors,time,Khat.obs=NULL,T.obs.full=NUL
     #
     #     ps.m <- prune_samples(sub.SampleID,ps)
     #
-    #     k.hat <- ComputeK(ps.m,b=b,R=R,RR=RR,factors=factors,time=time,T.obs.full=T.obs.full)
+    #     k.hat <- bootLongPsi(ps.m,b=b,R=R,RR=RR,factors=factors,time=time,T.obs.full=T.obs.full)
     #     k.hat <- k.hat[[1]]
     #
     #     rm(sub.samdf)

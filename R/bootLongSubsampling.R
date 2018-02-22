@@ -30,17 +30,17 @@ bootLongSubsampling <- function(ps,R,RR,factors,time,subjectidvar="SubjectID",lI
     #   number of subsamples per subject
     Wj <- trunc(table(sample_data(ps)$SubjectID)*omega)
 
-    #   lI must be less than the largest subsample
-    if(lI>=max(Wj)){stop("choose smaller initial block size")}
+    #   lI must be less than the largest number of subsample
+    if(lI > max(Wj)){stop(paste("choose lI at most",max(Wj)))}
 
     #   lC
     lC <- seq(1,(lI-1),by=1)
 
     #   compute K with initial block size and all whole data
-    computeK.res  <- ComputeK(ps=ps,b=lI,R=R,RR=RR,factors=factors,time=time)
+    psi.hat.lI  <- bootLongPsi(ps=ps,b=lI,R=R,RR=RR,factors=factors,time=time)
 
-    Khat.obs <- computeK.res[[1]]
-    T.obs <- computeK.res[[2]]
+    Khat.obs <- psi.hat.lI[[1]]
+    T.obs <- psi.hat.lI[[2]]
 
     mseKhatKobs <- BiocParallel::bplapply(seq_len(length(lC)),function(y){ComputeMSE(ps=ps,qj=qj,Wj=Wj,b=y,R=R,RR=RR,factors=factors,time=time,Khat.obs=Khat.obs,T.obs.full=T.obs)})
     return(mseKhatKobs)
