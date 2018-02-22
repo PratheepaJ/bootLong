@@ -1,4 +1,4 @@
-#' bboot_phyloseq
+#' bootLongPhyloseq
 #'
 #' Creates block bootstrap realizations as \code{phyloseq} objects.
 #'
@@ -8,7 +8,7 @@
 #'
 #' @return a \code{phyloseq} object. This will be a block bootstrap realization of input \code{ps}.
 #' @export
-bboot_phyloseq <- function(ps,b,time){
+bootLongPhyloseq <- function(ps,b,time){
 
     if(dim(otu_table(ps))[1]==nsamples(ps)){
         otu_table(ps) <- t(otu_table(ps,taxa_are_rows = T))
@@ -43,13 +43,14 @@ bboot_phyloseq <- function(ps,b,time){
     sampling.blks.within.subject.indices <- lapply(sampling.blks.within.subject.indices,"[[",1)
 
     #   all sample indices
-    boot.sample.indices <- unlist(sampling.blks.within.subject.indices)
+    boot.sample.indices <- as.numeric(unlist(sampling.blks.within.subject.indices))
 
     #   block bootstrap realization
     blk.boot.otu.tab <- otu.tab[,boot.sample.indices]
     blk.boot.samdf <- samdf[boot.sample.indices,]
+    blk.boot.samdf <- dplyr::select(blk.boot.samdf,-Index)
     colnames(blk.boot.otu.tab) <- rownames(blk.boot.samdf)
     rownames(blk.boot.otu.tab) <- taxa_names(ps)
-    ps.boot <- merge_phyloseq(X=otu_table(blk.boot.otu.tab,taxa_are_rows = T),sample_data(blk.boot.samdf),tax_table(ps))
+    ps.boot <- phyloseq::merge_phyloseq(X=otu_table(blk.boot.otu.tab,taxa_are_rows = T),sample_data(blk.boot.samdf),tax_table(ps))
     return(list(ps.boot))
 }

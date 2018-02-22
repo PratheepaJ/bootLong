@@ -26,14 +26,14 @@ ComputeK <- function(ps,b,R,RR,factors,time,T.obs.full=NULL){
     boot.results <- list()
 
     boot.results <- lapply(seq_len(R),FUN=function(i){
-        ps.boot <- bboot_phyloseq(ps,b,time)
+        ps.boot <- bootLongPhyloseq(ps,b,time)
         ps.boot <- ps.boot[[1]]
 
         df.boot <- compute_stat(ps.boot,factors)
 
         #   double MBB
         boot.results.bb <- lapply(seq_len(RR),FUN=function(j){
-            ps.boot.bb <- bboot_phyloseq(ps.boot,b,time)
+            ps.boot.bb <- bootLongPhyloseq(ps.boot,b,time)
             ps.boot.bb <- ps.boot.bb[[1]]
             df.boot.bb <- compute_stat(ps.boot.bb,factors)
             rm(ps.boot.bb)
