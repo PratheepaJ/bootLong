@@ -7,7 +7,7 @@ The Block Bootstrap Method Inference for Longitudinal Microbiome Data
 
 `bootLongMethod()` Computes the adjusted p-values and confidence sets: given a block length, this fucntion calls `bootLongPhyloseq()` to create moving block bootstrap phyloseq realizations. Then, it calls ``computeStat`` on each bootstrap realization to compute the statistic and pivotal statistic. Finally, this function computes the adjusted p-values and confidence sets.
 
-`bootLongSubsampling()` Computes the MSE of two-sided probability using subsampling procedure. Given an initial block size and percentage of repeated observations to make subsamples, this function computes the total mean squared error (MSE) in estimating the two-sided probability with different block sizes 1:(lI-1). 
+`bootLongSubsampling()` Computes the MSE of two-sided probability using subsampling procedure. Given an initial block size and percentage of repeated observations to make subsamples, this function computes the total mean squared error (MSE) in estimating the two-sided probability with different block sizes less than the initital block size. 
 
 # Installation
 
