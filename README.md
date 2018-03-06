@@ -1,14 +1,13 @@
 # bootLong
-The Block Bootstrap Method for Longitudinal  Microbiome Data
+The Block Bootstrap Method Inference for Longitudinal Microbiome Data
 
+`bootLongIndices()` Creates sample indices to construct a moving block bootstrap realization. 
 
-`SamplingIndices()` Creates moving block bootstrap samples within each subject: given a block length, this function creates blocks of repeated samples from each subject. Then, this function resampling blocks within each subject to create bootstrap samples.
+`bootLongPhyloseq()` Creates moving block bootstrap phyloseq realizations: given the block size, this function creates blocks of temporally contiguous observations for each subject by calling `bootLongIndices()`.
 
-`Bootphyloseq()` Creates moving block bootstrap phyloseq: given the bootstrap samples from `SamplingIndices()`, this method creates bootstrap phyloseq object.
+`bootLongMethod()` Computes the adjusted p-values and confidence sets: given a block length, this fucntion calls `bootLongPhyloseq()` to create moving block bootstrap phyloseq realizations. Then, it calls ``computeStat`` on each bootstrap realization to compute the statistic and pivotal statistic. Finally, this function computes the adjusted p-values and confidence sets.
 
-`MBB_method()` Computes the adjusted p-values and confidence sets: given a block length, this fucntion calls `Bootphyloseq()` to create bootstrap samples of phyloseq objects. Then, call an appropriate function on each bootstrap samples to compute corresponding statistic. Finally, this function computes the adjusted p-values and confidence sets.
-
-`MBB_blocklength()` Computes the optimal block length for the given second level parameter (bias or variance or one/two-sided probability) of interest. Given an initial block length and percentage of repeated observations to make subsamples, this function computes the total mean squared error (MSE) in estimating the second level parameter with different block lengths. Finally, we choose the optimal block length based on the computed MSE.
+`bootLongSubsampling()` Computes the MSE of two-sided probability using subsampling procedure. Given an initial block size and percentage of repeated observations to make subsamples, this function computes the total mean squared error (MSE) in estimating the two-sided probability with different block sizes 1:$l_{I}$. Finally, we choose the optimal block length based on the computed MSE.
 
 # Installation
 
