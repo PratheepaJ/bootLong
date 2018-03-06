@@ -34,7 +34,7 @@ if(any(!lpckges)){
 #                      strip.text = element_text(size = 8),
 #                      legend.key = element_blank())
 #  p <- ggplot(samdf)+
-#      geom_point(aes(x = Time, y = SubjectID, color=Preterm), position = position_jitter(width = .2,height = .1),size = 2,alpha=.8)+
+#      geom_point(aes(x = Time, y = SubjectID, color=Preterm), position = position_jitter(width = .2,height = .1),size = 1)+
 #      theme_set(set.theme)+
 #      facet_wrap(~Preterm)+
 #      scale_color_discrete(name  ="Group",breaks=c("FALSE", "TRUE"),labels=c("Term", "Preterm"))
@@ -55,7 +55,7 @@ plot.legend <- function(p){
 }
 
 ## ----eval=FALSE----------------------------------------------------------
-#  ps.tr <- ps_trans(ps,factors="Preterm")
+#  ps.tr <- psTransform(ps,factors="Preterm")
 #  p.all <- LMic_correloram_multaxa(ps.tr, factors="Preterm",time="Time",1,6,taxlevel = "Genus")
 #  
 #  #   Change the legend labels
@@ -84,7 +84,7 @@ plot.legend <- function(p){
 #  
 
 ## ----eval=FALSE----------------------------------------------------------
-#  p.all <- LMic_vario_multaxa(ps.tr, factors="Preterm",time="Time",1,6,taxlevel = "Genus")
+#  p.all <- longVarioMultiple(ps.tr, factors="Preterm",time="Time",1,6,taxlevel = "Genus")
 #  
 #  #   Change the legend labels
 #  p.all <- lapply(p.all, function(x){x+scale_color_discrete(name  ="Group",breaks=c("FALSE", "TRUE"),labels=c("Term", "Preterm "))})

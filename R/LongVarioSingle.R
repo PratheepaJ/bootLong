@@ -1,40 +1,6 @@
-#' ps_trans
+#' longVarioSingle
 #'
-#' @param ps \code{phyloseq} object
-#' @param factors factor, variable in the sample data of ps.
-#'
-#' @return \code{phyloseq} object with transformed \code{otu_table}
-#' @export
-#' @import "joineR"
-ps_trans <- function(ps,factors){
-    ot <- as.matrix(otu_table(ps))
-    anno <- data.frame(tax_table(ps))
-    samdf <- data.frame(sample_data(ps))
-    dgeList <- edgeR::DGEList(counts=ot, genes=anno, samples = samdf)
-
-    #   setting up the model
-    des <- as.formula(paste("~", paste(factors, collapse="+")))
-    mm <- model.matrix(des,data=samdf)
-    pse <- ps
-    otu_table(pse) <- otu_table(ps)+1
-    pDE <- suppressMessages(phyloseq_to_deseq2(pse,design=des))
-    rm(pse)
-    pDE <- DESeq2::estimateSizeFactors(pDE)
-    sj <- DESeq2::sizeFactors(pDE)
-    #   NOTE: if we want to use gene specific size factor, then
-    #sij <- normalizationFactors(pDE) # matrix
-
-    v <- voom_arcsine(counts=dgeList, design=mm, lib.size=sj,plot = F)
-
-    transformed.ot <- data.frame(v$E)
-    colnames(transformed.ot) <- sample_names(ps)
-
-    pstr <- merge_phyloseq(otu_table(transformed.ot,taxa_are_rows = TRUE),sample_data(ps),tax_table(ps))
-    return(pstr)
-}
-
-
-#' LMic_vario
+#' This function plot the variogram given the tax index.
 #'
 #' @param ps \code{phyloseq} object
 #' @param factors factor, variable in the sample data of ps.
@@ -45,13 +11,13 @@ ps_trans <- function(ps,factors){
 #' @return \code{ggplot} object of variogram
 #' @export
 #'
-LMic_vario <- function(ps,factors,time,taxon,point=FALSE,taxlevel="Species"){
+longVarioSingle <- function(ps,factors,time,taxon,point=FALSE,taxlevel="Species"){
     #ps.tr <- ps_trans(ps,factors="Preterm")
     taxon_name <- tax_table(ps)[taxon,taxlevel]
     df.taxa <- data.frame(sample_data(ps),otu=as.numeric(t(otu_table(ps)[taxon,])))
     names(df.taxa)[names(df.taxa)==factors] <- "Group"
     names(df.taxa)[names(df.taxa)==time] <- "Time"
-    
+
     if(!is.numeric(df.taxa$Time)){df.taxa$Time <- as.numeric(df.taxa$Time)}
     #   split by the levels of a factor
     df.taxa.sep <- split(df.taxa,df.taxa$Group)
@@ -96,29 +62,4 @@ LMic_vario <- function(ps,factors,time,taxon,point=FALSE,taxlevel="Species"){
     }
 
     return(p)
-}
-
-
-
-#' LMic_vario_multaxa
-#'
-#' @param ps \code{phyloseq} object
-#' @param factors factor, variable in the sample data of ps.
-#' @param starttaxa numeric, starting index of taxon: taxa will be ordered inside the function
-#' @param endtaxa numeric, last index of taxon: taxa will be ordered inside the function
-#' @param time character, time variable at repeated observations.
-#' @param taxlevel character, taxonomy level to put the title
-#'
-#' @return \code{ggplot} object of variogram for starttaxa:endtaxa taxa
-#' @export
-#'
-LMic_vario_multaxa <- function(ps,factors,time,starttaxa=1,endtaxa=4,point=FALSE,taxlevel="Species"){
-    # ps.tr <- ps_trans(ps,factors=factors)
-    #   order tax by taxa sum
-    #taxa_order <- names(sort(taxa_sums(ps),decreasing = TRUE))
-    taxa_order <- sort(taxa_sums(ps),decreasing = T)
-    ind <- which(taxa_names(ps)%in%names(taxa_order)[starttaxa:endtaxa])
-    taxa <- as.list(ind)
-    p.all <- lapply(taxa,function(x){LMic_vario(ps=ps,factors=factors,time=time,taxon=x,point=point,taxlevel = taxlevel)})
-    return(p.all)
 }

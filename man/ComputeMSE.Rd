@@ -28,7 +28,7 @@ ComputeMSE(ps, qj, Wj, b, R, RR, factors, time, Khat.obs = NULL,
 
 \item{T.obs.full}{If observed statistic is already computed}
 
-\item{compute_stat}{}
+\item{computeStat}{}
 }
 \value{
 list of MSE computed with block length b, Khat is all subsamples, Khat with initial block length

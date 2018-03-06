@@ -1,11 +1,10 @@
-#' voom_arcsin
+#' arcsinhTransform
 #'
-#' This function is called within \code{compute_stat()} and
-#' takes argumetns as for \code{voom} in \url{https://bioconductor.org/packages/release/bioc/html/edgeR.html}
+#' This is a utility function used by the higher level function \code{computeStat} to compute arcsine transformation and weights for the glm fit.
 #'
 #' @param counts \code{DGEList} as for \code{voom}.
-#' @param design model matrix created by \code{compute_stat()} as for \code{voom}.
-#' @param lib.size library size created by \code{compute_stat()} as for \code{voom}.
+#' @param design model matrix created by \code{computeStat()} as for \code{voom}.
+#' @param lib.size library size created by \code{computeStat()} as for \code{voom}.
 #' @param normalize.method no need to use this argument because we do not use logCPM values
 #' @param span argument as for \code{voom}.
 #' @param plot logical, as for \code{voom}.
@@ -13,7 +12,7 @@
 
 #' @return An EList object as \code{voom}. E is numeric matrix of transformed counts on the arcsine scale
 #' @export
-voom_arcsine <- function (counts, design = NULL, lib.size = NULL, normalize.method = "none",
+arcsinhTransform <- function (counts, design = NULL, lib.size = NULL, normalize.method = "none",
           span = 0.5, plot = FALSE, save.plot = FALSE, ...)
 {
     #   arcsine transformation

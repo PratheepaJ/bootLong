@@ -12,7 +12,7 @@
 #' @param Khat.obs second element of the output of \code{bootLongPsi} evaluated using the initial block length and full data
 #' @param time Time variable at repeated observations.
 #' @param T.obs.full If observed statistic is already computed
-#' @param compute_stat
+#' @param computeStat
 #'
 #' @return list of MSE computed with block length b, Khat is all subsamples, Khat with initial block length
 #'

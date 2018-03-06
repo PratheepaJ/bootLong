@@ -1,4 +1,4 @@
-#' bboot_LMic
+#' bootLongMSEPsi
 #'
 #' @param ps Observed \code{phyloseq} class object.
 #' @param b numeric, optimal block size to account for dependence within-subject.
@@ -11,13 +11,13 @@
 #' @return list of dataframe with ASV, observed stat, pvalues, adjusted pvalues, lcl, ucl, observed pivotal quantity; stat.obs; stat.star; stat.star.star; T.star_obs.
 #' @export
 #'
-bboot_LMic <- function(ps,b,R,RR,factors,time,FDR=.1){
+bootLongMSEPsi <- function(ps,b,R,RR,factors,time,FDR=.1){
     #   otu table of observed phyloseq: rows taxa; columns samples
     if(dim(otu_table(ps))[1]==nsamples(ps)){
         otu_table(ps) <- t(otu_table(ps,taxa_are_rows = T))
     }
 
-    res.obs <- compute_stat(ps,factors)
+    res.obs <- computeStat(ps,factors)
     stat.name <- colnames(res.obs)[1]
 
     boot.results <- list()
@@ -26,13 +26,13 @@ bboot_LMic <- function(ps,b,R,RR,factors,time,FDR=.1){
         ps.boot <- bootLongPhyloseq(ps,b,time)
         ps.boot <- ps.boot[[1]]
 
-        df.boot <- compute_stat(ps.boot,factors)
+        df.boot <- computeStat(ps.boot,factors)
 
         #   double MBB
         boot.results.bb <- lapply(seq_len(RR),FUN=function(j){
             ps.boot.bb <- bootLongPhyloseq(ps.boot,b,time)
             ps.boot.bb <- ps.boot.bb[[1]]
-            df.boot.bb <- compute_stat(ps.boot.bb,factors)
+            df.boot.bb <- computeStat(ps.boot.bb,factors)
             rm(ps.boot.bb)
             return(df.boot.bb)
         })

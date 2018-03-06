@@ -1,65 +1,37 @@
-#' bootLongPsi
-#'
-#' Compute \eqn{\psi} = two-sided probability with a given block size
+#' bootLongMethod
 #'
 #' @param ps Observed \code{phyloseq} class object.
-#' @param b numeric, block size to account for dependence within-subject.
+#' @param b numeric, optimal block size to account for dependence within-subject.
 #' @param R Number of block bootstrap realization.
 #' @param RR Number of double block bootstrap realization.
 #' @param factors vector of factor variable(s) in the sample data of ps.
 #' @param time Time variable at repeated observations.
-#' @param T.obs.full If observed statistic is already computed
+#' @param FDR False discovery rate
 #'
-#' @return a list with first element ``K.val`` - two-sided significance probability.
-#'         second element ``observed statistic``
-#'
+#' @return list of dataframe with ASV, observed stat, pvalues, adjusted pvalues, lcl, ucl, observed pivotal quantity; stat.obs; stat.star; stat.star.star; T.star_obs.
 #' @export
-bootLongPsi <- function(ps,b,R,RR,factors,time,T.obs.full=NULL){
+#'
+bootLongMethod <- function(ps,b,R,RR,factors,time,FDR=.1){
     #   otu table of observed phyloseq: rows taxa; columns samples
     if(dim(otu_table(ps))[1]==nsamples(ps)){
         otu_table(ps) <- t(otu_table(ps,taxa_are_rows = T))
     }
 
-    #   compute observed statistic
-    res.obs <- computeStat(ps=ps,factors=factors)
+    res.obs <- computeStat(ps,factors)
+    stat.name <- colnames(res.obs)[1]
 
     boot.results <- list()
 
-    # ps.boot <- lapply(seq_len(R),FUN=function(i){
-    #     bootLongPhyloseq(ps=ps,b=b,time=time)[[1]]
-    # })
-    #
-    # df.boot <- lapply(ps.boot,FUN=function(pb){
-    #     computeStat(pb,factors)
-    # })
-    #
-    # #ps.boot <- mapply(append, ps.boot, RR, SIMPLIFY = FALSE)
-    #
-    # boot.results.bb <- lapply(ps.boot,FUN=function(k){
-    #     ps.boot.bb <- bootLongPhyloseq(k,b,time)
-    #     return(ps.boot.bb)
-    #
-    # })
-
-    # boot.results.bb <- lapply(seq_len(RR),FUN=function(j){
-    #     ps.boot.bb <- bootLongPhyloseq(ps.boot,b,time)
-    #     ps.boot.bb <- ps.boot.bb[[1]]
-    #     df.boot.bb <- computeStat(ps.boot.bb,factors)
-    #     rm(ps.boot.bb)
-    #     return(df.boot.bb)
-    # })
-
-
     boot.results <- lapply(seq_len(R),FUN=function(i){
-        ps.boot <- bootLongPhyloseq(ps,b,time)[[1]]
-
+        ps.boot <- bootLongPhyloseq(ps,b,time)
+        ps.boot <- ps.boot[[1]]
 
         df.boot <- computeStat(ps.boot,factors)
 
         #   double MBB
         boot.results.bb <- lapply(seq_len(RR),FUN=function(j){
-            ps.boot.bb <- bootLongPhyloseq(ps.boot,b,time)[[1]]
-
+            ps.boot.bb <- bootLongPhyloseq(ps.boot,b,time)
+            ps.boot.bb <- ps.boot.bb[[1]]
             df.boot.bb <- computeStat(ps.boot.bb,factors)
             rm(ps.boot.bb)
             return(df.boot.bb)
@@ -92,11 +64,6 @@ bootLongPsi <- function(ps,b,R,RR,factors,time,T.obs.full=NULL){
 
     #   compute T observed
     T.obs <- data.frame(T.obs=stat.obs/sd.stat)
-    if(is.null(T.obs.full)){
-        T.obs <- T.obs
-    }else{
-        T.obs <- as.data.frame(T.obs.full)
-    }
 
     #   compute   SE(stat*) from double MBB
     stat.star.star <-  lapply(boot.results.bb,function(x){
@@ -107,20 +74,30 @@ bootLongPsi <- function(ps,b,R,RR,factors,time,T.obs.full=NULL){
     sd.stat.star <- do.call("cbind",lapply(stat.star.star,function(x){data.frame(sd.stat.star=apply(x,1,FUN=sd,na.rm=TRUE))}))
 
     #   compute stat*-stat.obs
-    T.d.star <- data.frame(apply(stat.star,2,function(x){x-stat.obs}))
+    T.num.star <- data.frame(apply(stat.star,2,function(x){x-stat.obs}))
 
-    T.t.star <- T.d.star/sd.stat.star
+    T.star <- T.num.star/sd.stat.star
 
-    df.stat <- bind_cols(T.t.star,T.obs=T.obs[,1])
+    #   compute p-value
+    T.star_obs <- dplyr::bind_cols(T.star ,T.obs=T.obs[,1])
 
-    K.val <- apply(df.stat,1,function(x){sum(abs(x[1:R])>=abs(x[(R+1)]))/R})
+    pvalue <- apply(T.star_obs,1,function(x){sum(abs(x[1:R])>=abs(x[(R+1)]))/R})
 
-    rt <- list(K.val, T.obs)
+    #   adjusted p-value for multiple testing
+    pvalue.adj <- data.frame(pvalue.adj=p.adjust(pvalue,method = "BH"))
 
-    rm(list=c("stat.star","stat.obs","sd.stat","stat.star.star","sd.stat.star","T.d.star","df.stat"))
-    gc(reset = TRUE)
+    # output taxa names, stat, adj pvalues
+    #txnames <- taxa_names(ps)
+    txnames <- dplyr::select(res.obs,ASV)
+    out <- data.frame(Taxa=txnames,stat=res.obs[,1],pvalue=pvalue,pvalue.adj=pvalue.adj)
+    names(out)[which(names(out)=="stat")] <- stat.name
+    #   compute confidence interval: not the simultaneous CI so will be wider than expected
+    lcl <- apply(stat.star,1,FUN=function(x){quantile(x,probs=FDR/2,na.rm=TRUE)})
+    ucl <- apply(stat.star,1,FUN=function(x){quantile(x,probs=(1-FDR/2),na.rm=TRUE)})
 
+    out <- dplyr::bind_cols(out,lcl=lcl,ucl=ucl,T.obs=T.obs[,1])
+
+    rt <- list(out,stat.obs,stat.star,stat.star.star,T.star_obs)
+    names(rt) <- c("summary","beta.hat","beta.hat.star","beta.hat.star.star","T.obs")
     return(rt)
-
 }
-
