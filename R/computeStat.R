@@ -44,7 +44,7 @@ computeStat <- function(ps,factors){
     #   we have voom transformed data
     #   Use limma::lmFit to fit linear model using computed weights
     #   fit linear model for each taxa
-    fit <- limma::lmFit(v, design = mm,method = "robust",weights = v$weights)
+    fit <- limma::lmFit(v, design = mm,weights = v$weights)
     #fit4 <-glm(v$E[1,]~samdf$Preterm,weights = v$weights[1,])
 
     #   estimated coefficients

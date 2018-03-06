@@ -56,7 +56,7 @@ plot.legend <- function(p){
 
 ## ----eval=FALSE----------------------------------------------------------
 #  ps.tr <- psTransform(ps,factors="Preterm")
-#  p.all <- LMic_correloram_multaxa(ps.tr, factors="Preterm",time="Time",1,6,taxlevel = "Genus")
+#  p.all <- longCorreloMultiple(ps.tr, factors="Preterm",time="Time",1,6,taxlevel = "Genus")
 #  
 #  #   Change the legend labels
 #  p.all <- lapply(p.all, function(x){x+scale_fill_discrete(name  ="Group",breaks=c("FALSE", "TRUE"),labels=c("Term", "Preterm"))})
@@ -70,7 +70,7 @@ plot.legend <- function(p){
 
 ## ----eval=FALSE----------------------------------------------------------
 #  lags <- as.list(seq(1,8))
-#  p.lags <- lapply(lags,function(x){LMic_lagged(ps.tr,factors="Preterm",time="Time",taxon=1,x,taxlevel="Genus")})
+#  p.lags <- lapply(lags,function(x){longLagPlot(ps.tr,factors="Preterm",time="Time",taxon=1,x,taxlevel="Genus")})
 #  
 #  #   Change the legend labels
 #  p.lags <- lapply(p.lags, function(x){x+scale_color_discrete(name  ="Group",breaks=c("FALSE", "TRUE"),labels=c("Term", "Preterm"))})
@@ -80,7 +80,7 @@ plot.legend <- function(p){
 #  
 #  pp2 <- grid.arrange(arrangeGrob(grobs=plist,nrow=2,widths=c(3,3,3,3)),leg,ncol=2,widths=c(10,2))
 #  
-#  ggsave("./lag_sim.eps",plot=pp2,width = 8,height = 5.5)
+#  #ggsave("./lag_sim.eps",plot=pp2,width = 8,height = 5.5)
 #  
 
 ## ----eval=FALSE----------------------------------------------------------
@@ -94,16 +94,16 @@ plot.legend <- function(p){
 #  
 #  pp3 <- grid.arrange(arrangeGrob(grobs=plist,nrow=2,widths=c(3,3,3)),leg,ncol=2,widths=c(10,2))
 #  
-#  ggsave("./vario_sim.eps",plot=pp3,width = 8,height = 5.5)
+#  #ggsave("./vario_sim.eps",plot=pp3,width = 8,height = 5.5)
 
 ## ----eval=FALSE----------------------------------------------------------
 #  R <- 2
 #  RR <- 2
 #  factors <- "Preterm"
 #  time <- "Time"
-#  lI <- 5
+#  lI <- 2
 #  omega <- .6
-#  system.time(mse_results <- bboot_optblocksize(ps,R=R,RR=RR,factors=factors,time=time,subjectidvar="SubjectID",lI=lI,omega=omega))
+#  system.time(mse_results <- bootLongSubsampling(ps,R=R,RR=RR,factors=factors,time=time,subjectidvar="SubjectID",lI=lI,omega=omega))
 #  saveRDS(mse_results,"./bboot_sim.rds")
 
 ## ----eval=FALSE----------------------------------------------------------

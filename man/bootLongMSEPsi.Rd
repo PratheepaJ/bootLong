@@ -4,12 +4,17 @@
 \alias{bootLongMSEPsi}
 \title{bootLongMSEPsi}
 \usage{
-bootLongMSEPsi(ps, b, R, RR, factors, time, FDR = 0.1)
+bootLongMSEPsi(ps, qj, Wj, b, R, RR, factors, time, Khat.obs = NULL,
+  T.obs.full = NULL)
 }
 \arguments{
 \item{ps}{Observed \code{phyloseq} class object.}
 
-\item{b}{numeric, optimal block size to account for dependence within-subject.}
+\item{qj}{number of repeated observations for j-th subject}
+
+\item{Wj}{subset of repeated observations for j-th subject}
+
+\item{b}{numeric, block lenght to account for dependence within-subject.}
 
 \item{R}{Number of block bootstrap realization.}
 
@@ -19,11 +24,15 @@ bootLongMSEPsi(ps, b, R, RR, factors, time, FDR = 0.1)
 
 \item{time}{Time variable at repeated observations.}
 
-\item{FDR}{False discovery rate}
+\item{Khat.obs}{second element of the output of \code{bootLongPsi} evaluated using the initial block length and full data}
+
+\item{T.obs.full}{If observed statistic is already computed}
+
+\item{computeStat}{}
 }
 \value{
-list of dataframe with ASV, observed stat, pvalues, adjusted pvalues, lcl, ucl, observed pivotal quantity; stat.obs; stat.star; stat.star.star; T.star_obs.
+list of MSE computed with block length b, Khat is all subsamples, Khat with initial block length
 }
 \description{
-bootLongMSEPsi
+Compute MSE in computing K = two-sided probability with different block sizes
 }

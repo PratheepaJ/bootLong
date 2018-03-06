@@ -1,6 +1,6 @@
 #' longVarioSingle
 #'
-#' This function plot the variogram given the tax index.
+#' This function plot the variogram given the taxon index.
 #'
 #' @param ps \code{phyloseq} object
 #' @param factors factor, variable in the sample data of ps.

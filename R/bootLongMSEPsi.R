@@ -1,103 +1,109 @@
 #' bootLongMSEPsi
 #'
+#' Compute MSE in computing K = two-sided probability with different block sizes
+#'
 #' @param ps Observed \code{phyloseq} class object.
-#' @param b numeric, optimal block size to account for dependence within-subject.
+#' @param Wj subset of repeated observations for j-th subject
+#' @param qj number of repeated observations for j-th subject
+#' @param b numeric, block lenght to account for dependence within-subject.
 #' @param R Number of block bootstrap realization.
 #' @param RR Number of double block bootstrap realization.
 #' @param factors vector of factor variable(s) in the sample data of ps.
+#' @param Khat.obs second element of the output of \code{bootLongPsi} evaluated using the initial block length and full data
 #' @param time Time variable at repeated observations.
-#' @param FDR False discovery rate
+#' @param T.obs.full If observed statistic is already computed
+#' @param computeStat
 #'
-#' @return list of dataframe with ASV, observed stat, pvalues, adjusted pvalues, lcl, ucl, observed pivotal quantity; stat.obs; stat.star; stat.star.star; T.star_obs.
+#' @return list of MSE computed with block length b, Khat is all subsamples, Khat with initial block length
+#'
+#'
 #' @export
-#'
-bootLongMSEPsi <- function(ps,b,R,RR,factors,time,FDR=.1){
-    #   otu table of observed phyloseq: rows taxa; columns samples
-    if(dim(otu_table(ps))[1]==nsamples(ps)){
-        otu_table(ps) <- t(otu_table(ps,taxa_are_rows = T))
+bootLongMSEPsi <- function(ps,qj,Wj,b,R,RR,factors,time,Khat.obs=NULL,T.obs.full=NULL){
+
+    if(is.null(Khat.obs)){stop("User needs to run bootLongPsi() function with initial block length ")}
+    if(is.null(T.obs.full)){stop("User needs to provide observed test statistic")}
+
+    #names(sample_data(ps))[names(sample_data(ps))==time] <- "Time"
+    #   Create many ((max(qj)-max(Wj)+1) number of sub-seires) phyloseq with sub-series to compute MSE with block size "b"
+    samdf <- data.frame(sample_data(ps))
+    samdf <- split(samdf,samdf$SubjectID)
+    num.sub.sam <- max(qj)-max(Wj)+1
+
+    samdf.q.W <- mapply(samdf,as.list(qj),as.list(Wj),FUN=list,SIMPLIFY = FALSE)
+
+    samdf.q.W.or <- lapply(samdf.q.W,function(x){
+        if(!(is.numeric(x[[1]][,time]))){x[[1]][,time] <- as.numeric(x[[1]][,time])}
+        x[[1]] <- dplyr::arrange_(x[[1]],time)
+        return(x)
+    })
+
+
+    if(num.sub.sam<5){stop("decrease omega")}
+
+    ps.sub <- list()
+    for(i in 1:num.sub.sam){
+        sub.sam.i <- lapply(samdf.q.W.or,function(x){
+            xd <- x[[1]]
+            W <- x[[3]]
+            ss <- data.frame(dplyr::slice(x[[1]],i:(W+i-1)))
+            return(ss)
+        })
+        sub.sam.i <- do.call("rbind",sub.sam.i)
+        subsam.id <- sub.sam.i$SampleID
+        subsam.id <- as.character(subsam.id)
+        ps.sub[[i]] <- prune_samples(subsam.id,ps)
+        #names(sample_data(ps.sub[[i]]))[names(sample_data(ps.sub[[i]]))=="Time"] <- time
     }
 
-    res.obs <- computeStat(ps,factors)
-    stat.name <- colnames(res.obs)[1]
-
-    boot.results <- list()
-
-    boot.results <- lapply(seq_len(R),FUN=function(i){
-        ps.boot <- bootLongPhyloseq(ps,b,time)
-        ps.boot <- ps.boot[[1]]
-
-        df.boot <- computeStat(ps.boot,factors)
-
-        #   double MBB
-        boot.results.bb <- lapply(seq_len(RR),FUN=function(j){
-            ps.boot.bb <- bootLongPhyloseq(ps.boot,b,time)
-            ps.boot.bb <- ps.boot.bb[[1]]
-            df.boot.bb <- computeStat(ps.boot.bb,factors)
-            rm(ps.boot.bb)
-            return(df.boot.bb)
-        })
-
-        rm(ps.boot)
-
-        return(list(df.boot,boot.results.bb))
-
+    Khat <- lapply(ps.sub,function(x){
+        k.hat <- bootLongPsi(x,b=b,R=R,RR=RR,factors=factors,time=time,T.obs.full=T.obs.full)
+        k.hat <- k.hat[[1]]
+        return(k.hat)
     })
 
-    #   stat* from MBB estimates (R times)
-    boot.results.all <- lapply(boot.results,"[[",1)
-    #   stat** from double MBB to compute SE(stat*)
-    boot.results.bb <- lapply(boot.results,"[[",2)
+    # Khat <- lapply(subsam.num,function(i){
+    #
+    #     sub.samdf <- lapply(samdf,function(x){x[min(qj[which(names(qj)%in%unique(x$SubjectID))]-Wj[which(names(Wj)%in%unique(x$SubjectID))]+1,i):min(qj[which(names(qj)%in%unique(x$SubjectID))],Wj[which(names(Wj)%in%unique(x$SubjectID))]+i-1),]})
+    #
+    #     sub.samdf <- do.call("rbind",sub.samdf)
+    #
+    #     sub.SampleID <- as.character(sub.samdf$SampleID)
+    #
+    #     ps.m <- prune_samples(sub.SampleID,ps)
+    #
+    #     k.hat <- bootLongPsi(ps.m,b=b,R=R,RR=RR,factors=factors,time=time,T.obs.full=T.obs.full)
+    #     k.hat <- k.hat[[1]]
+    #
+    #     rm(sub.samdf)
+    #     rm(sub.SampleID)
+    #     rm(ps.m)
+    #
+    #    return(k.hat)
+    # })
 
-    rm(boot.results)
 
-    #   stat* from MBB in a dataframe
-    stat.star <- do.call("cbind",lapply(boot.results.all,FUN=function(x){x[,1]}))
-    stat.star <- as.data.frame(stat.star)
+    rm(ps)
+    rm(samdf)
+    rm(samdf.q.W)
+    rm(samdf.q.W.or)
+    rm(ps.sub)
 
-    rm(boot.results.all)
 
-    #   add observed value of stat to a dataframe
-    stat.obs <- data.frame(stat.obs=res.obs[,1])
+    #deviation squared between two-tailed probability with block lengths lI and lC
+    Khat.squared.diff <- lapply(Khat,FUN=function(w){(w-Khat.obs)^2})
 
-    #   compute SE(stat.obs) - from stat*
-    sd.stat <- data.frame(sd.stat=apply(stat.star,1,FUN=sd,na.rm=FALSE))
+    #   dataframe -
+    Khat.squared.diff.df <- do.call("cbind",Khat.squared.diff)
 
-    #   compute T observed
-    T.obs <- data.frame(T.obs=stat.obs/sd.stat)
+    #   MSE over all possible subsamples
+    MSE_i <- apply(Khat.squared.diff.df,1,FUN=function(x){mean(x)})
 
-    #   compute   SE(stat*) from double MBB
-    stat.star.star <-  lapply(boot.results.bb,function(x){
-        do.call("cbind",lapply(x,FUN=function(x){x[,1]}))
+    rm(Khat.squared.diff.df)
 
-    })
+    rt <- list(MSE_i=MSE_i,Khat=Khat,Khat.obs=Khat.obs)
+    #   free up memory
+    gc(reset = TRUE)
 
-    sd.stat.star <- do.call("cbind",lapply(stat.star.star,function(x){data.frame(sd.stat.star=apply(x,1,FUN=sd,na.rm=TRUE))}))
-
-    #   compute stat*-stat.obs
-    T.num.star <- data.frame(apply(stat.star,2,function(x){x-stat.obs}))
-
-    T.star <- T.num.star/sd.stat.star
-
-    #   compute p-value
-    T.star_obs <- dplyr::bind_cols(T.star ,T.obs=T.obs[,1])
-
-    pvalue <- apply(T.star_obs,1,function(x){sum(abs(x[1:R])>=abs(x[(R+1)]))/R})
-
-    #   adjusted p-value for multiple testing
-    pvalue.adj <- data.frame(pvalue.adj=p.adjust(pvalue,method = "BH"))
-
-    # output taxa names, stat, adj pvalues
-    #txnames <- taxa_names(ps)
-    txnames <- dplyr::select(res.obs,ASV)
-    out <- data.frame(Taxa=txnames,stat=res.obs[,1],pvalue=pvalue,pvalue.adj=pvalue.adj)
-    names(out)[which(names(out)=="stat")] <- stat.name
-    #   compute confidence interval: not the simultaneous CI so will be wider than expected
-    lcl <- apply(stat.star,1,FUN=function(x){quantile(x,probs=FDR/2,na.rm=TRUE)})
-    ucl <- apply(stat.star,1,FUN=function(x){quantile(x,probs=(1-FDR/2),na.rm=TRUE)})
-
-    out <- dplyr::bind_cols(out,lcl=lcl,ucl=ucl,T.obs=T.obs[,1])
-
-    rt <- list(out,stat.obs,stat.star,stat.star.star,T.star_obs)
-    names(rt) <- c("summary","beta.hat","beta.hat.star","beta.hat.star.star","T.obs")
+    #return(MSE_i)
     return(rt)
 }

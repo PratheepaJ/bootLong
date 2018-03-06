@@ -137,7 +137,7 @@ plot.legend &lt;-<span class="st"> </span><span class="cf">function</span>(p){
 <div id="eda-correlogram" class="section level1">
 <h1>EDA: correlogram</h1>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ps.tr &lt;-<span class="st"> </span><span class="kw">psTransform</span>(ps,<span class="dt">factors=</span><span class="st">&quot;Preterm&quot;</span>) 
-p.all &lt;-<span class="st"> </span><span class="kw">LMic_correloram_multaxa</span>(ps.tr, <span class="dt">factors=</span><span class="st">&quot;Preterm&quot;</span>,<span class="dt">time=</span><span class="st">&quot;Time&quot;</span>,<span class="dv">1</span>,<span class="dv">6</span>,<span class="dt">taxlevel =</span> <span class="st">&quot;Genus&quot;</span>)
+p.all &lt;-<span class="st"> </span><span class="kw">longCorreloMultiple</span>(ps.tr, <span class="dt">factors=</span><span class="st">&quot;Preterm&quot;</span>,<span class="dt">time=</span><span class="st">&quot;Time&quot;</span>,<span class="dv">1</span>,<span class="dv">6</span>,<span class="dt">taxlevel =</span> <span class="st">&quot;Genus&quot;</span>)
 
 <span class="co">#   Change the legend labels</span>
 p.all &lt;-<span class="st"> </span><span class="kw">lapply</span>(p.all, <span class="cf">function</span>(x){x<span class="op">+</span><span class="kw">scale_fill_discrete</span>(<span class="dt">name  =</span><span class="st">&quot;Group&quot;</span>,<span class="dt">breaks=</span><span class="kw">c</span>(<span class="st">&quot;FALSE&quot;</span>, <span class="st">&quot;TRUE&quot;</span>),<span class="dt">labels=</span><span class="kw">c</span>(<span class="st">&quot;Term&quot;</span>, <span class="st">&quot;Preterm&quot;</span>))})
@@ -152,7 +152,7 @@ pp1 &lt;-<span class="kw">grid.arrange</span>(<span class="kw">arrangeGrob</span
 <div id="eda-lag-plot-for-each-taxa" class="section level1">
 <h1>EDA: lag-plot for each taxa</h1>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">lags &lt;-<span class="st"> </span><span class="kw">as.list</span>(<span class="kw">seq</span>(<span class="dv">1</span>,<span class="dv">8</span>))
-p.lags &lt;-<span class="st"> </span><span class="kw">lapply</span>(lags,<span class="cf">function</span>(x){<span class="kw">LMic_lagged</span>(ps.tr,<span class="dt">factors=</span><span class="st">&quot;Preterm&quot;</span>,<span class="dt">time=</span><span class="st">&quot;Time&quot;</span>,<span class="dt">taxon=</span><span class="dv">1</span>,x,<span class="dt">taxlevel=</span><span class="st">&quot;Genus&quot;</span>)})
+p.lags &lt;-<span class="st"> </span><span class="kw">lapply</span>(lags,<span class="cf">function</span>(x){<span class="kw">longLagPlot</span>(ps.tr,<span class="dt">factors=</span><span class="st">&quot;Preterm&quot;</span>,<span class="dt">time=</span><span class="st">&quot;Time&quot;</span>,<span class="dt">taxon=</span><span class="dv">1</span>,x,<span class="dt">taxlevel=</span><span class="st">&quot;Genus&quot;</span>)})
 
 <span class="co">#   Change the legend labels</span>
 p.lags &lt;-<span class="st"> </span><span class="kw">lapply</span>(p.lags, <span class="cf">function</span>(x){x<span class="op">+</span><span class="kw">scale_color_discrete</span>(<span class="dt">name  =</span><span class="st">&quot;Group&quot;</span>,<span class="dt">breaks=</span><span class="kw">c</span>(<span class="st">&quot;FALSE&quot;</span>, <span class="st">&quot;TRUE&quot;</span>),<span class="dt">labels=</span><span class="kw">c</span>(<span class="st">&quot;Term&quot;</span>, <span class="st">&quot;Preterm&quot;</span>))})
@@ -162,7 +162,7 @@ plist &lt;-<span class="st"> </span><span class="kw">lapply</span>(p.lags,<span 
 
 pp2 &lt;-<span class="st"> </span><span class="kw">grid.arrange</span>(<span class="kw">arrangeGrob</span>(<span class="dt">grobs=</span>plist,<span class="dt">nrow=</span><span class="dv">2</span>,<span class="dt">widths=</span><span class="kw">c</span>(<span class="dv">3</span>,<span class="dv">3</span>,<span class="dv">3</span>,<span class="dv">3</span>)),leg,<span class="dt">ncol=</span><span class="dv">2</span>,<span class="dt">widths=</span><span class="kw">c</span>(<span class="dv">10</span>,<span class="dv">2</span>))
 
-<span class="kw">ggsave</span>(<span class="st">&quot;./lag_sim.eps&quot;</span>,<span class="dt">plot=</span>pp2,<span class="dt">width =</span> <span class="dv">8</span>,<span class="dt">height =</span> <span class="fl">5.5</span>)</code></pre></div>
+<span class="co">#ggsave(&quot;./lag_sim.eps&quot;,plot=pp2,width = 8,height = 5.5)</span></code></pre></div>
 </div>
 <div id="eda-explore-correlation-structure-using-variogram" class="section level1">
 <h1>EDA: explore correlation structure using variogram</h1>
@@ -176,7 +176,7 @@ plist &lt;-<span class="st"> </span><span class="kw">lapply</span>(p.all,<span c
 
 pp3 &lt;-<span class="st"> </span><span class="kw">grid.arrange</span>(<span class="kw">arrangeGrob</span>(<span class="dt">grobs=</span>plist,<span class="dt">nrow=</span><span class="dv">2</span>,<span class="dt">widths=</span><span class="kw">c</span>(<span class="dv">3</span>,<span class="dv">3</span>,<span class="dv">3</span>)),leg,<span class="dt">ncol=</span><span class="dv">2</span>,<span class="dt">widths=</span><span class="kw">c</span>(<span class="dv">10</span>,<span class="dv">2</span>))
 
-<span class="kw">ggsave</span>(<span class="st">&quot;./vario_sim.eps&quot;</span>,<span class="dt">plot=</span>pp3,<span class="dt">width =</span> <span class="dv">8</span>,<span class="dt">height =</span> <span class="fl">5.5</span>)</code></pre></div>
+<span class="co">#ggsave(&quot;./vario_sim.eps&quot;,plot=pp3,width = 8,height = 5.5)</span></code></pre></div>
 </div>
 <div id="run-subsampling-procedure-with-initial-block-size" class="section level1">
 <h1>Run subsampling procedure with initial block size</h1>
@@ -184,9 +184,9 @@ pp3 &lt;-<span class="st"> </span><span class="kw">grid.arrange</span>(<span cla
 RR &lt;-<span class="st"> </span><span class="dv">2</span>
 factors &lt;-<span class="st"> &quot;Preterm&quot;</span>
 time &lt;-<span class="st"> &quot;Time&quot;</span>
-lI &lt;-<span class="st"> </span><span class="dv">5</span>
+lI &lt;-<span class="st"> </span><span class="dv">2</span>
 omega &lt;-<span class="st"> </span>.<span class="dv">6</span>
-<span class="kw">system.time</span>(mse_results &lt;-<span class="st"> </span><span class="kw">bboot_optblocksize</span>(ps,<span class="dt">R=</span>R,<span class="dt">RR=</span>RR,<span class="dt">factors=</span>factors,<span class="dt">time=</span>time,<span class="dt">subjectidvar=</span><span class="st">&quot;SubjectID&quot;</span>,<span class="dt">lI=</span>lI,<span class="dt">omega=</span>omega))
+<span class="kw">system.time</span>(mse_results &lt;-<span class="st"> </span><span class="kw">bootLongSubsampling</span>(ps,<span class="dt">R=</span>R,<span class="dt">RR=</span>RR,<span class="dt">factors=</span>factors,<span class="dt">time=</span>time,<span class="dt">subjectidvar=</span><span class="st">&quot;SubjectID&quot;</span>,<span class="dt">lI=</span>lI,<span class="dt">omega=</span>omega))
 <span class="kw">saveRDS</span>(mse_results,<span class="st">&quot;./bboot_sim.rds&quot;</span>)</code></pre></div>
 </div>
 <div id="inspect-mse-plot" class="section level1">

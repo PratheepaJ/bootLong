@@ -22,5 +22,5 @@ longVarioSingle(ps, factors, time, taxon, point = FALSE,
 \code{ggplot} object of variogram
 }
 \description{
-This function plot the variogram given the tax index.
+This function plot the variogram given the taxon index.
 }
