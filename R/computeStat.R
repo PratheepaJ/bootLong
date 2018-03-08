@@ -22,7 +22,6 @@ computeStat <- function(ps,factors){
     ot <- as.matrix(otu_table(ps))
     anno <- data.frame(tax_table(ps))
     samdf <- data.frame(sample_data(ps))
-    dgeList <- edgeR::DGEList(counts=ot, genes=anno, samples = samdf)
 
     #   setting up the model
     des <- as.formula(paste("~", paste(factors, collapse="+")))
@@ -35,8 +34,8 @@ computeStat <- function(ps,factors){
     rm(pse)
     pDE <- DESeq2::estimateSizeFactors(pDE)
     sj <- DESeq2::sizeFactors(pDE)
-    #   NOTE: if we want to use gene specific size factor, then
-    #sij <- normalizationFactors(pDE) # matrix
+
+    dgeList <- edgeR::DGEList(counts=ot, genes=anno, samples = samdf)
 
     v <- arcsinhTransform(counts=dgeList, design=mm, lib.size=sj,plot = F)
 
