@@ -1,4 +1,4 @@
-# bootLong
+# Overview
 The Block Bootstrap Method Inference for Longitudinal Microbiome Data
 
 `bootLongIndices()` Creates sample indices to construct a moving block bootstrap realization. 
