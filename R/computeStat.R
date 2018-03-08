@@ -45,8 +45,14 @@ computeStat <- function(ps,factors){
     #   Use limma::lmFit to fit linear model using computed weights
     #   fit linear model for each taxa
     fit <- limma::lmFit(v, design = mm,weights = v$weights)
-    #fit4 <-glm(v$E[1,]~samdf$Preterm,weights = v$weights[1,])
-
+    #   Testing
+    linkfun <- function(y) log(y + sqrt(y ^ 2 + 1))
+    fit4 <- lapply(as.list(1:dim(ot)[1]),function(x){
+        glm(as.numeric(ot[x,])~samdf$Preterm,offset=linkfun(sj),weights = v$weights[x,],family = quasipoisson(link = asinhLink))
+    })
+    fit4 <- lapply(fit4,function(x)coefficients(x))
+    fit4 <- do.call("rbind",fit4)
+    ##########
     #   estimated coefficients
     df.beta.hat <- data.frame(fit$coefficients)
     df.sd.beta <- data.frame(fit$stdev.unscaled)
