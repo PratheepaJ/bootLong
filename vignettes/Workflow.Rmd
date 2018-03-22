@@ -93,7 +93,7 @@ p.all <- lapply(p.all, function(x){x+scale_fill_discrete(name  ="Group",breaks=c
 leg <- plot.legend(p.all[[1]])
 plist <- lapply(p.all,function(x){x+theme(legend.position="none")})
 
-pp1 <-grid.arrange(arrangeGrob(grobs=plist,nrow=2,widths=c(3,3,3)),leg,ncol=2,widths=c(10,2))
+pp1 <- grid.arrange(arrangeGrob(grobs=plist,nrow=2,widths=c(3,3,3)),leg,ncol=2,widths=c(10,2))
 #ggsave("./core_Sim.eps",plot=pp1,width = 8,height = 5.5)
 ```
 
