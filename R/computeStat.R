@@ -75,7 +75,7 @@
 
 
 
-computeStat <- function(ps,factors){
+computeStat <- function(ps,factors,time,b){
     ot <- as.matrix(otu_table(ps))
     anno <- data.frame(tax_table(ps))
     samdf <- data.frame(sample_data(ps))
@@ -94,13 +94,30 @@ computeStat <- function(ps,factors){
 
     dgeList <- edgeR::DGEList(counts=ot, genes=anno, samples = samdf)
 
-blk <- apply(data.frame(samdf$SubjectID),1,function(x){
-substr(x,start=2,stop = nchar(x))
-})
-blk <- factor(blk)
-df.mm <- data.frame(mm)
+    blk <- apply(data.frame(samdf$SubjectID),1,function(x){
+    substr(x,start=2,stop = nchar(x))
+    })
+    blk <- factor(blk)
+    df.mm <- data.frame(mm)
 
-geeglm(as.numeric(ot[1,]+1)~samdf$Preterm,weights = v$weights[1,],id=blk,family = poisson(link = log),waves = samdf$Time,offset = sj)
+
+    df.taxa <- data.frame(sample_data(ps),otu=as.numeric(t(otu_table(ps)[1,])))
+    names(df.taxa)[names(df.taxa)==factors] <- "Group"
+    names(df.taxa)[names(df.taxa)==time] <- "Time"
+
+    df.taxa$Time <- as.factor(df.taxa$Time)
+    df.taxa <- df.taxa %>% group_by(Time) %>% summarise(meant=mean(otu))
+    acf.res <- as.numeric(acf(df.taxa$meant,plot=F)$acf)
+    acf.res[(b+1):length(acf.res)] <- 0
+
+    workCorr <- matrix(nrow=length(acf.res),ncol = length(acf.res))
+    for(rw in 1:length(acf.res)){
+        for(nc in 1:length(acf.res)){
+            workCorr[rw,nc] <- acf.res[(abs(rw-nc)+1)]
+        }
+    }
+
+    geese(as.numeric(ot[1,]+1)~samdf$Preterm,weights = v$weights[1,],id=blk,family = poisson(link = log),waves = samdf$Time,offset = sj)
 
 
     v <- arcsinhTransform(counts=dgeList, design=mm, lib.size=sj,plot = F)

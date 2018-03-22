@@ -12,7 +12,7 @@ vignette: >
 
 Install packages: 
 ```{r }
-pkgs <- c("ggplot2","dplyr","tidyr","phyloseq","DESeq2","BiocParallel","edgeR","limma","ashr","gridExtra")
+pkgs <- c("ggplot2","dplyr","tidyr","phyloseq","DESeq2","BiocParallel","edgeR","limma","ashr","gridExtra","geepack")
 #pkgs <- c("doParallel","foreach","reshape2","gridExtra","ggfortify","R.utils")
 
 #   installed packages that were not installed already
