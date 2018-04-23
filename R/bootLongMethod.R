@@ -9,6 +9,7 @@
 #' @param FDR False discovery rate
 #'
 #' @return list of dataframe with ASV, observed stat, pvalues, adjusted pvalues, lcl, ucl, observed pivotal quantity; stat.obs; stat.star; stat.star.star; T.star_obs.
+#' @import "ashr"
 #' @export
 bootLongMethod <- function(ps,b,R,RR,factors,time,FDR=.1){
     #   otu table of observed phyloseq: rows taxa; columns samples
