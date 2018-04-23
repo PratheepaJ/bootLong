@@ -4,16 +4,20 @@
 \alias{computeStat}
 \title{computeStat}
 \usage{
-computeStat(ps, factors)
+computeStat(ps, factors, time, b)
 }
 \arguments{
 \item{ps}{Observed \code{phyloseq} class object.}
 
 \item{factors}{vector of factor variable(s) in the sample data of ps.}
+
+\item{time}{Time variable at repeated observations.}
+
+\item{b}{numeric, optimal block size to account for dependence within-subject.}
 }
 \value{
 dataframe with the last column corresponds to taxa names
-and other columns are for moderated coefficients for each factors, including Intercept.
+and other columns are for estimated coefficients for each factors using GEE, including Intercept.
 }
 \description{
 This function computes size factors for each samples using \code{estimateSizeFactors}.

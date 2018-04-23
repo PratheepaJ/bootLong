@@ -1,5 +1,5 @@
 ## ------------------------------------------------------------------------
-pkgs <- c("ggplot2","dplyr","tidyr","phyloseq","DESeq2","BiocParallel","edgeR","limma","ashr","gridExtra")
+pkgs <- c("ggplot2","dplyr","tidyr","phyloseq","DESeq2","BiocParallel","edgeR","limma","ashr","gridExtra","geepack")
 #pkgs <- c("doParallel","foreach","reshape2","gridExtra","ggfortify","R.utils")
 
 #   installed packages that were not installed already
@@ -65,7 +65,7 @@ plot.legend <- function(p){
 #  leg <- plot.legend(p.all[[1]])
 #  plist <- lapply(p.all,function(x){x+theme(legend.position="none")})
 #  
-#  pp1 <-grid.arrange(arrangeGrob(grobs=plist,nrow=2,widths=c(3,3,3)),leg,ncol=2,widths=c(10,2))
+#  pp1 <- grid.arrange(arrangeGrob(grobs=plist,nrow=2,widths=c(3,3,3)),leg,ncol=2,widths=c(10,2))
 #  #ggsave("./core_Sim.eps",plot=pp1,width = 8,height = 5.5)
 
 ## ----eval=FALSE----------------------------------------------------------
@@ -135,12 +135,12 @@ plot.legend <- function(p){
 #  l.opt
 
 ## ----eval=FALSE----------------------------------------------------------
-#  R <- 200
-#  RR <- 50
+#  R <- 2
+#  RR <- 5
 #  factors <- "Preterm"
 #  time <- "Time"
 #  
-#  system.time(bboot_res <- bboot_LMic(ps,b=l.opt,R=R,RR=RR,factors=factors,time=time))
+#  system.time(bboot_res <- bootLongMethod(ps,b=l.opt,R=R,RR=RR,factors=factors,time=time))
 #  saveRDS(bboot_res,"./bboot_sim.rds")
 
 ## ----eval=FALSE----------------------------------------------------------

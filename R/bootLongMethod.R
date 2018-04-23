@@ -23,7 +23,7 @@ bootLongMethod <- function(ps,b,R,RR,factors,time,FDR=.1){
 
     boot.results <- list()
 
-    boot.results <- lapply(seq_len(R),FUN=function(i){
+    boot.results <- bplapply(seq_len(R),FUN=function(i){
         ps.boot <- bootLongPhyloseq(ps,b,time)
         ps.boot <- ps.boot[[1]]
 
@@ -89,6 +89,7 @@ bootLongMethod <- function(ps,b,R,RR,factors,time,FDR=.1){
 
     stat.star <- do.call("cbind",shrink.beta.boot.est)
     sd.stat.star <- do.call("cbind",shrink.beta.boot.sd)
+
     #   compute stat*-stat.obs
     T.num.star <- data.frame(apply(stat.star,2,function(x){x-stat.obs}))
 

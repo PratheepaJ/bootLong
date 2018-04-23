@@ -61,55 +61,15 @@ computeStat <- function(ps,factors,time,b){
 
         zcor <- fixed2Zcor(workCorr,id=df.per.taxa$idvar,waves = df.per.taxa$Time)
         #   gee with the working correlation
-        # gee2 <- geeglm(otu~Preterm, data=df.per.taxa,id=idvar,corstr = "fixed",weights = v$weights[1,],waves = df.per.taxa$Time,offset = sj,family = poisson(link = log),zcor=zcor)
         gee2 <- geeglm(des2, data=df.per.taxa,id=idvar,corstr = "fixed",weights = df.per.taxa$weights,waves = df.per.taxa$Time,offset = df.per.taxa$sj,family = gaussian,zcor=zcor)
 
         return(t(gee2$coefficients))
     })
 
-    # df.beta.hat <- list()
-    # for(i in 1:ntaxa(ps)){
-    #     # df.per.taxa <- data.frame(samdf,otu=as.numeric(t(ot[1,])),sj=sj,weights=v$weights[1,])
-    #     df.per.taxa <- data.frame(samdf,otu=as.numeric(t(v$E[i,])),sj=sj,weights=v$weights[i,])
-    #
-    #     #   need numeric values for Subject ID
-    #
-    #     df.per.taxa$idvar <- as.numeric(as.factor(df.per.taxa$SubjectID))
-    #     df.per.taxa <- arrange(df.per.taxa,SubjectID)
-    #
-    #     #   compute residuals
-    #     # gee1 <- geeglm(otu~Preterm, data=df.per.taxa,id=idvar,corstr = "independence",weights = df.per.taxa$weights,waves = df.per.taxa$Time,offset = df.per.taxa$sj,family = poisson(link = log))
-    #     gee1 <- geeglm(otu~Preterm, data=df.per.taxa,id=idvar,corstr = "independence",weights = df.per.taxa$weights,waves = df.per.taxa$Time,offset = df.per.taxa$sj,family = gaussian)
-    #     res <- as.vector(residuals(gee1))
-    #
-    #     #   compute sample correlation
-    #     df.per.taxa$res <- res
-    #     df.per.taxa$Time <- as.factor(df.per.taxa$Time)
-    #     df.per.s <- df.per.taxa %>% group_by(Time) %>% summarise(meanr=mean(res))
-    #     acf.res <- as.numeric(acf(df.per.s$meanr,plot = F)$acf)
-    #     acf.res[(b+1):length(acf.res)] <- 0
-    #
-    #     workCorr <- matrix(nrow=length(acf.res),ncol = length(acf.res))
-    #     for(rw in 1:length(acf.res)){
-    #         for(nc in 1:length(acf.res)){
-    #             workCorr[rw,nc] <- acf.res[(abs(rw-nc)+1)]
-    #         }
-    #     }
-    #
-    #     zcor <- fixed2Zcor(workCorr,id=df.per.taxa$idvar,waves = df.per.taxa$Time)
-    #     #   gee with the working correlation
-    #     # gee2 <- geeglm(otu~Preterm, data=df.per.taxa,id=idvar,corstr = "fixed",weights = v$weights[1,],waves = df.per.taxa$Time,offset = sj,family = poisson(link = log),zcor=zcor)
-    #     gee2 <- geeglm(otu~Preterm, data=df.per.taxa,id=idvar,corstr = "fixed",weights = df.per.taxa$weights,waves = df.per.taxa$Time,offset = df.per.taxa$sj,family = gaussian,zcor=zcor)
-    #
-    #     df.beta.hat[[i]] <- t(gee2$coefficients)
-    # }
-
-
     df.beta.hat <- data.frame(do.call("rbind",df.beta.hat))
 
     ASV <- taxa_names(ps)
     res <- bind_cols(df.beta.hat,ASV=ASV)
-    # res <- res[,c(2,3)]
     rm(ps)
     return(res)
 }

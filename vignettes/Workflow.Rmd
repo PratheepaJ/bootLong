@@ -131,7 +131,7 @@ pp3 <- grid.arrange(arrangeGrob(grobs=plist,nrow=2,widths=c(3,3,3)),leg,ncol=2,w
 
 #   Run subsampling procedure with initial block size 
 ```{r eval=FALSE}
-R <- 2
+R <- 5
 RR <- 2
 factors <- "Preterm"
 time <- "Time"
@@ -173,13 +173,15 @@ l.opt
 
 #   Run MBB with the optimal block size
 ```{r eval=FALSE}
-R <- 2
-RR <- 5
+doParallel::registerDoParallel(parallel::detectCores())
+BiocParallel::register(BiocParallel::DoparParam())
+R <- 50
+RR <- 6
 factors <- "Preterm"
 time <- "Time"
 
-system.time(bboot_res <- bootLongMethod(ps,b=l.opt,R=R,RR=RR,factors=factors,time=time))
-saveRDS(bboot_res,"./bboot_sim.rds")
+system.time(boot_res <- bootLongMethod(ps,b=l.opt,R=R,RR=RR,factors=factors,time=time))
+#saveRDS(boot_res,"./boot_sim.rds")
 ```
 
 #   Inspect the results

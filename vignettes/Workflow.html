@@ -12,7 +12,7 @@
 
 <meta name="author" content="Pratheepa Jeganathan" />
 
-<meta name="date" content="2018-03-06" />
+<meta name="date" content="2018-04-23" />
 
 <title>Workflow : The Block Bootstrap Method for Longitudinal Microbiome Data</title>
 
@@ -70,12 +70,12 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">Workflow : The Block Bootstrap Method for Longitudinal Microbiome Data</h1>
 <h4 class="author"><em>Pratheepa Jeganathan</em></h4>
-<h4 class="date"><em>2018-03-06</em></h4>
+<h4 class="date"><em>2018-04-23</em></h4>
 
 
 
 <p>Install packages:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">pkgs &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;ggplot2&quot;</span>,<span class="st">&quot;dplyr&quot;</span>,<span class="st">&quot;tidyr&quot;</span>,<span class="st">&quot;phyloseq&quot;</span>,<span class="st">&quot;DESeq2&quot;</span>,<span class="st">&quot;BiocParallel&quot;</span>,<span class="st">&quot;edgeR&quot;</span>,<span class="st">&quot;limma&quot;</span>,<span class="st">&quot;ashr&quot;</span>,<span class="st">&quot;gridExtra&quot;</span>)
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">pkgs &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;ggplot2&quot;</span>,<span class="st">&quot;dplyr&quot;</span>,<span class="st">&quot;tidyr&quot;</span>,<span class="st">&quot;phyloseq&quot;</span>,<span class="st">&quot;DESeq2&quot;</span>,<span class="st">&quot;BiocParallel&quot;</span>,<span class="st">&quot;edgeR&quot;</span>,<span class="st">&quot;limma&quot;</span>,<span class="st">&quot;ashr&quot;</span>,<span class="st">&quot;gridExtra&quot;</span>,<span class="st">&quot;geepack&quot;</span>)
 <span class="co">#pkgs &lt;- c(&quot;doParallel&quot;,&quot;foreach&quot;,&quot;reshape2&quot;,&quot;gridExtra&quot;,&quot;ggfortify&quot;,&quot;R.utils&quot;)</span>
 
 <span class="co">#   installed packages that were not installed already</span>
@@ -90,7 +90,9 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <pre><code>##      ggplot2        dplyr        tidyr     phyloseq       DESeq2 
 ##         TRUE         TRUE         TRUE         TRUE         TRUE 
 ## BiocParallel        edgeR        limma         ashr    gridExtra 
-##         TRUE         TRUE         TRUE         TRUE         TRUE</code></pre>
+##         TRUE         TRUE         TRUE         TRUE         TRUE 
+##      geepack 
+##         TRUE</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#library(bootLong)</span></code></pre></div>
 <div id="read-data" class="section level1">
 <h1>Read data</h1>
@@ -146,7 +148,7 @@ p.all &lt;-<span class="st"> </span><span class="kw">lapply</span>(p.all, <span 
 leg &lt;-<span class="st"> </span><span class="kw">plot.legend</span>(p.all[[<span class="dv">1</span>]])
 plist &lt;-<span class="st"> </span><span class="kw">lapply</span>(p.all,<span class="cf">function</span>(x){x<span class="op">+</span><span class="kw">theme</span>(<span class="dt">legend.position=</span><span class="st">&quot;none&quot;</span>)})
 
-pp1 &lt;-<span class="kw">grid.arrange</span>(<span class="kw">arrangeGrob</span>(<span class="dt">grobs=</span>plist,<span class="dt">nrow=</span><span class="dv">2</span>,<span class="dt">widths=</span><span class="kw">c</span>(<span class="dv">3</span>,<span class="dv">3</span>,<span class="dv">3</span>)),leg,<span class="dt">ncol=</span><span class="dv">2</span>,<span class="dt">widths=</span><span class="kw">c</span>(<span class="dv">10</span>,<span class="dv">2</span>))
+pp1 &lt;-<span class="st"> </span><span class="kw">grid.arrange</span>(<span class="kw">arrangeGrob</span>(<span class="dt">grobs=</span>plist,<span class="dt">nrow=</span><span class="dv">2</span>,<span class="dt">widths=</span><span class="kw">c</span>(<span class="dv">3</span>,<span class="dv">3</span>,<span class="dv">3</span>)),leg,<span class="dt">ncol=</span><span class="dv">2</span>,<span class="dt">widths=</span><span class="kw">c</span>(<span class="dv">10</span>,<span class="dv">2</span>))
 <span class="co">#ggsave(&quot;./core_Sim.eps&quot;,plot=pp1,width = 8,height = 5.5)</span></code></pre></div>
 </div>
 <div id="eda-lag-plot-for-each-taxa" class="section level1">
@@ -220,12 +222,12 @@ l.opt</code></pre></div>
 </div>
 <div id="run-mbb-with-the-optimal-block-size" class="section level1">
 <h1>Run MBB with the optimal block size</h1>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">R &lt;-<span class="st"> </span><span class="dv">200</span>
-RR &lt;-<span class="st"> </span><span class="dv">50</span>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">R &lt;-<span class="st"> </span><span class="dv">2</span>
+RR &lt;-<span class="st"> </span><span class="dv">5</span>
 factors &lt;-<span class="st"> &quot;Preterm&quot;</span>
 time &lt;-<span class="st"> &quot;Time&quot;</span>
 
-<span class="kw">system.time</span>(bboot_res &lt;-<span class="st"> </span><span class="kw">bboot_LMic</span>(ps,<span class="dt">b=</span>l.opt,<span class="dt">R=</span>R,<span class="dt">RR=</span>RR,<span class="dt">factors=</span>factors,<span class="dt">time=</span>time))
+<span class="kw">system.time</span>(bboot_res &lt;-<span class="st"> </span><span class="kw">bootLongMethod</span>(ps,<span class="dt">b=</span>l.opt,<span class="dt">R=</span>R,<span class="dt">RR=</span>RR,<span class="dt">factors=</span>factors,<span class="dt">time=</span>time))
 <span class="kw">saveRDS</span>(bboot_res,<span class="st">&quot;./bboot_sim.rds&quot;</span>)</code></pre></div>
 </div>
 <div id="inspect-the-results" class="section level1">
