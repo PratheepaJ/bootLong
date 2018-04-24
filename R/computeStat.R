@@ -34,22 +34,25 @@ computeStat <- function(ps,factors,time,b){
 
     v <- arcsinhTransform(counts=dgeList, design=mm, lib.size=sj,plot = F)
 
-    df.beta.hat <- lapply(seq_along(1:ntaxa(ps)),function(i){
-        df.per.taxa <- data.frame(samdf,otu=as.numeric(t(v$E[i,])),sj=sj,weights=v$weights[i,])
+    nt <- as.list(seq(1,ntaxa(ps)))
+
+    com.beta <- function(ind){
+        df <- data.frame(samdf,otu=as.numeric(v$E[ind,]),sj=as.numeric(sj),weight=as.numeric(v$weights[ind,]))
 
         #   need numeric values for Subject ID
-        df.per.taxa$idvar <- as.numeric(as.factor(df.per.taxa$SubjectID))
-        df.per.taxa <- arrange(df.per.taxa,SubjectID)
+        df$idvar <- as.numeric(as.factor(df$SubjectID))
+        df <- arrange(df,SubjectID)
 
         #   compute residuals
-        gee1 <- geeglm(des2, data=df.per.taxa,id=idvar,corstr = "independence",weights = df.per.taxa$weights,waves = df.per.taxa$Time,offset = df.per.taxa$sj,family = gaussian)
-        res <- as.vector(residuals(gee1))
+        gee1 <- geeglm(des2,data=df,id=idvar,corstr = "independence",weights = df$weight,waves = df$Time,offset = df$sj,family = gaussian)
+        rese <- as.vector(residuals(gee1))
 
         #   compute sample correlation
-        df.per.taxa$res <- res
-        df.per.taxa$Time <- as.factor(df.per.taxa$Time)
-        df.per.s <- df.per.taxa %>% group_by(Time) %>% summarise(meanr=mean(res))
-        acf.res <- as.numeric(acf(df.per.s$meanr,plot = F)$acf)
+        df$res <- rese
+        dfsub <- df
+        dfsub$Time <- as.factor(dfsub$Time)
+        dfsub <- dfsub %>% group_by(Time) %>% summarise(meanr=mean(res))
+        acf.res <- as.numeric(acf(dfsub$meanr,plot = F)$acf)
         acf.res[(b+1):length(acf.res)] <- 0
 
         workCorr <- matrix(nrow=length(acf.res),ncol = length(acf.res))
@@ -59,12 +62,13 @@ computeStat <- function(ps,factors,time,b){
             }
         }
 
-        zcor <- fixed2Zcor(workCorr,id=df.per.taxa$idvar,waves = df.per.taxa$Time)
+        zcor <- fixed2Zcor(workCorr,id=df$idvar,waves = df$Time)
         #   gee with the working correlation
-        gee2 <- geeglm(des2, data=df.per.taxa,id=idvar,corstr = "fixed",weights = df.per.taxa$weights,waves = df.per.taxa$Time,offset = df.per.taxa$sj,family = gaussian,zcor=zcor)
+        gee2 <- geeglm(des2, data=df,id=idvar,corstr = "fixed",weights = df$weight,waves = df$Time,offset = df$sj,family = gaussian,zcor=zcor)
 
         return(t(gee2$coefficients))
-    })
+    }
+    df.beta.hat <- lapply(nt,FUN = com.beta)
 
     df.beta.hat <- data.frame(do.call("rbind",df.beta.hat))
 

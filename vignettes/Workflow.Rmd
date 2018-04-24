@@ -19,6 +19,7 @@ pkgs <- c("ggplot2","dplyr","tidyr","phyloseq","DESeq2","BiocParallel","edgeR","
 # source("http://bioconductor.org/biocLite.R")
 # biocLite(setdiff(pkgs,installed.packages()))
 #devtools::install_github("PratheepaJ/bbootLong")
+
 ```
 
 load packages:
@@ -31,7 +32,7 @@ if(any(!lpckges)){
 ```
 
 #   Read data
-```{r eval=FALSE}
+```{r }
 ps <- pssim
 ```
 
@@ -176,7 +177,7 @@ l.opt
 doParallel::registerDoParallel(parallel::detectCores())
 BiocParallel::register(BiocParallel::DoparParam())
 R <- 50
-RR <- 6
+RR <- 25
 factors <- "Preterm"
 time <- "Time"
 
