@@ -174,10 +174,8 @@ l.opt
 
 #   Run MBB with the optimal block size
 ```{r eval=FALSE}
-doParallel::registerDoParallel(parallel::detectCores())
-BiocParallel::register(BiocParallel::DoparParam())
-R <- 50
-RR <- 25
+R <- 3
+RR <- 2
 factors <- "Preterm"
 time <- "Time"
 

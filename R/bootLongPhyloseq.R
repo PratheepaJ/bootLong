@@ -48,6 +48,15 @@ bootLongPhyloseq <- function(ps,b,time){
     #   block bootstrap realization
     blk.boot.otu.tab <- otu.tab[,boot.sample.indices]
     blk.boot.samdf <- samdf[boot.sample.indices,]
+    #   split by subject
+    boot.samdf <- split(blk.boot.samdf,blk.boot.samdf$SubjectID)
+    #   create order of Time
+    boot.samdf <- lapply(boot.samdf,function(x){
+        tim <- seq(1,dim(x)[1])
+        x[,time] <- tim
+        return(x)
+    })
+    blk.boot.samdf <- do.call("rbind",boot.samdf)
     blk.boot.samdf <- dplyr::select(blk.boot.samdf,-Index)
     colnames(blk.boot.otu.tab) <- rownames(blk.boot.samdf)
     rownames(blk.boot.otu.tab) <- taxa_names(ps)

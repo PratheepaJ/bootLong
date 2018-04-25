@@ -12,35 +12,39 @@
 #' @import "ashr"
 #' @export
 bootLongMethod <- function(ps,b,R,RR,factors,time,FDR=.1){
+    doParallel::registerDoParallel(parallel::detectCores())
+    BiocParallel::register(BiocParallel::DoparParam())
     #   otu table of observed phyloseq: rows taxa; columns samples
     if(dim(otu_table(ps))[1]==nsamples(ps)){
         otu_table(ps) <- t(otu_table(ps,taxa_are_rows = T))
     }
 
-    res.obs <- computeStat(ps,factors,time,b)
+    res.obs <- computeStat(ps=ps,factors=factors,time=time,b=b)
 
     stat.name <- colnames(res.obs)[2]
 
     boot.results <- list()
 
-    boot.results <- bplapply(seq_len(R),FUN=function(i){
+    boot.results <- lapply(seq_len(R),FUN=function(i){
         ps.boot <- bootLongPhyloseq(ps,b,time)
         ps.boot <- ps.boot[[1]]
 
-        df.boot <- computeStat(ps.boot,factors,time,b)
+        df.boot <- computeStat(ps=ps.boot,factors=factors,time=time,b=b)
 
         #   double MBB
         boot.results.bb <- lapply(seq_len(RR),FUN=function(j){
             ps.boot.bb <- bootLongPhyloseq(ps.boot,b,time)
             ps.boot.bb <- ps.boot.bb[[1]]
-            df.boot.bb <- computeStat(ps.boot.bb,factors,time,b)
+            df.boot.bb <- computeStat(ps=ps.boot.bb,factors=factors,time=time,b=b)
             rm(ps.boot.bb)
             return(df.boot.bb)
+
         })
 
         rm(ps.boot)
 
         return(list(df.boot,boot.results.bb))
+
 
     })
 

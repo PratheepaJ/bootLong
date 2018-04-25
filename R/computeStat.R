@@ -20,36 +20,42 @@
 #' @export
 computeStat <- function(ps,factors,time,b){
     ot <- as.matrix(otu_table(ps))
-    samdf <- data.frame(sample_data(ps))
+    samd <- data.frame(sample_data(ps))
+    names(samd)[names(samd)==time] <- "Time"
     anno <- data.frame(tax_table(ps))
-    dgeList <- edgeR::DGEList(counts=ot, genes=anno, samples = samdf)
+    dgeList <- edgeR::DGEList(counts=ot, genes=anno, samples = samd)
 
     #   setting up the model
     des <- as.formula(paste("~", paste(factors, collapse="+")))
-    mm <- model.matrix(des,data=samdf)
+    mm <- model.matrix(des,data=samd)
     des2 <- as.formula(paste("otu","~", paste(factors, collapse="+")))
     #   estimate the size factors
     geo.mean.row <- apply((ot+1),1,function(x){exp(sum(log(x))/length(x))})
     sj <- apply((ot+1),2,function(x){median(x/geo.mean.row)})
 
     v <- arcsinhTransform(counts=dgeList, design=mm, lib.size=sj,plot = F)
+    v.E <- v$E
+    we <- v$weights
 
     nt <- as.list(seq(1,ntaxa(ps)))
-
-    com.beta <- function(ind){
-        df <- data.frame(samdf,otu=as.numeric(v$E[ind,]),sj=as.numeric(sj),weight=as.numeric(v$weights[ind,]))
-
+    names(samd)[names(samd)==factors] <- "Group"
+    com.beta <- function(ind,samd,v.E,sj,we,des2,b){
+        otu <- as.numeric(v.E[ind,])
+        sj <- as.numeric(sj)
+        we <- as.numeric(we[ind,])
+        dff <- samd
+        dff <- cbind(samd,otu=otu,sj=sj,we=we)
         #   need numeric values for Subject ID
-        df$idvar <- as.numeric(as.factor(df$SubjectID))
-        df <- arrange(df,SubjectID)
+        dff$idvar <- as.numeric(as.factor(dff$SubjectID))
+        dff <- arrange(dff,SubjectID)
 
         #   compute residuals
-        gee1 <- geeglm(des2,data=df,id=idvar,corstr = "independence",weights = df$weight,waves = df$Time,offset = df$sj,family = gaussian)
+        gee1 <- geeglm(otu~Group,data=dff,id=idvar,corstr = "independence",weights = we,waves = Time,offset = sj,family = gaussian)
         rese <- as.vector(residuals(gee1))
 
         #   compute sample correlation
-        df$res <- rese
-        dfsub <- df
+        dff$res <- rese
+        dfsub <- dff
         dfsub$Time <- as.factor(dfsub$Time)
         dfsub <- dfsub %>% group_by(Time) %>% summarise(meanr=mean(res))
         acf.res <- as.numeric(acf(dfsub$meanr,plot = F)$acf)
@@ -62,13 +68,22 @@ computeStat <- function(ps,factors,time,b){
             }
         }
 
-        zcor <- fixed2Zcor(workCorr,id=df$idvar,waves = df$Time)
+        id.zcor <- dff$idvar
+        wa <- dff$Time
+        zcor <- fixed2Zcor(workCorr,id=id.zcor,waves = wa)
         #   gee with the working correlation
-        gee2 <- geeglm(des2, data=df,id=idvar,corstr = "fixed",weights = df$weight,waves = df$Time,offset = df$sj,family = gaussian,zcor=zcor)
+        gee2 <- geeglm(otu~Group, data=dff,id=idvar,corstr = "fixed",weights = we,waves = Time,offset = sj,family = gaussian,zcor=zcor)
 
         return(t(gee2$coefficients))
+
     }
-    df.beta.hat <- lapply(nt,FUN = com.beta)
+
+    df.beta.hat <- lapply(nt,function(x){com.beta(x,samd,v.E,sj,we,des2,b)})
+
+    # df.beta.hat <- list()
+    # for(i in 1:length(nt)){
+    #     df.beta.hat[[i]] <- com.beta(nt[[i]],v=v,sj=sj)
+    # }
 
     df.beta.hat <- data.frame(do.call("rbind",df.beta.hat))
 
