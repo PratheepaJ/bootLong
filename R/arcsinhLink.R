@@ -4,7 +4,7 @@ arcsinhLink <- function(){
     ## inverse link
     linkinv <- function(eta)  0.5*exp(-eta)*(exp(2*eta)-1)
     ## derivative of invlink wrt eta
-    mu.eta <- function(eta) { .5*(exp(eta)+exp(-eta))}
+    mu.eta <- function(eta) {.5*(exp(eta)+exp(-eta))}
     valideta <- function(eta) TRUE
     link <- "asinh"
     structure(list(linkfun = linkfun, linkinv = linkinv,
@@ -13,4 +13,4 @@ arcsinhLink <- function(){
               class = "link-glm")
 }
 
-asinhLink <- arcsinhLink()
+#asinhLink <- arcsinhLink()

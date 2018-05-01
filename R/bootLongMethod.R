@@ -25,7 +25,7 @@ bootLongMethod <- function(ps,b,R,RR,factors,time,FDR=.1){
 
     boot.results <- list()
 
-    boot.results <- lapply(seq_len(R),FUN=function(i){
+    boot.results <- BiocParallel::bplapply(seq_len(R),FUN=function(i){
         ps.boot <- bootLongPhyloseq(ps,b,time)
         ps.boot <- ps.boot[[1]]
 
@@ -111,7 +111,8 @@ bootLongMethod <- function(ps,b,R,RR,factors,time,FDR=.1){
     #txnames <- taxa_names(ps)
     txnames <- dplyr::select(res.obs,ASV)
     out <- data.frame(Taxa=txnames,stat=stat.obs[,1],pvalue=pvalue,pvalue.adj=pvalue.adj)
-    names(out)[which(names(out)=="stat")] <- stat.name
+    #names(out)[which(names(out)=="stat")] <- stat.name
+
     #   compute confidence interval: not the simultaneous CI so will be wider than expected
     lcl <- apply(stat.star,1,FUN=function(x){quantile(x,probs=FDR/2,na.rm=TRUE)})
     ucl <- apply(stat.star,1,FUN=function(x){quantile(x,probs=(1-FDR/2),na.rm=TRUE)})

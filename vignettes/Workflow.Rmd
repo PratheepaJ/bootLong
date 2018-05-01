@@ -9,6 +9,9 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+```{r}
+rm(list = ls())
+```
 
 Install packages: 
 ```{r }
@@ -34,6 +37,23 @@ if(any(!lpckges)){
 #   Read data
 ```{r }
 ps <- pssim
+```
+
+# MBS
+```{r eval=FALSE}
+
+psm <- merge_samples(ps, "SubjectID")  # OTU_COUNTS ARE SUMMED
+#   otu count of psm: columns- taxa, rows-subjects
+#   coercion is for SampleID...that's ok
+sample_data(psm)$SubjectID <- rownames(sample_data(psm))
+sample_data(psm)$Preterm <- factor(sample_data(psm)$Preterm)
+# Make mean OTU-counts
+omat <- as(otu_table(psm), "matrix")
+nsam <- table(sample_data(ps)$SubjectID)
+omn <- omat/as.vector(nsam)
+otu_table(psm) <- otu_table(omn, taxa_are_rows=FALSE)
+if(dim(otu_table(psm))[2]!=nsamples(psm)){otu_table(psm)=t(otu_table(psm))}
+    
 ```
 
 #   sumamry of data
@@ -85,7 +105,7 @@ plot.legend <- function(p){
 #   EDA: correlogram
 ```{r eval=FALSE}
 ps.tr <- psTransform(ps,factors="Preterm") 
-p.all <- longCorreloMultiple(ps.tr, factors="Preterm",time="Time",1,6,taxlevel = "Genus")
+p.all <- longCorreloMultiple(ps.tr[[1]],ps.tr[[2]], factors="Preterm",time="Time",1,6,taxlevel = "Genus")
 
 #   Change the legend labels
 p.all <- lapply(p.all, function(x){x+scale_fill_discrete(name  ="Group",breaks=c("FALSE", "TRUE"),labels=c("Term", "Preterm"))})
@@ -101,7 +121,7 @@ pp1 <- grid.arrange(arrangeGrob(grobs=plist,nrow=2,widths=c(3,3,3)),leg,ncol=2,w
 #   EDA: lag-plot for each taxa
 ```{r eval=FALSE}
 lags <- as.list(seq(1,8))
-p.lags <- lapply(lags,function(x){longLagPlot(ps.tr,factors="Preterm",time="Time",taxon=1,x,taxlevel="Genus")})
+p.lags <- lapply(lags,function(x){longLagPlot(ps.tr[[2]],factors="Preterm",time="Time",taxon=1,x,taxlevel="Genus")})
 
 #   Change the legend labels
 p.lags <- lapply(p.lags, function(x){x+scale_color_discrete(name  ="Group",breaks=c("FALSE", "TRUE"),labels=c("Term", "Preterm"))})
@@ -117,7 +137,7 @@ pp2 <- grid.arrange(arrangeGrob(grobs=plist,nrow=2,widths=c(3,3,3,3)),leg,ncol=2
 
 #   EDA: explore correlation structure using variogram
 ```{r eval=FALSE}
-p.all <- longVarioMultiple(ps.tr, factors="Preterm",time="Time",1,6,taxlevel = "Genus")
+p.all <- longVarioMultiple(ps.tr[[1]],ps.tr[[2]], factors="Preterm",time="Time",1,6,taxlevel = "Genus")
 
 #   Change the legend labels
 p.all <- lapply(p.all, function(x){x+scale_color_discrete(name  ="Group",breaks=c("FALSE", "TRUE"),labels=c("Term", "Preterm "))})
@@ -180,19 +200,19 @@ factors <- "Preterm"
 time <- "Time"
 
 system.time(boot_res <- bootLongMethod(ps,b=l.opt,R=R,RR=RR,factors=factors,time=time))
-#saveRDS(boot_res,"./boot_sim.rds")
+saveRDS(boot_res,"./boot_sim.rds")
 ```
 
 #   Inspect the results
 
 ```{r eval=FALSE}
-bboot_res <- readRDS("./bboot_sim.rds")
+boot_res <- readRDS("./bboot_sim.rds")
 FDR <- .05
 taxalevel <- "Genus"
-out <- bboot_res[[1]] 
+out <- boot_res[[1]] 
 
 #   bootstrap values
-T.star_obs <- bboot_res[[5]] 
+T.star_obs <- boot_res[[5]] 
 
 #  filter by FDR
 out <- dplyr::filter(out,pvalue.adj <= FDR)
@@ -223,7 +243,7 @@ tn <- paste(tog,taxaN,sep=".")
 out$ASV <- tn #taxalevel name and variant number
 #out$ASV <- taxaName    #   only taxalevel names
 #out$ASV <- tog #   taxalevel and Species name
-out <- out[-ind.na,]
+#out <- out[-ind.na,]
 
 #   arrange by observed lfc
 out <- dplyr::arrange(out,desc(stat))
@@ -236,6 +256,6 @@ out <- dplyr::filter(out,!is.na(pvalue.adj))
 
 #   write the results table in latex
 library(xtable)
-print(xtable(out, type = "latex",digits = 3), file = "./bboot_sim.tex")
+print(xtable(out, type = "latex",digits = 3), file = "./boot_sim.tex")
 ```
 

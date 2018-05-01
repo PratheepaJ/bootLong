@@ -7,6 +7,7 @@ pkgs <- c("ggplot2","dplyr","tidyr","phyloseq","DESeq2","BiocParallel","edgeR","
 # biocLite(setdiff(pkgs,installed.packages()))
 #devtools::install_github("PratheepaJ/bbootLong")
 
+
 ## ----message=FALSE,warning=FALSE-----------------------------------------
 lpckges<-pkgs%in%(.packages())
 if(any(!lpckges)){
@@ -14,8 +15,23 @@ if(any(!lpckges)){
 }
 #library(bootLong)
 
+## ------------------------------------------------------------------------
+ps <- pssim
+
 ## ----eval=FALSE----------------------------------------------------------
-#  ps <- pssim
+#  
+#  psm <- merge_samples(ps, "SubjectID")  # OTU_COUNTS ARE SUMMED
+#  #   otu count of psm: columns- taxa, rows-subjects
+#  #   coercion is for SampleID...that's ok
+#  sample_data(psm)$SubjectID <- rownames(sample_data(psm))
+#  sample_data(psm)$Preterm <- factor(sample_data(psm)$Preterm)
+#  # Make mean OTU-counts
+#  omat <- as(otu_table(psm), "matrix")
+#  nsam <- table(sample_data(ps)$SubjectID)
+#  omn <- omat/as.vector(nsam)
+#  otu_table(psm) <- otu_table(omn, taxa_are_rows=FALSE)
+#  if(dim(otu_table(psm))[2]!=nsamples(psm)){otu_table(psm)=t(otu_table(psm))}
+#  
 
 ## ----eval=FALSE----------------------------------------------------------
 #  table(sample_data(ps)$SubjectID)
@@ -97,7 +113,7 @@ plot.legend <- function(p){
 #  #ggsave("./vario_sim.eps",plot=pp3,width = 8,height = 5.5)
 
 ## ----eval=FALSE----------------------------------------------------------
-#  R <- 2
+#  R <- 5
 #  RR <- 2
 #  factors <- "Preterm"
 #  time <- "Time"
@@ -135,22 +151,22 @@ plot.legend <- function(p){
 #  l.opt
 
 ## ----eval=FALSE----------------------------------------------------------
-#  R <- 2
-#  RR <- 5
+#  R <- 3
+#  RR <- 2
 #  factors <- "Preterm"
 #  time <- "Time"
 #  
-#  system.time(bboot_res <- bootLongMethod(ps,b=l.opt,R=R,RR=RR,factors=factors,time=time))
-#  saveRDS(bboot_res,"./bboot_sim.rds")
+#  system.time(boot_res <- bootLongMethod(ps,b=l.opt,R=R,RR=RR,factors=factors,time=time))
+#  saveRDS(boot_res,"./boot_sim.rds")
 
 ## ----eval=FALSE----------------------------------------------------------
-#  bboot_res <- readRDS("./bboot_sim.rds")
+#  boot_res <- readRDS("./bboot_sim.rds")
 #  FDR <- .05
 #  taxalevel <- "Genus"
-#  out <- bboot_res[[1]]
+#  out <- boot_res[[1]]
 #  
 #  #   bootstrap values
-#  T.star_obs <- bboot_res[[5]]
+#  T.star_obs <- boot_res[[5]]
 #  
 #  #  filter by FDR
 #  out <- dplyr::filter(out,pvalue.adj <= FDR)
@@ -181,7 +197,7 @@ plot.legend <- function(p){
 #  out$ASV <- tn #taxalevel name and variant number
 #  #out$ASV <- taxaName    #   only taxalevel names
 #  #out$ASV <- tog #   taxalevel and Species name
-#  out <- out[-ind.na,]
+#  #out <- out[-ind.na,]
 #  
 #  #   arrange by observed lfc
 #  out <- dplyr::arrange(out,desc(stat))
@@ -194,5 +210,5 @@ plot.legend <- function(p){
 #  
 #  #   write the results table in latex
 #  library(xtable)
-#  print(xtable(out, type = "latex",digits = 3), file = "./bboot_sim.tex")
+#  print(xtable(out, type = "latex",digits = 3), file = "./boot_sim.tex")
 
