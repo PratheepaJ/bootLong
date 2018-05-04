@@ -34,7 +34,7 @@ psTransform <- function(ps,factors){
                 dff <- samd
                 dff <- cbind(samd,otu=otu,sj=sj,we=we)
                 #       negative binomial family with arcsinh link 
-                glmft.tx <- glm.nb(des2,data = dff,weights = we,method = "glm.fit",link = arcsinhLink())
+                glmft.tx <- MASS::glm.nb(des2,data = dff,weights = we,method = "glm.fit",link = arcsinhLink())
                 return(glmft.tx$residuals)
         }
         

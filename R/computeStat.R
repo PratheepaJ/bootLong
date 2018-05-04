@@ -16,49 +16,123 @@
 #'
 #' @import "edgeR"
 #' @import "phyloseq"
-#' @import "DESeq2"
-#' @import "geepack"
+#' @import "MASS"
+#' @import "geeM"
 #' @export
 computeStat <- function(ps,factors,time,b){
-    ot <- as.matrix(round(otu_table(ps),digits = 0))
-    samd <- data.frame(sample_data(ps))
-    anno <- data.frame(tax_table(ps))
-    dgeList <- edgeR::DGEList(counts=ot, genes=anno, samples = samd)
-
-    #   setting up the model
-    des <- as.formula(paste("~", paste(factors, collapse="+")))
-    mm <- model.matrix(des,data=samd)
-    des2 <- as.formula(paste("otu","~", paste(factors, collapse="+"),"+","offset(arcsinhLink()$linkfun(sj))"))
-    #des2 <- as.formula(paste("otu","~", paste(factors, collapse="+")))
-    #   estimate the size factors
-    geo.mean.row <- apply((ot+1),1,function(x){exp(sum(log(x))/length(x))})
-    sj <- apply((ot+1),2,function(x){median(x/geo.mean.row)})
-
-    v <- arcsinhTransform(counts=dgeList, design=mm, lib.size=sj,plot = F)
-    we <- v$weights
-
-    nt <- as.list(seq(1,ntaxa(ps)))
-    #names(samd)[names(samd)==factors] <- "Group"
-    com.beta <- function(ind,samd,ot,sj,we,des2,b){
-            otu <- as.numeric(ot[ind,])
-            sj <- as.numeric(sj)
-            we <- as.numeric(we[ind,])
-            dff <- samd
-            dff <- cbind(samd,otu=otu,sj=sj,we=we)
-            #       negative binomial family with arcsinh link
-            glmft.tx <- glm.nb(des2,data = dff,weights = we,method = "glm.fit",link = arcsinhLink())
-            return(t(glmft.tx$coefficients))
-    }
-
-    df.beta.hat <- lapply(nt,function(x){com.beta(x,samd,(ot+1),sj,we,des2,b)})
-
-    df.beta.hat <- data.frame(do.call("rbind",df.beta.hat))
-
-    ASV <- taxa_names(ps)
-    res <- bind_cols(df.beta.hat,ASV=ASV)
-    rm(ps)
-    return(res)
+        ot <- as.matrix(round(otu_table(ps),digits = 0))
+        samd <- data.frame(sample_data(ps))
+        names(samd)[names(samd)==time] <- "Time"
+        anno <- data.frame(tax_table(ps))
+        dgeList <- edgeR::DGEList(counts=ot, genes=anno, samples = samd)
+        
+        #   setting up the model
+        des <- as.formula(paste("~", paste(factors, collapse="+")))
+        mm <- model.matrix(des,data=samd)
+        des2 <- as.formula(paste("otu","~", paste(factors, collapse="+"),"+","offset(arcsinhLink()$linkfun(sj))"))
+        #   estimate the size factors
+        geo.mean.row <- apply((ot+1),1,function(x){exp(sum(log(x))/length(x))})
+        sj <- apply((ot+1),2,function(x){median(x/geo.mean.row)})
+        
+        v <- arcsinhTransform(counts=dgeList, design=mm, lib.size=sj,plot = F)
+        we <- v$weights
+        
+        nt <- as.list(seq(1,ntaxa(ps)))
+      
+        com.beta <- function(ind,samd,ot,sj,we,des2,b){
+                otu <- as.numeric(ot[ind,])
+                sj <- as.numeric(sj)
+                we.ind <- as.numeric(we[ind,])
+                dff <- samd
+                dff <- cbind(samd,otu=otu,sj=sj,we=we.ind)
+                #   need numeric values for Subject ID
+                dff$idvar <- as.numeric(as.factor(dff$SubjectID))
+                dff <- arrange(dff,SubjectID)
+                
+                #       negative binomial family with arcsinh link
+                glmft.tx <- MASS::glm.nb(des2,data = dff,weights = we,method = "glm.fit",link = arcsinhLink())
+                
+                #   residuals
+                rese <- as.vector(residuals(glmft.tx))
+                
+                #   compute sample correlation
+                dff$res <- rese
+                dfsub <- dff
+                if(!is.factor(dfsub$Time)){dfsub$Time <- as.factor(dfsub$Time)}
+                dfsub <- dfsub %>% group_by(Time) %>% summarise(meanr=mean(res))
+                acf.res <- as.numeric(acf(dfsub$meanr,plot = F,lag.max = dim(dfsub)[1])$acf)
+                acf.res[(b+1):length(acf.res)] <- 0
+                
+                workCorr <- matrix(nrow=length(acf.res),ncol = length(acf.res))
+                for(rw in 1:length(acf.res)){
+                        for(nc in 1:length(acf.res)){
+                                workCorr[rw,nc] <- acf.res[(abs(rw-nc)+1)]
+                        }
+                }
+                
+                if(!is.numeric(dff$Time)){dff$Time <- as.numeric(as.character(dff$Time))}
+                wa <- dff$Time
+                theta <- glmft.tx$theta
+                init.beta <- as.numeric(glmft.tx$coefficients)
+                fit <- geeM::geem(des2,id=idvar,waves = Time,data = dff,family=arcsinhlstLink(),weights = we,corstr = "fixed",corr.mat = workCorr,nodummy=TRUE,init.beta = init.beta,scale.fix = TRUE)
+                
+                return(fit$beta)
+                
+        }
+        
+        df.beta.hat <- lapply(nt,function(x){com.beta(x,samd,(ot+1),sj,we,des2,b)})
+        
+        df.beta.hat <- data.frame(do.call("rbind",df.beta.hat))
+        
+        ASV <- taxa_names(ps)
+        res <- bind_cols(df.beta.hat,ASV=ASV)
+        rm(ps)
+        return(res)
 }
+
+
+
+### without correlation and used for oral data latest analysis
+# computeStat <- function(ps,factors,time,b){
+#     ot <- as.matrix(round(otu_table(ps),digits = 0))
+#     samd <- data.frame(sample_data(ps))
+#     anno <- data.frame(tax_table(ps))
+#     dgeList <- edgeR::DGEList(counts=ot, genes=anno, samples = samd)
+# 
+#     #   setting up the model
+#     des <- as.formula(paste("~", paste(factors, collapse="+")))
+#     mm <- model.matrix(des,data=samd)
+#     des2 <- as.formula(paste("otu","~", paste(factors, collapse="+"),"+","offset(arcsinhLink()$linkfun(sj))"))
+#     #des2 <- as.formula(paste("otu","~", paste(factors, collapse="+")))
+#     #   estimate the size factors
+#     geo.mean.row <- apply((ot+1),1,function(x){exp(sum(log(x))/length(x))})
+#     sj <- apply((ot+1),2,function(x){median(x/geo.mean.row)})
+# 
+#     v <- arcsinhTransform(counts=dgeList, design=mm, lib.size=sj,plot = F)
+#     we <- v$weights
+# 
+#     nt <- as.list(seq(1,ntaxa(ps)))
+#     #names(samd)[names(samd)==factors] <- "Group"
+#     com.beta <- function(ind,samd,ot,sj,we,des2,b){
+#             otu <- as.numeric(ot[ind,])
+#             sj <- as.numeric(sj)
+#             we <- as.numeric(we[ind,])
+#             dff <- samd
+#             dff <- cbind(samd,otu=otu,sj=sj,we=we)
+#             #       negative binomial family with arcsinh link
+#             glmft.tx <- glm.nb(des2,data = dff,weights = we,method = "glm.fit",link = arcsinhLink())
+#             return(t(glmft.tx$coefficients))
+#     }
+# 
+#     df.beta.hat <- lapply(nt,function(x){com.beta(x,samd,(ot+1),sj,we,des2,b)})
+# 
+#     df.beta.hat <- data.frame(do.call("rbind",df.beta.hat))
+# 
+#     ASV <- taxa_names(ps)
+#     res <- bind_cols(df.beta.hat,ASV=ASV)
+#     rm(ps)
+#     return(res)
+# }
 
 
 # computeStat <- function(ps,factors,time,b){
