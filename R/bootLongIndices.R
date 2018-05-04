@@ -28,6 +28,7 @@ bootLongIndices <- function(x,b,time,L,blks_first_index){
 
     if(L>num.of.blks){
         # how many rows should be added or how many times repeated
+        # impute using the block size
         if((L-num.of.blks)%%num.of.rep.obs.x==0){
             howrep <- rep(1:num.of.rep.obs.x,times=(L-num.of.blks)/num.of.rep.obs.x)
         }else{

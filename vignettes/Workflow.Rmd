@@ -15,7 +15,7 @@ rm(list = ls())
 
 Install packages: 
 ```{r }
-pkgs <- c("ggplot2","dplyr","tidyr","phyloseq","DESeq2","BiocParallel","edgeR","limma","ashr","gridExtra","geepack")
+pkgs <- c("ggplot2","dplyr","tidyr","phyloseq","DESeq2","BiocParallel","edgeR","limma","ashr","gridExtra","geepack","MASS","geeM")
 #pkgs <- c("doParallel","foreach","reshape2","gridExtra","ggfortify","R.utils")
 
 #   installed packages that were not installed already

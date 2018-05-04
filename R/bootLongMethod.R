@@ -86,7 +86,7 @@ bootLongMethod <- function(ps,b,R,RR,factors,time,FDR=.1){
     shrink.beta.boot.est <- list()
     shrink.beta.boot.sd <- list()
     for(i in 1:R){
-        shrink.beta.boot[[i]] <- suppressMessages(ash(stat.star[,i],sebetahat = sd.stat.star[,i],mixcompdist = "normal"))
+        shrink.beta.boot[[i]] <- suppressMessages(ashr::ash(stat.star[,i],sebetahat = sd.stat.star[,i],mixcompdist = "normal"))
         shrink.beta.boot.est[[i]] <- shrink.beta.boot[[i]]$result$PosteriorMean
         shrink.beta.boot.sd[[i]] <- shrink.beta.boot[[i]]$result$PosteriorSD
     }

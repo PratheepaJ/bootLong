@@ -17,7 +17,7 @@ psTransform <- function(ps,factors){
         #   setting up the model
         des <- as.formula(paste("~", paste(factors, collapse="+")))
         mm <- model.matrix(des,data=samd)
-        des2 <- as.formula(paste("otu","~", paste(factors, collapse="+"),"+","offset(sj)"))
+        des2 <- as.formula(paste("otu","~", paste(factors, collapse="+"),"+","offset(arcsinhLink()$linkfun(sj))"))
         #   estimate the size factors
         geo.mean.row <- apply((ot+1),1,function(x){exp(sum(log(x))/length(x))})
         sj <- apply((ot+1),2,function(x){median(x/geo.mean.row)})

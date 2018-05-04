@@ -156,7 +156,7 @@ bootLongPsi <- function(ps,b,R,RR,factors,time,T.obs.full=NULL){
 
     rt <- list(K.val, T.obs)
 
-    rm(list=c("stat.star","stat.obs","sd.stat","stat.star.star","sd.stat.star","T.d.star","df.stat"))
+    rm(list=c("stat.star","stat.obs","sd.stat","stat.star.star","sd.stat.star","T.num.star","df.stat"))
     gc(reset = TRUE)
 
     return(rt)

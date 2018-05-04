@@ -28,38 +28,84 @@ computeStat2 <- function(ps,factors,time,b){
     #   setting up the model
     des <- as.formula(paste("~", paste(factors, collapse="+")))
     mm <- model.matrix(des,data=samd)
-    des2 <- as.formula(paste("otu","~", paste(factors, collapse="+")))
+    des2 <- as.formula(paste("otu","~", paste(factors, collapse="+"),"+","offset(arcsinhLink()$linkfun(sj))"))
     #   estimate the size factors
     geo.mean.row <- apply((ot+1),1,function(x){exp(sum(log(x))/length(x))})
     sj <- apply((ot+1),2,function(x){median(x/geo.mean.row)})
 
     v <- arcsinhTransform(counts=dgeList, design=mm, lib.size=sj,plot = F)
-    v.E <- v$E
     we <- v$weights
 
     nt <- as.list(seq(1,ntaxa(ps)))
     #names(samd)[names(samd)==factors] <- "Group"
+
+    # com.beta <- list()
+    # for(ind in 1:ntaxa(ps)){
+    #     otu <- as.numeric(ot[ind,])
+    #     if(sum(otu==0)>10){otu <- otu+1}
+    #     sj <- as.numeric(sj)
+    #     we.ind <- as.numeric(we[ind,])
+    #     dff <- samd
+    #     dff <- cbind(samd,otu=otu,sj=sj,we=we.ind)
+    #     #   need numeric values for Subject ID
+    #     dff$idvar <- as.numeric(as.factor(dff$SubjectID))
+    #     dff <- arrange(dff,SubjectID)
+    # 
+    #     #       negative binomial family with arcsinh link
+    #     glmft.tx <- glm.nb(des2,data = dff,weights = we,method = "glm.fit",link = arcsinhLink())
+    # 
+    #     #   residuals
+    #     rese <- as.vector(residuals(glmft.tx))
+    # 
+    #     #   compute sample correlation
+    #     dff$res <- rese
+    #     dfsub <- dff
+    #     if(!is.factor(dfsub$Time)){dfsub$Time <- as.factor(dfsub$Time)}
+    #     dfsub <- dfsub %>% group_by(Time) %>% summarise(meanr=mean(res))
+    #     acf.res <- as.numeric(acf(dfsub$meanr,plot = F,lag.max = dim(dfsub)[1])$acf)
+    #     acf.res[(b+1):length(acf.res)] <- 0
+    # 
+    #     workCorr <- matrix(nrow=length(acf.res),ncol = length(acf.res))
+    #     for(rw in 1:length(acf.res)){
+    #         for(nc in 1:length(acf.res)){
+    #             workCorr[rw,nc] <- acf.res[(abs(rw-nc)+1)]
+    #         }
+    #     }
+    # 
+    #     if(!is.numeric(dff$Time)){dff$Time <- as.numeric(as.character(dff$Time))}
+    #     wa <- dff$Time
+    #     theta <- glmft.tx$theta
+    #     init.beta <- as.numeric(glmft.tx$coefficients)
+    #     fit <- geeM::geem(des2,id=idvar,waves = Time,data = dff,family=arcsinhlstLink(),weights = we.ind,corstr = "fixed",corr.mat = workCorr,nodummy=TRUE,init.beta = init.beta)
+    # 
+    #     com.beta[[ind]] <- fit$beta
+    # 
+    # }
+
+
+
     com.beta <- function(ind,samd,ot,sj,we,des2,b){
         otu <- as.numeric(ot[ind,])
         sj <- as.numeric(sj)
-        we <- as.numeric(we[ind,])
+        we.ind <- as.numeric(we[ind,])
         dff <- samd
-        dff <- cbind(samd,otu=otu,sj=sj,we=we)
+        dff <- cbind(samd,otu=otu,sj=sj,we=we.ind)
         #   need numeric values for Subject ID
         dff$idvar <- as.numeric(as.factor(dff$SubjectID))
         dff <- arrange(dff,SubjectID)
 
-        #   compute residuals
-        gee1 <- geeglm(des2,data=dff,id=idvar,corstr = "independence",weights = we,offset = sj,family = poisson)
-        #gee1 <- glm(des2,data=dff,offset = sj,family = quasipoisson(link=arcsinhLink()))
-        rese <- as.vector(residuals(gee1))
+        #       negative binomial family with arcsinh link
+        glmft.tx <- glm.nb(des2,data = dff,weights = we,method = "glm.fit",link = arcsinhLink())
+
+        #   residuals
+        rese <- as.vector(residuals(glmft.tx))
 
         #   compute sample correlation
         dff$res <- rese
         dfsub <- dff
-        dfsub$Time <- as.factor(dfsub$Time)
+        if(!is.factor(dfsub$Time)){dfsub$Time <- as.factor(dfsub$Time)}
         dfsub <- dfsub %>% group_by(Time) %>% summarise(meanr=mean(res))
-        acf.res <- as.numeric(acf(dfsub$meanr,plot = F)$acf)
+        acf.res <- as.numeric(acf(dfsub$meanr,plot = F,lag.max = dim(dfsub)[1])$acf)
         acf.res[(b+1):length(acf.res)] <- 0
 
         workCorr <- matrix(nrow=length(acf.res),ncol = length(acf.res))
@@ -69,25 +115,19 @@ computeStat2 <- function(ps,factors,time,b){
             }
         }
 
-        id.zcor <- dff$idvar
+        if(!is.numeric(dff$Time)){dff$Time <- as.numeric(as.character(dff$Time))}
         wa <- dff$Time
-        zcor <- fixed2Zcor(workCorr,id=id.zcor,waves = wa)
-        #   gee with the working correlation
-        gee2 <- geeglm(des2, data=dff,id=idvar,corstr = "userdefined",weights = we,waves = Time,offset = sj,family = poisson,zcor=zcor)
-        #gee2 <- glm(des2,data=dff,offset = sj,family = quasipoisson(link=arcsinhLink()))
-        return(t(gee2$coefficients))
-        #return(gee2)
+        theta <- glmft.tx$theta
+        init.beta <- as.numeric(glmft.tx$coefficients)
+        fit <- geeM::geem(des2,id=idvar,waves = Time,data = dff,family=arcsinhlstLink(),weights = we,corstr = "fixed",corr.mat = workCorr,nodummy=TRUE,init.beta = init.beta,scale.fix = TRUE)
+
+        return(fit$beta)
 
     }
 
-    df.beta.hat <- lapply(nt,function(x){com.beta(x,samd,ot,sj,we,des2,5)})
+    df.beta.hat <- lapply(nt,function(x){com.beta(x,samd,(ot+1),sj,we,des2,b)})
 
-    # df.beta.hat <- list()
-    # for(i in 1:length(nt)){
-    #     df.beta.hat[[i]] <- com.beta(nt[[i]],v=v,sj=sj)
-    # }
-
-    df.beta.hat4 <- data.frame(do.call("rbind",df.beta.hat))
+    df.beta.hat <- data.frame(do.call("rbind",df.beta.hat))
 
     ASV <- taxa_names(ps)
     res <- bind_cols(df.beta.hat,ASV=ASV)
@@ -237,3 +277,81 @@ computeStat2 <- function(ps,factors,time,b){
 #     return(res)
 # }
 
+
+#### 3rd attempt
+# computeStat2 <- function(ps,factors,time,b){
+#     ot <- as.matrix(round(otu_table(ps),digits = 0))
+#     samd <- data.frame(sample_data(ps))
+#     names(samd)[names(samd)==time] <- "Time"
+#     anno <- data.frame(tax_table(ps))
+#     dgeList <- edgeR::DGEList(counts=ot, genes=anno, samples = samd)
+#
+#     #   setting up the model
+#     des <- as.formula(paste("~", paste(factors, collapse="+")))
+#     mm <- model.matrix(des,data=samd)
+#     des2 <- as.formula(paste("otu","~", paste(factors, collapse="+")))
+#     #   estimate the size factors
+#     geo.mean.row <- apply((ot+1),1,function(x){exp(sum(log(x))/length(x))})
+#     sj <- apply((ot+1),2,function(x){median(x/geo.mean.row)})
+#
+#     v <- arcsinhTransform(counts=dgeList, design=mm, lib.size=sj,plot = F)
+#     v.E <- v$E
+#     we <- v$weights
+#
+#     nt <- as.list(seq(1,ntaxa(ps)))
+#     #names(samd)[names(samd)==factors] <- "Group"
+#     com.beta <- function(ind,samd,ot,sj,we,des2,b){
+#         otu <- as.numeric(ot[ind,])
+#         sj <- as.numeric(sj)
+#         we <- as.numeric(we[ind,])
+#         dff <- samd
+#         dff <- cbind(samd,otu=otu,sj=sj,we=we)
+#         #   need numeric values for Subject ID
+#         dff$idvar <- as.numeric(as.factor(dff$SubjectID))
+#         dff <- arrange(dff,SubjectID)
+#
+#         #   compute residuals
+#         gee1 <- geeglm(des2,data=dff,id=idvar,corstr = "independence",weights = we,offset = sj,family = poisson)
+#         #gee1 <- glm(des2,data=dff,offset = sj,family = quasipoisson(link=arcsinhLink()))
+#         rese <- as.vector(residuals(gee1))
+#
+#         #   compute sample correlation
+#         dff$res <- rese
+#         dfsub <- dff
+#         dfsub$Time <- as.factor(dfsub$Time)
+#         dfsub <- dfsub %>% group_by(Time) %>% summarise(meanr=mean(res))
+#         acf.res <- as.numeric(acf(dfsub$meanr,plot = F)$acf)
+#         acf.res[(b+1):length(acf.res)] <- 0
+#
+#         workCorr <- matrix(nrow=length(acf.res),ncol = length(acf.res))
+#         for(rw in 1:length(acf.res)){
+#             for(nc in 1:length(acf.res)){
+#                 workCorr[rw,nc] <- acf.res[(abs(rw-nc)+1)]
+#             }
+#         }
+#
+#         id.zcor <- dff$idvar
+#         wa <- dff$Time
+#         zcor <- fixed2Zcor(workCorr,id=id.zcor,waves = wa)
+#         #   gee with the working correlation
+#         gee2 <- geeglm(des2, data=dff,id=idvar,corstr = "userdefined",weights = we,waves = Time,offset = sj,family = poisson,zcor=zcor)
+#         #gee2 <- glm(des2,data=dff,offset = sj,family = quasipoisson(link=arcsinhLink()))
+#         return(t(gee2$coefficients))
+#         #return(gee2)
+#
+#     }
+#
+#     df.beta.hat <- lapply(nt,function(x){com.beta(x,samd,ot,sj,we,des2,5)})
+#
+#     # df.beta.hat <- list()
+#     # for(i in 1:length(nt)){
+#     #     df.beta.hat[[i]] <- com.beta(nt[[i]],v=v,sj=sj)
+#     # }
+#
+#     df.beta.hat4 <- data.frame(do.call("rbind",df.beta.hat))
+#
+#     ASV <- taxa_names(ps)
+#     res <- bind_cols(df.beta.hat,ASV=ASV)
+#     rm(ps)
+#     return(res)
+# }
