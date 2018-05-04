@@ -1,5 +1,8 @@
 ## ------------------------------------------------------------------------
-pkgs <- c("ggplot2","dplyr","tidyr","phyloseq","DESeq2","BiocParallel","edgeR","limma","ashr","gridExtra","geepack")
+rm(list = ls())
+
+## ------------------------------------------------------------------------
+pkgs <- c("ggplot2","dplyr","tidyr","phyloseq","DESeq2","BiocParallel","edgeR","limma","ashr","gridExtra","geepack","MASS","geeM")
 #pkgs <- c("doParallel","foreach","reshape2","gridExtra","ggfortify","R.utils")
 
 #   installed packages that were not installed already
@@ -14,6 +17,7 @@ if(any(!lpckges)){
     sapply(pkgs[!lpckges],require,character.only=TRUE)
 }
 #library(bootLong)
+devtools::load_all(".")
 
 ## ------------------------------------------------------------------------
 ps <- pssim
@@ -61,18 +65,18 @@ ps <- pssim
 #  #   Filter taxa
 #  ps <- prune_taxa((apply(otu_table(ps),1,function(x){sum(x>0)}))>.1*nsamples(ps),ps)
 
-## ------------------------------------------------------------------------
-#   make a common legend
-plot.legend <- function(p){
-    gg.fea <- ggplot_gtable(ggplot_build(p))
-    gg.fea.l.box <- which(sapply(gg.fea$grobs, function(x) x$name) == "guide-box")
-    l <- gg.fea$grobs[[gg.fea.l.box]]
-    return(l)
-}
-
 ## ----eval=FALSE----------------------------------------------------------
+#  #   make a common legend
+#  plot.legend <- function(p){
+#      gg.fea <- ggplot_gtable(ggplot_build(p))
+#      gg.fea.l.box <- which(sapply(gg.fea$grobs, function(x) x$name) == "guide-box")
+#      l <- gg.fea$grobs[[gg.fea.l.box]]
+#      return(l)
+#  }
+
+## ----eval=FALSE,message=FALSE,warning=FALSE------------------------------
 #  ps.tr <- psTransform(ps,factors="Preterm")
-#  p.all <- longCorreloMultiple(ps.tr, factors="Preterm",time="Time",1,6,taxlevel = "Genus")
+#  p.all <- longCorreloMultiple(ps.tr[[1]],ps.tr[[2]], factors="Preterm",time="Time",1,6,taxlevel = "Genus")
 #  
 #  #   Change the legend labels
 #  p.all <- lapply(p.all, function(x){x+scale_fill_discrete(name  ="Group",breaks=c("FALSE", "TRUE"),labels=c("Term", "Preterm"))})
@@ -84,9 +88,9 @@ plot.legend <- function(p){
 #  pp1 <- grid.arrange(arrangeGrob(grobs=plist,nrow=2,widths=c(3,3,3)),leg,ncol=2,widths=c(10,2))
 #  #ggsave("./core_Sim.eps",plot=pp1,width = 8,height = 5.5)
 
-## ----eval=FALSE----------------------------------------------------------
+## ----eval=FALSE,message=FALSE,warning=FALSE------------------------------
 #  lags <- as.list(seq(1,8))
-#  p.lags <- lapply(lags,function(x){longLagPlot(ps.tr,factors="Preterm",time="Time",taxon=1,x,taxlevel="Genus")})
+#  p.lags <- lapply(lags,function(x){longLagPlot(ps.tr[[2]],factors="Preterm",time="Time",taxon=1,x,taxlevel="Genus")})
 #  
 #  #   Change the legend labels
 #  p.lags <- lapply(p.lags, function(x){x+scale_color_discrete(name  ="Group",breaks=c("FALSE", "TRUE"),labels=c("Term", "Preterm"))})
@@ -99,8 +103,8 @@ plot.legend <- function(p){
 #  #ggsave("./lag_sim.eps",plot=pp2,width = 8,height = 5.5)
 #  
 
-## ----eval=FALSE----------------------------------------------------------
-#  p.all <- longVarioMultiple(ps.tr, factors="Preterm",time="Time",1,6,taxlevel = "Genus")
+## ----eval=FALSE,message=FALSE,warning=FALSE------------------------------
+#  p.all <- longVarioMultiple(ps.tr[[1]],ps.tr[[2]], factors="Preterm",time="Time",1,6,taxlevel = "Genus")
 #  
 #  #   Change the legend labels
 #  p.all <- lapply(p.all, function(x){x+scale_color_discrete(name  ="Group",breaks=c("FALSE", "TRUE"),labels=c("Term", "Preterm "))})
@@ -112,17 +116,18 @@ plot.legend <- function(p){
 #  
 #  #ggsave("./vario_sim.eps",plot=pp3,width = 8,height = 5.5)
 
-## ----eval=FALSE----------------------------------------------------------
-#  R <- 5
-#  RR <- 2
+## ----message=FALSE,warning=FALSE,eval=FALSE------------------------------
+#  R <- 100
+#  RR <- 25
 #  factors <- "Preterm"
 #  time <- "Time"
-#  lI <- 2
+#  lI <- 5
 #  omega <- .6
 #  system.time(mse_results <- bootLongSubsampling(ps,R=R,RR=RR,factors=factors,time=time,subjectidvar="SubjectID",lI=lI,omega=omega))
+#  
 #  saveRDS(mse_results,"./bboot_sim.rds")
 
-## ----eval=FALSE----------------------------------------------------------
+## ----message=FALSE,warning=FALSE,eval=FALSE------------------------------
 #  omega <- .6
 #  mse_results <- readRDS("./bboot_sim.rds")
 #  blks <- length(mse_results)
@@ -150,16 +155,16 @@ plot.legend <- function(p){
 #  l.opt <- ceiling((100/(omega*100))^(1/5)*l.M)
 #  l.opt
 
-## ----eval=FALSE----------------------------------------------------------
-#  R <- 3
-#  RR <- 2
+## ----message=FALSE,warning=FALSE,eval=FALSE------------------------------
+#  R <- 1000
+#  RR <- 50
 #  factors <- "Preterm"
 #  time <- "Time"
 #  
 #  system.time(boot_res <- bootLongMethod(ps,b=l.opt,R=R,RR=RR,factors=factors,time=time))
 #  saveRDS(boot_res,"./boot_sim.rds")
 
-## ----eval=FALSE----------------------------------------------------------
+## ----message=FALSE,warning=FALSE,eval=FALSE------------------------------
 #  boot_res <- readRDS("./bboot_sim.rds")
 #  FDR <- .05
 #  taxalevel <- "Genus"

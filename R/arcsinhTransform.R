@@ -1,6 +1,7 @@
 #' arcsinhTransform
 #'
-#' This is a utility function used by the higher level function \code{computeStat} to compute arcsine transformation and weights for the glm fit.
+#' This is a utility function used by the higher level function \code{computeStat}
+#' to compute arcsine transformation and weights for the glm and gee fits.
 #'
 #' @param counts \code{DGEList} as for \code{voom}.
 #' @param design model matrix created by \code{computeStat()} as for \code{voom}.

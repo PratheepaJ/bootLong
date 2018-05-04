@@ -4,12 +4,10 @@
 \alias{longVarioMultiple}
 \title{longVarioMultiple}
 \usage{
-longVarioMultiple(ps, factors, time, starttaxa = 1, endtaxa = 4,
+longVarioMultiple(pstr, psres, factors, time, starttaxa = 1, endtaxa = 4,
   point = FALSE, taxlevel = "Species")
 }
 \arguments{
-\item{ps}{\code{phyloseq} object}
-
 \item{factors}{factor, variable in the sample data of ps.}
 
 \item{time}{character, time variable at repeated observations.}
@@ -19,6 +17,8 @@ longVarioMultiple(ps, factors, time, starttaxa = 1, endtaxa = 4,
 \item{endtaxa}{numeric, last index of taxon: taxa will be ordered inside the function}
 
 \item{taxlevel}{character, taxonomy level to make the title}
+
+\item{ps}{\code{phyloseq} object}
 }
 \value{
 \code{ggplot} object of variogram for starttaxa:endtaxa taxa

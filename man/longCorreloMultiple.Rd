@@ -4,12 +4,10 @@
 \alias{longCorreloMultiple}
 \title{longCorreloMultiple}
 \usage{
-longCorreloMultiple(ps, factors, time, starttaxa = 1, endtaxa = 4,
+longCorreloMultiple(pstr, psres, factors, time, starttaxa = 1, endtaxa = 4,
   taxlevel = "Species")
 }
 \arguments{
-\item{ps}{\code{phyloseq} object}
-
 \item{factors}{factor, variable in the sample data of ps.}
 
 \item{time}{character, time variable at repeated observations.}
@@ -19,6 +17,8 @@ longCorreloMultiple(ps, factors, time, starttaxa = 1, endtaxa = 4,
 \item{endtaxa}{numeric, the last index of taxa ordered by total reads}
 
 \item{taxlevel}{character, taxonomy level to put the title}
+
+\item{ps}{\code{phyloseq} object}
 }
 \value{
 \code{ggplot2} object of correlogram for multiple taxa.

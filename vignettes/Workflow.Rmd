@@ -32,6 +32,7 @@ if(any(!lpckges)){
     sapply(pkgs[!lpckges],require,character.only=TRUE)
 }
 #library(bootLong)
+devtools::load_all(".")
 ```
 
 #   Read data
@@ -92,7 +93,7 @@ p <- ggplot(samdf)+
 ps <- prune_taxa((apply(otu_table(ps),1,function(x){sum(x>0)}))>.1*nsamples(ps),ps)
 ```
 
-```{r }
+```{r eval=FALSE}
 #   make a common legend
 plot.legend <- function(p){
     gg.fea <- ggplot_gtable(ggplot_build(p))
@@ -103,7 +104,7 @@ plot.legend <- function(p){
 ```
 
 #   EDA: correlogram
-```{r eval=FALSE}
+```{r eval=FALSE,message=FALSE,warning=FALSE}
 ps.tr <- psTransform(ps,factors="Preterm") 
 p.all <- longCorreloMultiple(ps.tr[[1]],ps.tr[[2]], factors="Preterm",time="Time",1,6,taxlevel = "Genus")
 
@@ -119,7 +120,7 @@ pp1 <- grid.arrange(arrangeGrob(grobs=plist,nrow=2,widths=c(3,3,3)),leg,ncol=2,w
 ```
 
 #   EDA: lag-plot for each taxa
-```{r eval=FALSE}
+```{r eval=FALSE,message=FALSE,warning=FALSE}
 lags <- as.list(seq(1,8))
 p.lags <- lapply(lags,function(x){longLagPlot(ps.tr[[2]],factors="Preterm",time="Time",taxon=1,x,taxlevel="Genus")})
 
@@ -136,7 +137,7 @@ pp2 <- grid.arrange(arrangeGrob(grobs=plist,nrow=2,widths=c(3,3,3,3)),leg,ncol=2
 ```
 
 #   EDA: explore correlation structure using variogram
-```{r eval=FALSE}
+```{r eval=FALSE,message=FALSE,warning=FALSE}
 p.all <- longVarioMultiple(ps.tr[[1]],ps.tr[[2]], factors="Preterm",time="Time",1,6,taxlevel = "Genus")
 
 #   Change the legend labels
@@ -151,19 +152,20 @@ pp3 <- grid.arrange(arrangeGrob(grobs=plist,nrow=2,widths=c(3,3,3)),leg,ncol=2,w
 ```
 
 #   Run subsampling procedure with initial block size 
-```{r eval=FALSE}
-R <- 5
-RR <- 2
+```{r message=FALSE,warning=FALSE,eval=FALSE}
+R <- 100
+RR <- 25
 factors <- "Preterm"
 time <- "Time"
-lI <- 2
+lI <- 5
 omega <- .6
 system.time(mse_results <- bootLongSubsampling(ps,R=R,RR=RR,factors=factors,time=time,subjectidvar="SubjectID",lI=lI,omega=omega))
+
 saveRDS(mse_results,"./bboot_sim.rds")
 ```
 
 #   Inspect MSE plot
-```{r eval=FALSE}
+```{r message=FALSE,warning=FALSE,eval=FALSE}
 omega <- .6
 mse_results <- readRDS("./bboot_sim.rds")
 blks <- length(mse_results)
@@ -193,9 +195,9 @@ l.opt
 ```
 
 #   Run MBB with the optimal block size
-```{r eval=FALSE}
-R <- 3
-RR <- 2
+```{r message=FALSE,warning=FALSE,eval=FALSE}
+R <- 1000
+RR <- 50
 factors <- "Preterm"
 time <- "Time"
 
@@ -205,7 +207,7 @@ saveRDS(boot_res,"./boot_sim.rds")
 
 #   Inspect the results
 
-```{r eval=FALSE}
+```{r message=FALSE,warning=FALSE,eval=FALSE}
 boot_res <- readRDS("./bboot_sim.rds")
 FDR <- .05
 taxalevel <- "Genus"

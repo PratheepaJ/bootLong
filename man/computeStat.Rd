@@ -4,7 +4,7 @@
 \alias{computeStat}
 \title{computeStat}
 \usage{
-computeStat(ps, factors)
+computeStat(ps, factors, time, b)
 }
 \arguments{
 \item{ps}{Observed \code{phyloseq} class object.}

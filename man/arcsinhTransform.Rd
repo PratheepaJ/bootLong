@@ -27,5 +27,6 @@ arcsinhTransform(counts, design = NULL, lib.size = NULL,
 An EList object as \code{voom}. E is numeric matrix of transformed counts on the arcsine scale
 }
 \description{
-This is a utility function used by the higher level function \code{computeStat} to compute arcsine transformation and weights for the glm fit.
+This is a utility function used by the higher level function \code{computeStat}
+to compute arcsine transformation and weights for the glm and gee fits.
 }

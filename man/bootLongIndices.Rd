@@ -21,5 +21,6 @@ bootLongIndices(x, b, time, L, blks_first_index)
 A list of indices to include in the block bootstrap realization.
 }
 \description{
-This function is called within \code{bootLongPhyloseq} for each subject's data frame.
+This function is called within \code{bootLongPhyloseq} for
+each subject's data frame.
 }

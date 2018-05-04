@@ -1,6 +1,7 @@
 #' bootLongIndices
 #'
-#' This function is called within \code{bootLongPhyloseq} for each subject's data frame.
+#' This function is called within \code{bootLongPhyloseq} for
+#' each subject's data frame.
 #'
 #'
 #' @param x a data frame. It must have \code{Index} column that will be added by \code{bootLongPhyloseq}.

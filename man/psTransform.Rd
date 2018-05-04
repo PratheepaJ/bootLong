@@ -3,7 +3,8 @@
 \name{psTransform}
 \alias{psTransform}
 \title{psTransform
-This function takes the \code{phyloseq} object and apply the arcsinh transformation.}
+This function takes the \code{phyloseq} object and apply
+the arcsinh transformation.}
 \usage{
 psTransform(ps, factors)
 }
@@ -17,5 +18,6 @@ psTransform(ps, factors)
 }
 \description{
 psTransform
-This function takes the \code{phyloseq} object and apply the arcsinh transformation.
+This function takes the \code{phyloseq} object and apply
+the arcsinh transformation.
 }
