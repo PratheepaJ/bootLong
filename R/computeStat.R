@@ -81,11 +81,11 @@ computeStat <- function(ps,factors,time,b){
                 wa <- dff$Time
                 theta <- glmft.tx$theta
                 
-                # LinkFun <- function(y) log(y + sqrt(y^2 + 1))
-                # VarFun <- function(y){y+(y^2*theta)}
-                # InvLink <- function(eta)  0.5*exp(-eta)*(exp(2*eta)-1)
-                # InvLinkDeriv <- function(eta) {.5*(exp(eta)+exp(-eta))}
-                # FunList <- list(LinkFun,VarFun,InvLink,InvLinkDeriv)
+                LinkFun <- function(y) log(y + sqrt(y^2 + 1))
+                VarFun <- function(y){y+(y^2/theta)}
+                InvLink <- function(eta)  0.5*exp(-eta)*(exp(2*eta)-1)
+                InvLinkDeriv <- function(eta) {.5*(exp(eta)+exp(-eta))}
+                FunList <- list(LinkFun,VarFun,InvLink,InvLinkDeriv)
                 
                 init.beta <- as.numeric(glmft.tx$coefficients)
                 fit <- geeM::geem(des2,id=idvar,waves = wa,data = dff,family=arcsinhlstLink(),weights = weig,corstr = "fixed",corr.mat = workCorr,nodummy=TRUE,init.beta = init.beta,scale.fix = TRUE)
