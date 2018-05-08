@@ -41,18 +41,19 @@ computeStat2 <- function(ps,factors,time,b){
 
     # com.beta <- list()
     # for(ind in 1:ntaxa(ps)){
-    #     otu <- as.numeric(ot[ind,])
-    #     if(sum(otu==0)>10){otu <- otu+1}
+    #     otu <- as.numeric(ot[ind,])+1
+    #     #if(sum(otu==0)>10){otu <- otu+1}
     #     sj <- as.numeric(sj)
     #     we.ind <- as.numeric(we[ind,])
     #     dff <- samd
-    #     dff <- cbind(samd,otu=otu,sj=sj,we=we.ind)
+    #     dff <- cbind(samd,otu=otu,sj=sj,weig=we.ind)
+    #     
     #     #   need numeric values for Subject ID
     #     dff$idvar <- as.numeric(as.factor(dff$SubjectID))
     #     dff <- arrange(dff,SubjectID)
     # 
     #     #       negative binomial family with arcsinh link
-    #     glmft.tx <- glm.nb(des2,data = dff,weights = we,method = "glm.fit",link = arcsinhLink())
+    #     glmft.tx <- glm.nb(des2,data = dff,weights = weig,method = "glm.fit",link = arcsinhLink())
     # 
     #     #   residuals
     #     rese <- as.vector(residuals(glmft.tx))
@@ -62,8 +63,14 @@ computeStat2 <- function(ps,factors,time,b){
     #     dfsub <- dff
     #     if(!is.factor(dfsub$Time)){dfsub$Time <- as.factor(dfsub$Time)}
     #     dfsub <- dfsub %>% group_by(Time) %>% summarise(meanr=mean(res))
-    #     acf.res <- as.numeric(acf(dfsub$meanr,plot = F,lag.max = dim(dfsub)[1])$acf)
+    #     dfsub$Time <- as.numeric(as.character(dfsub$Time))
+    #     dfsub <- arrange(dfsub,Time)
+    #     
+    #     meanr <- ts(dfsub$meanr,start = min(dfsub$Time),end = max(dfsub$Time),frequency = 1)
+    #     
+    #     acf.res <- as.numeric(acf(meanr,plot = F,lag.max = length(meanr))$acf)
     #     acf.res[(b+1):length(acf.res)] <- 0
+    #     
     # 
     #     workCorr <- matrix(nrow=length(acf.res),ncol = length(acf.res))
     #     for(rw in 1:length(acf.res)){
@@ -76,7 +83,7 @@ computeStat2 <- function(ps,factors,time,b){
     #     wa <- dff$Time
     #     theta <- glmft.tx$theta
     #     init.beta <- as.numeric(glmft.tx$coefficients)
-    #     fit <- geeM::geem(des2,id=idvar,waves = Time,data = dff,family=arcsinhlstLink(),weights = we.ind,corstr = "fixed",corr.mat = workCorr,nodummy=TRUE,init.beta = init.beta)
+    #     fit <- geeM::geem(des2,id=idvar,waves = wa,data = dff,family=arcsinhlstLink(),weights = weig,corstr = "fixed",corr.mat = workCorr,nodummy=TRUE,init.beta = init.beta)
     # 
     #     com.beta[[ind]] <- fit$beta
     # 
@@ -89,37 +96,45 @@ computeStat2 <- function(ps,factors,time,b){
         sj <- as.numeric(sj)
         we.ind <- as.numeric(we[ind,])
         dff <- samd
-        dff <- cbind(samd,otu=otu,sj=sj,we=we.ind)
+        dff <- cbind(samd,otu=otu,sj=sj,weig=we.ind)
+        
         #   need numeric values for Subject ID
         dff$idvar <- as.numeric(as.factor(dff$SubjectID))
         dff <- arrange(dff,SubjectID)
 
         #       negative binomial family with arcsinh link
-        glmft.tx <- glm.nb(des2,data = dff,weights = we,method = "glm.fit",link = arcsinhLink())
+        glmft.tx <- glm.nb(des2,data = dff,weights = weig,method = "glm.fit",link = arcsinhLink())
 
         #   residuals
         rese <- as.vector(residuals(glmft.tx))
 
         #   compute sample correlation
-        dff$res <- rese
-        dfsub <- dff
-        if(!is.factor(dfsub$Time)){dfsub$Time <- as.factor(dfsub$Time)}
-        dfsub <- dfsub %>% group_by(Time) %>% summarise(meanr=mean(res))
-        acf.res <- as.numeric(acf(dfsub$meanr,plot = F,lag.max = dim(dfsub)[1])$acf)
-        acf.res[(b+1):length(acf.res)] <- 0
+            dff$res <- rese
+            dfsub <- dff
+            if(!is.factor(dfsub$Time)){dfsub$Time <- as.factor(dfsub$Time)}
+            dfsub <- dfsub %>% group_by(Time) %>% summarise(meanr=mean(res))
+            dfsub$Time <- as.numeric(as.character(dfsub$Time))
+            dfsub <- arrange(dfsub,Time)
 
-        workCorr <- matrix(nrow=length(acf.res),ncol = length(acf.res))
-        for(rw in 1:length(acf.res)){
-            for(nc in 1:length(acf.res)){
-                workCorr[rw,nc] <- acf.res[(abs(rw-nc)+1)]
+            meanr <- ts(dfsub$meanr,start = min(dfsub$Time),end = max(dfsub$Time),frequency = 1)
+
+            acf.res <- as.numeric(acf(meanr,plot = F,lag.max = length(meanr))$acf)
+            acf.res[(b+1):length(acf.res)] <- 0
+
+
+            workCorr <- matrix(nrow=length(acf.res),ncol = length(acf.res))
+            for(rw in 1:length(acf.res)){
+                for(nc in 1:length(acf.res)){
+                    workCorr[rw,nc] <- acf.res[(abs(rw-nc)+1)]
+                }
             }
-        }
 
-        if(!is.numeric(dff$Time)){dff$Time <- as.numeric(as.character(dff$Time))}
-        wa <- dff$Time
-        theta <- glmft.tx$theta
-        init.beta <- as.numeric(glmft.tx$coefficients)
-        fit <- geeM::geem(des2,id=idvar,waves = Time,data = dff,family=arcsinhlstLink(),weights = we,corstr = "fixed",corr.mat = workCorr,nodummy=TRUE,init.beta = init.beta,scale.fix = TRUE)
+
+                if(!is.numeric(dff$Time)){dff$Time <- as.numeric(as.character(dff$Time))}
+                wa <- dff$Time
+                theta <- glmft.tx$theta
+                init.beta <- as.numeric(glmft.tx$coefficients)
+                fit <- geeM::geem(des2,id=idvar,waves = wa,data = dff,family=arcsinhlstLink(),weights = weig,corstr = "fixed",corr.mat = workCorr,nodummy=TRUE,init.beta = init.beta)
 
         return(fit$beta)
 
