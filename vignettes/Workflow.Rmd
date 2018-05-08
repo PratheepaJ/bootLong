@@ -14,8 +14,8 @@ rm(list = ls())
 ```
 
 Install packages: 
-```{r }
-pkgs <- c("ggplot2","dplyr","tidyr","phyloseq","DESeq2","BiocParallel","edgeR","limma","ashr","gridExtra","geepack","MASS","geeM")
+```{r message=FALSE,warning=FALSE}
+pkgs <- c("ggplot2","dplyr","tidyr","phyloseq","DESeq2","BiocParallel","edgeR","limma","ashr","gridExtra","geepack","MASS","geeM","R.utils")
 #pkgs <- c("doParallel","foreach","reshape2","gridExtra","ggfortify","R.utils")
 
 #   installed packages that were not installed already
@@ -33,6 +33,7 @@ if(any(!lpckges)){
 }
 #library(bootLong)
 devtools::load_all(".")
+#sourceDirectory("../R")
 ```
 
 #   Read data
@@ -88,12 +89,12 @@ p <- ggplot(samdf)+
 ```
 
 #   Preprocessig
-```{r eval=FALSE}
+```{r }
 #   Filter taxa
 ps <- prune_taxa((apply(otu_table(ps),1,function(x){sum(x>0)}))>.1*nsamples(ps),ps)
 ```
 
-```{r eval=FALSE}
+```{r }
 #   make a common legend
 plot.legend <- function(p){
     gg.fea <- ggplot_gtable(ggplot_build(p))
@@ -104,7 +105,7 @@ plot.legend <- function(p){
 ```
 
 #   EDA: correlogram
-```{r eval=FALSE,message=FALSE,warning=FALSE}
+```{r message=FALSE,warning=FALSE,fig.width=7.5,fig.height=5.5}
 ps.tr <- psTransform(ps,factors="Preterm") 
 p.all <- longCorreloMultiple(ps.tr[[1]],ps.tr[[2]], factors="Preterm",time="Time",1,6,taxlevel = "Genus")
 
@@ -115,12 +116,13 @@ p.all <- lapply(p.all, function(x){x+scale_fill_discrete(name  ="Group",breaks=c
 leg <- plot.legend(p.all[[1]])
 plist <- lapply(p.all,function(x){x+theme(legend.position="none")})
 
-pp1 <- grid.arrange(arrangeGrob(grobs=plist,nrow=2,widths=c(3,3,3)),leg,ncol=2,widths=c(10,2))
+#pp1 <- grid.arrange(arrangeGrob(grobs=plist,nrow=2,widths=c(3,3,3)),leg,ncol=2,widths=c(10,2))
+grid.arrange(arrangeGrob(grobs=plist,nrow=2,widths=c(3,3,3)),leg,ncol=2,widths=c(10,2))
 #ggsave("./core_Sim.eps",plot=pp1,width = 8,height = 5.5)
 ```
 
 #   EDA: lag-plot for each taxa
-```{r eval=FALSE,message=FALSE,warning=FALSE}
+```{r message=FALSE,warning=FALSE,fig.width=7.5,fig.height=5.5}
 lags <- as.list(seq(1,8))
 p.lags <- lapply(lags,function(x){longLagPlot(ps.tr[[2]],factors="Preterm",time="Time",taxon=1,x,taxlevel="Genus")})
 
@@ -130,14 +132,14 @@ p.lags <- lapply(p.lags, function(x){x+scale_color_discrete(name  ="Group",break
 leg <- plot.legend(p.lags[[1]])
 plist <- lapply(p.lags,function(x){x+theme(legend.position="none")})
 
-pp2 <- grid.arrange(arrangeGrob(grobs=plist,nrow=2,widths=c(3,3,3,3)),leg,ncol=2,widths=c(10,2))
-
+#pp2 <- grid.arrange(arrangeGrob(grobs=plist,nrow=2,widths=c(3,3,3,3)),leg,ncol=2,widths=c(10,2))
+grid.arrange(arrangeGrob(grobs=plist,nrow=2,widths=c(3,3,3,3)),leg,ncol=2,widths=c(10,2))
 #ggsave("./lag_sim.eps",plot=pp2,width = 8,height = 5.5)
 
 ```
 
 #   EDA: explore correlation structure using variogram
-```{r eval=FALSE,message=FALSE,warning=FALSE}
+```{r message=FALSE,warning=FALSE,fig.width=7.5,fig.height=5.5}
 p.all <- longVarioMultiple(ps.tr[[1]],ps.tr[[2]], factors="Preterm",time="Time",1,6,taxlevel = "Genus")
 
 #   Change the legend labels
@@ -146,8 +148,8 @@ p.all <- lapply(p.all, function(x){x+scale_color_discrete(name  ="Group",breaks=
 leg <- plot.legend(p.all[[1]])
 plist <- lapply(p.all,function(x){x+theme(legend.position="none")})
 
-pp3 <- grid.arrange(arrangeGrob(grobs=plist,nrow=2,widths=c(3,3,3)),leg,ncol=2,widths=c(10,2))
-
+#pp3 <- grid.arrange(arrangeGrob(grobs=plist,nrow=2,widths=c(3,3,3)),leg,ncol=2,widths=c(10,2))
+grid.arrange(arrangeGrob(grobs=plist,nrow=2,widths=c(3,3,3)),leg,ncol=2,widths=c(10,2))
 #ggsave("./vario_sim.eps",plot=pp3,width = 8,height = 5.5)
 ```
 
@@ -202,6 +204,7 @@ factors <- "Preterm"
 time <- "Time"
 
 system.time(boot_res <- bootLongMethod(ps,b=l.opt,R=R,RR=RR,factors=factors,time=time))
+
 saveRDS(boot_res,"./boot_sim.rds")
 ```
 
