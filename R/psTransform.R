@@ -34,6 +34,8 @@ psTransform <- function(ps,factors){
                 we <- as.numeric(we[ind,])
                 dff <- samd
                 dff <- cbind(samd,otu=otu,sj=sj,we=we)
+                #       remove trend
+                
                 #       negative binomial family with arcsinh link
                 glmft.tx <- MASS::glm.nb(des2,data = dff,weights = we,method = "glm.fit",link = arcsinhLink())
                 return(glmft.tx$residuals)

@@ -11,7 +11,7 @@
 #' @return list of dataframe with ASV, observed stat, pvalues, adjusted pvalues, lcl, ucl, observed pivotal quantity; stat.obs; stat.star; stat.star.star; T.star_obs.
 #' @import "ashr"
 #' @export
-bootLongMethod <- function(ps,b,R,RR,factors,time,FDR=.1){
+bootLongMethod <- function(ps,b,R,RR,factors,time,FDR=.1,SubjectID_n="SubjectID"){
     doParallel::registerDoParallel(parallel::detectCores())
     BiocParallel::register(BiocParallel::DoparParam())
     #   otu table of observed phyloseq: rows taxa; columns samples
@@ -19,7 +19,7 @@ bootLongMethod <- function(ps,b,R,RR,factors,time,FDR=.1){
         otu_table(ps) <- t(otu_table(ps,taxa_are_rows = T))
     }
 
-    res.obs <- computeStat(ps=ps,factors=factors,time=time,b=b)
+    res.obs <- computeStat(ps=ps,factors=factors,time=time,b=b,SubjectID_n=SubjectID_n)
 
     stat.name <- colnames(res.obs)[2]
 
