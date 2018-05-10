@@ -14,49 +14,28 @@
 #'         second element ``observed statistic``
 #'
 #' @export
-bootLongPsi <- function(ps,b,R,RR,factors,time,T.obs.full=NULL){
+bootLongPsi <- function(ps,b,R,RR,factors,time,T.obs.full=NULL,SubjectID_n="SubjectID"){
     #   otu table of observed phyloseq: rows taxa; columns samples
     if(dim(otu_table(ps))[1]==nsamples(ps)){
         otu_table(ps) <- t(otu_table(ps,taxa_are_rows = T))
     }
 
     #   compute observed statistic
-    res.obs <- computeStat(ps=ps,factors=factors)
+    res.obs <- computeStat(ps=ps,factors=factors,time=time,b=b,SubjectID_n=SubjectID_n)
 
     boot.results <- list()
 
-    # boot.results <- lapply(seq_len(R),FUN=function(i){
-    #     ps.boot <- bootLongPhyloseq(ps,b,time)[[1]]
-    # 
-    # 
-    #     df.boot <- computeStat(ps.boot,factors)
-    # 
-    #     #   double MBB
-    #     boot.results.bb <- lapply(seq_len(RR),FUN=function(j){
-    #         ps.boot.bb <- bootLongPhyloseq(ps.boot,b,time)[[1]]
-    # 
-    #         df.boot.bb <- computeStat(ps.boot.bb,factors)
-    #         rm(ps.boot.bb)
-    #         return(df.boot.bb)
-    #     })
-    # 
-    #     rm(ps.boot)
-    # 
-    #     return(list(df.boot,boot.results.bb))
-    # 
-    # })
-
     boot.results <- lapply(seq_len(R),FUN=function(i){
-            ps.boot <- bootLongPhyloseq(ps,b,time)
+            ps.boot <- bootLongPhyloseq(ps,b,time,SubjectID_n=SubjectID_n)
             ps.boot <- ps.boot[[1]]
             
-            df.boot <- computeStat(ps=ps.boot,factors=factors,time=time,b=b)
+            df.boot <- computeStat(ps=ps.boot,factors=factors,time=time,b=b,SubjectID_n=SubjectID_n)
             
             #   double MBB
             boot.results.bb <- lapply(seq_len(RR),FUN=function(j){
-                    ps.boot.bb <- bootLongPhyloseq(ps.boot,b,time)
+                    ps.boot.bb <- bootLongPhyloseq(ps.boot,b,time,SubjectID_n=SubjectID_n)
                     ps.boot.bb <- ps.boot.bb[[1]]
-                    df.boot.bb <- computeStat(ps=ps.boot.bb,factors=factors,time=time,b=b)
+                    df.boot.bb <- computeStat(ps=ps.boot.bb,factors=factors,time=time,b=b,SubjectID_n=SubjectID_n)
                     rm(ps.boot.bb)
                     return(df.boot.bb)
                     

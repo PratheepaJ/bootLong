@@ -13,13 +13,15 @@
 #' @return A list of indices to include in the block bootstrap realization.
 #' @export
 bootLongIndices <- function(x,b,time,L,blks_first_index){
-
-    #   if repeated samples are not ordered by 'time'
-    if(!is.unsorted(x[,time])){# argument for `is.unsorted()` must be 1-dim
+        
+        if(!is.numeric(x[,time])){x[,time] <- as.numeric(x[,time])}
+    
+        #   if repeated samples are not ordered by 'time'
+        if(!is.unsorted(x[,time])){# argument for `is.unsorted()` must be 1-dim
         x <- x
-    }else{
+        }else{
         x <- arrange_(x,time)
-    }
+        }
 
     #   number of repeated biological samples per subject
     num.of.rep.obs.x <- dim(x)[1]

@@ -26,16 +26,16 @@ bootLongMethod <- function(ps,b,R,RR,factors,time,FDR=.1,SubjectID_n="SubjectID"
     boot.results <- list()
 
     boot.results <- BiocParallel::bplapply(seq_len(R),FUN=function(i){
-        ps.boot <- bootLongPhyloseq(ps,b,time)
+        ps.boot <- bootLongPhyloseq(ps,b,time,SubjectID_n=SubjectID_n)
         ps.boot <- ps.boot[[1]]
 
-        df.boot <- computeStat(ps=ps.boot,factors=factors,time=time,b=b)
+        df.boot <- computeStat(ps=ps.boot,factors=factors,time=time,b=b,SubjectID_n=SubjectID_n)
 
         #   double MBB
         boot.results.bb <- lapply(seq_len(RR),FUN=function(j){
-            ps.boot.bb <- bootLongPhyloseq(ps.boot,b,time)
+            ps.boot.bb <- bootLongPhyloseq(ps.boot,b,time,SubjectID_n=SubjectID_n)
             ps.boot.bb <- ps.boot.bb[[1]]
-            df.boot.bb <- computeStat(ps=ps.boot.bb,factors=factors,time=time,b=b)
+            df.boot.bb <- computeStat(ps=ps.boot.bb,factors=factors,time=time,b=b,SubjectID_n=SubjectID_n)
             rm(ps.boot.bb)
             return(df.boot.bb)
 

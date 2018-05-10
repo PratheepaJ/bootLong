@@ -35,7 +35,15 @@ psTransform <- function(ps,factors){
                 dff <- samd
                 dff <- cbind(samd,otu=otu,sj=sj,we=we)
                 #       remove trend
+                # if(!is.factor(dff[,SubjectID_n])){dff[,SubjectID_n] <- as.factor(dff[,SubjectID_n])}
+                # if(!is.numeric(dff[,time])){dff[,time] <- as.numeric(as.factor(dff[,time]))}
+                # dff <- arrange_(dff,SubjectID_n,time)
                 
+                # g <- dff[,SubjectID_n]
+                # splSubID <- split(dff,g)
+                # 
+                # subsplSubID <- splSubID[[1]][,"otu"]
+                # de <- pracma::detrend(subsplSubID)
                 #       negative binomial family with arcsinh link
                 glmft.tx <- MASS::glm.nb(des2,data = dff,weights = we,method = "glm.fit",link = arcsinhLink())
                 return(glmft.tx$residuals)

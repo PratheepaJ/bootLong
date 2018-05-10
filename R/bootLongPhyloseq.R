@@ -8,23 +8,27 @@
 #'
 #' @return a \code{phyloseq} object. This will be a block bootstrap realization of input \code{ps}.
 #' @export
-bootLongPhyloseq <- function(ps,b,time){
+bootLongPhyloseq <- function(ps,b,time,SubjectID_n="SubjectID"){
 
     if(dim(otu_table(ps))[1]==nsamples(ps)){
         otu_table(ps) <- t(otu_table(ps,taxa_are_rows = T))
     }
 
-    #   add ``Index``
-    sample_data(ps)$Index <- seq(1,nsamples(ps),by=1)
-
+   
     #   sample data
     samdf <- data.frame(sample_data(ps))
+    
+    #   add ``Index``
+    samdf$Index <- seq(1,nsamples(ps),by=1)
+    
+    if(!is.factor(samdf[,SubjectID_n])){samdf[,SubjectID_n] <- as.factor(samdf[,SubjectID_n])}
 
     #   otu table
     otu.tab <- data.frame(otu_table(ps))
 
     #   split data frame by subjects ---
-    samdf.split.by.subjects <- split(samdf,samdf$SubjectID)
+    g <- samdf[,SubjectID_n]
+    samdf.split.by.subjects <- split(samdf,g)
 
     #   number of repeated biological samples per subject
     num.of.rep.obs <- lapply(samdf.split.by.subjects,function(x){dim(x)[1]})
@@ -49,13 +53,16 @@ bootLongPhyloseq <- function(ps,b,time){
     blk.boot.otu.tab <- otu.tab[,boot.sample.indices]
     blk.boot.samdf <- samdf[boot.sample.indices,]
     #   split by subject
-    boot.samdf <- split(blk.boot.samdf,blk.boot.samdf$SubjectID)
-    #   create order of Time
+    g2 <- blk.boot.samdf[,SubjectID_n]
+    boot.samdf <- split(blk.boot.samdf,g2)
+    
+    #   create new order of Time
     boot.samdf <- lapply(boot.samdf,function(x){
         tim <- seq(1,dim(x)[1])
         x[,time] <- tim
         return(x)
     })
+    
     blk.boot.samdf <- do.call("rbind",boot.samdf)
     blk.boot.samdf <- dplyr::select(blk.boot.samdf,-Index)
     colnames(blk.boot.otu.tab) <- rownames(blk.boot.samdf)

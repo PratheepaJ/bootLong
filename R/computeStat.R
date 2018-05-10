@@ -8,7 +8,7 @@
 #'
 #' @param ps Observed \code{phyloseq} class object.
 #' @param factors vector of factor variable(s) in the sample data of ps.
-#' @param time Time variable at repeated observations.
+#' @param time numeric, time variable at repeated observations.
 #' @param b numeric, optimal block size to account for dependence within-subject.
 #'
 #' @return dataframe with the last column corresponds to taxa names
@@ -23,7 +23,9 @@ computeStat <- function(ps,factors,time,b,SubjectID_n="SubjectID"){
         
         otu_full <- as.matrix(round(otu_table(ps),digits = 0))+1
         samdf <- data.frame(sample_data(ps))
-
+        if(!is.numeric(samdf[,time])){samdf[,time] <- as.numeric(samdf[,time])}
+        if(!is.factor(samdf[,SubjectID_n])){samdf[,SubjectID_n] <- as.factor(samdf[,SubjectID_n])}
+        
         anno <- data.frame(tax_table(ps))
         
         dgeList <- edgeR::DGEList(counts=otu_full, genes=anno, samples = samdf)
@@ -48,9 +50,11 @@ computeStat <- function(ps,factors,time,b,SubjectID_n="SubjectID"){
                 allSj <- as.numeric(allSj)
                 weightT <- as.numeric(weightDf[taxIndex,])
                 dffT <- cbind(sampleDf,otuT =otuT,allSj=allSj,weightT=weightT)
+                
                 #   need numeric values for Subject ID
                 dffT$idvar <- as.numeric(as.factor(dffT[,SubjectID_n]))
-                dffT <- arrange_(dffT,SubjectID_n,time)
+                idvar <- "idvar"
+                dffT <- arrange_(dffT,idvar,time)
                 
                 #       negative binomial family with arcsinh link
                 glmft.tx <- glm.nb(formula=desingGEE,data = dffT,weights = weightT,method = "glm.fit",link = arcsinhLink())
@@ -87,9 +91,7 @@ computeStat <- function(ps,factors,time,b,SubjectID_n="SubjectID"){
                  
                 init.beta <- as.numeric(glmft.tx$coefficients)
                 
-               fit <-  tryCatch(geeM::geem(formula=desingGEE,id=idvarV,waves = wavesTime,data = dffT,family=arcsinhlstLink(),corstr = "fixed",weights = weightT,corr.mat = workCorr,init.beta = init.beta,nodummy=TRUE)$beta,error=function(e){t(glmft.tx$coefficients)})
-                #fit <- geeM::geem(formula=desingGEE,id=idvarV,waves = wavesTime,data = dffT,family=arcsinhlstLink(),corstr = "fixed",weights = weightT,corr.mat = workCorr,init.beta = init.beta,nodummy=TRUE,tol = .001)$beta
-                #return(fit$beta)
+                fit <-  tryCatch(geeM::geem(formula=desingGEE,id=idvarV,waves = wavesTime,data = dffT,family=arcsinhlstLink(),corstr = "fixed",weights = weightT,corr.mat = workCorr,init.beta = init.beta,nodummy=TRUE)$beta,error=function(e){t(glmft.tx$coefficients)})
                 
                 return(fit)
 
