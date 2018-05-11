@@ -40,7 +40,7 @@ computeStat <- function(ps,factors,time,b,SubjectID_n="SubjectID"){
         geo.mean.row <- apply((otu_full+1),1,function(x){exp(sum(log(x))/length(x))})
         sj <- apply((otu_full+1),2,function(x){median(x/geo.mean.row)})
 
-        v <- arcsinhTransform(counts=dgeList, design=mm, lib.size=sj,plot = F)
+        v <- arcsinhTransform(counts=dgeList, design=mm, lib.size=sj)
         weights.cal <- v$weights
 
         taxaLst <- as.list(seq(1,ntaxa(ps)))

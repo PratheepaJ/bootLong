@@ -1,3 +1,8 @@
+#' arcsinhLink
+#' arcsinh link function for GLM
+#'
+#' @return An object of class "link-glm"
+#' @export
 arcsinhLink <- function(){
     ## link
     linkfun <- function(y){log(y + sqrt(y ^ 2 + 1))}
@@ -13,4 +18,3 @@ arcsinhLink <- function(){
               class = "link-glm")
 }
 
-#asinhLink <- arcsinhLink()
