@@ -28,8 +28,7 @@ bootLongPsi <- function(ps,b,R,RR,factors,time,T.obs.full=NULL,SubjectID_n="Subj
         
         boot.results <- list()
         
-        if(para){
-                boot.results <- BiocParallel::bplapply(seq_len(R),FUN=function(i){
+        boot.results <- lapply(seq_len(R),FUN=function(i){
                 ps.boot <- bootLongPhyloseq(ps,b,time,SubjectID_n=SubjectID_n)
                 ps.boot <- ps.boot[[1]]
                 
@@ -50,30 +49,7 @@ bootLongPsi <- function(ps,b,R,RR,factors,time,T.obs.full=NULL,SubjectID_n="Subj
                 return(list(df.boot,boot.results.bb))
                 
                 
-        })}else{
-                        boot.results <- lapply(seq_len(R),FUN=function(i){
-                        ps.boot <- bootLongPhyloseq(ps,b,time,SubjectID_n=SubjectID_n)
-                        ps.boot <- ps.boot[[1]]
-                        
-                        df.boot <- computeStat(ps=ps.boot,factors=factors,time=time,b=b,SubjectID_n=SubjectID_n)
-                        
-                        #   double MBB
-                        boot.results.bb <- lapply(seq_len(RR),FUN=function(j){
-                                ps.boot.bb <- bootLongPhyloseq(ps.boot,b,time,SubjectID_n=SubjectID_n)
-                                ps.boot.bb <- ps.boot.bb[[1]]
-                                df.boot.bb <- computeStat(ps=ps.boot.bb,factors=factors,time=time,b=b,SubjectID_n=SubjectID_n)
-                                rm(ps.boot.bb)
-                                return(df.boot.bb)
-                                
-                        })
-                        
-                        rm(ps.boot)
-                        
-                        return(list(df.boot,boot.results.bb))
-                        
-                        
-                })
-        }
+        })
         
         #   stat* from MBB estimates (R times)
         boot.results.all <- lapply(boot.results,"[[",1)

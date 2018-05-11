@@ -35,7 +35,7 @@ bootLongSubsampling <- function(ps,R,RR,factors,time,SubjectID_n="SubjectID",lI,
     lC <- seq(lC1,lC2,by=1)
 
     #   compute K with initial block size and all whole data
-    psi.hat.lI  <- bootLongPsi(ps=ps,b=lI,R=R,RR=RR,factors=factors,time=time,T.obs.full=NULL,SubjectID_n=SubjectID_n,para=TRUE)
+    psi.hat.lI  <- bootLongPsi(ps=ps,b=lI,R=R,RR=RR,factors=factors,time=time,T.obs.full=NULL,SubjectID_n=SubjectID_n)
 
     Khat.obs <- psi.hat.lI[[1]]
     T.obs <- psi.hat.lI[[2]]
