@@ -15,8 +15,8 @@
 #'
 #' @export
 bootLongPsi <- function(ps,b,R,RR,factors,time,T.obs.full=NULL,SubjectID_n="SubjectID",para=FALSE){
-        doParallel::registerDoParallel(parallel::detectCores())
-        BiocParallel::register(BiocParallel::DoparParam())
+        # doParallel::registerDoParallel(parallel::detectCores())
+        # BiocParallel::register(BiocParallel::DoparParam())
         
         #   otu table of observed phyloseq: rows taxa; columns samples
         if(dim(otu_table(ps))[1]==nsamples(ps)){
