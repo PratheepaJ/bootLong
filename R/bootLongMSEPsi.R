@@ -18,7 +18,7 @@
 #'
 #'
 #' @export
-bootLongMSEPsi <- function(ps,qj,Wj,b,R,RR,factors,time,Khat.obs=NULL,T.obs.full=NULL){
+bootLongMSEPsi <- function(ps,qj,Wj,b,R,RR,factors,time,Khat.obs=NULL,T.obs.full=NULL,SubjectID_n="SubjectID"){
 
     if(is.null(Khat.obs)){stop("User needs to run bootLongPsi() function with initial block length ")}
     if(is.null(T.obs.full)){stop("User needs to provide observed test statistic")}
@@ -26,19 +26,21 @@ bootLongMSEPsi <- function(ps,qj,Wj,b,R,RR,factors,time,Khat.obs=NULL,T.obs.full
    
     #   Create many ((max(qj)-max(Wj)+1) number of sub-seires) phyloseq with sub-series to compute MSE with block size "b"
     samdf <- data.frame(sample_data(ps))
-    samdf <- split(samdf,samdf$SubjectID)
+    if(!is.numeric(samdf[,time])){samdf[,time] <- as.numeric(samdf[,time])}
+    g <- samdf[,SubjectID_n]
+    samdf <- split(samdf,g)
     num.sub.sam <- max(qj)-max(Wj)+1
 
     samdf.q.W <- mapply(samdf,as.list(qj),as.list(Wj),FUN=list,SIMPLIFY = FALSE)
 
     samdf.q.W.or <- lapply(samdf.q.W,function(x){
-        if(!(is.numeric(x[[1]][,time]))){x[[1]][,time] <- as.numeric(x[[1]][,time])}
+        #if(!(is.numeric(x[[1]][,time]))){x[[1]][,time] <- as.numeric(x[[1]][,time])}
         x[[1]] <- dplyr::arrange_(x[[1]],time)
         return(x)
     })
 
 
-    if(num.sub.sam<5){stop("decrease omega")}
+    if(num.sub.sam < 5){stop("decrease omega")}
 
     ps.sub <- list()
     for(i in 1:num.sub.sam){

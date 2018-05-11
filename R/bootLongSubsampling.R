@@ -40,6 +40,6 @@ bootLongSubsampling <- function(ps,R,RR,factors,time,SubjectID_n="SubjectID",lI,
     Khat.obs <- psi.hat.lI[[1]]
     T.obs <- psi.hat.lI[[2]]
 
-    mseKhatKobs <- BiocParallel::bplapply(seq_len(length(lC)),function(y){bootLongMSEPsi(ps=ps,qj=qj,Wj=Wj,b=y,R=R,RR=RR,factors=factors,time=time,Khat.obs=Khat.obs,T.obs.full=T.obs)})
+    mseKhatKobs <- BiocParallel::bplapply(seq_len(length(lC)),function(y){bootLongMSEPsi(ps=ps,qj=qj,Wj=Wj,b=y,R=R,RR=RR,factors=factors,time=time,Khat.obs=Khat.obs,T.obs.full=T.obs,SubjectID_n=SubjectID_n)})
     return(mseKhatKobs)
 }
