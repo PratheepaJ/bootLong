@@ -19,7 +19,9 @@
 #'
 #' @export
 bootLongMSEPsi <- function(ps,qj,Wj,b,R,RR,factors,time,Khat.obs=NULL,T.obs.full=NULL,SubjectID_n="SubjectID"){
-
+        doParallel::registerDoParallel(parallel::detectCores())
+        BiocParallel::register(BiocParallel::DoparParam())
+        
     if(is.null(Khat.obs)){stop("User needs to run bootLongPsi() function with initial block length ")}
     if(is.null(T.obs.full)){stop("User needs to provide observed test statistic")}
 
@@ -57,7 +59,7 @@ bootLongMSEPsi <- function(ps,qj,Wj,b,R,RR,factors,time,Khat.obs=NULL,T.obs.full
         
     }
 
-    Khat <- lapply(ps.sub,function(x){
+    Khat <- BiocParallel::bplapply(ps.sub,function(x){
         k.hat <- bootLongPsi(x,b=b,R=R,RR=RR,factors=factors,time=time,T.obs.full=T.obs.full)
         k.hat <- k.hat[[1]]
         return(k.hat)
