@@ -23,7 +23,7 @@ bootLongMSEPsi <- function(ps,qj,Wj,b,R,RR,factors,time,Khat.obs=NULL,T.obs.full
     if(is.null(Khat.obs)){stop("User needs to run bootLongPsi() function with initial block length ")}
     if(is.null(T.obs.full)){stop("User needs to provide observed test statistic")}
 
-    #names(sample_data(ps))[names(sample_data(ps))==time] <- "Time"
+   
     #   Create many ((max(qj)-max(Wj)+1) number of sub-seires) phyloseq with sub-series to compute MSE with block size "b"
     samdf <- data.frame(sample_data(ps))
     samdf <- split(samdf,samdf$SubjectID)
@@ -52,7 +52,7 @@ bootLongMSEPsi <- function(ps,qj,Wj,b,R,RR,factors,time,Khat.obs=NULL,T.obs.full
         subsam.id <- sub.sam.i$SampleID
         subsam.id <- as.character(subsam.id)
         ps.sub[[i]] <- prune_samples(subsam.id,ps)
-        #names(sample_data(ps.sub[[i]]))[names(sample_data(ps.sub[[i]]))=="Time"] <- time
+        
     }
 
     Khat <- lapply(ps.sub,function(x){
@@ -61,27 +61,7 @@ bootLongMSEPsi <- function(ps,qj,Wj,b,R,RR,factors,time,Khat.obs=NULL,T.obs.full
         return(k.hat)
     })
 
-    # Khat <- lapply(subsam.num,function(i){
-    #
-    #     sub.samdf <- lapply(samdf,function(x){x[min(qj[which(names(qj)%in%unique(x$SubjectID))]-Wj[which(names(Wj)%in%unique(x$SubjectID))]+1,i):min(qj[which(names(qj)%in%unique(x$SubjectID))],Wj[which(names(Wj)%in%unique(x$SubjectID))]+i-1),]})
-    #
-    #     sub.samdf <- do.call("rbind",sub.samdf)
-    #
-    #     sub.SampleID <- as.character(sub.samdf$SampleID)
-    #
-    #     ps.m <- prune_samples(sub.SampleID,ps)
-    #
-    #     k.hat <- bootLongPsi(ps.m,b=b,R=R,RR=RR,factors=factors,time=time,T.obs.full=T.obs.full)
-    #     k.hat <- k.hat[[1]]
-    #
-    #     rm(sub.samdf)
-    #     rm(sub.SampleID)
-    #     rm(ps.m)
-    #
-    #    return(k.hat)
-    # })
-
-
+  
     rm(ps)
     rm(samdf)
     rm(samdf.q.W)
