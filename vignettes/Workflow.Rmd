@@ -15,13 +15,18 @@ rm(list = ls())
 
 Install packages: 
 ```{r message=FALSE,warning=FALSE}
-pkgs <- c("ggplot2","dplyr","tidyr","phyloseq","DESeq2","BiocParallel","edgeR","limma","ashr","gridExtra","geepack","MASS","geeM","R.utils")
-#pkgs <- c("doParallel","foreach","reshape2","gridExtra","ggfortify","R.utils")
+pkgs <- c("ggplot2","dplyr","tidyr",
+          "phyloseq","DESeq2","edgeR",
+          "limma","ashr","gridExtra",
+          "geepack","MASS","geeM","R.utils",
+          "BiocParallel")
+
 
 #   installed packages that were not installed already
 # source("http://bioconductor.org/biocLite.R")
 # biocLite(setdiff(pkgs,installed.packages()))
-#devtools::install_github("PratheepaJ/bbootLong")
+
+devtools::install_github("PratheepaJ/bbootLong")
 
 ```
 
