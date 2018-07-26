@@ -4,8 +4,8 @@
 \alias{bootLongSubsampling}
 \title{bootLongSubsampling}
 \usage{
-bootLongSubsampling(ps, R, RR, factors, time, subjectidvar = "SubjectID", lI,
-  omega = 0.6)
+bootLongSubsampling(ps, R, RR, factors, time, SubjectID_n = "SubjectID", lI,
+  omega = 0.6, lC1 = 1, lC2 = NULL)
 }
 \arguments{
 \item{ps}{a \code{phyloseq} object.}
@@ -18,11 +18,11 @@ bootLongSubsampling(ps, R, RR, factors, time, subjectidvar = "SubjectID", lI,
 
 \item{time}{Time variable at repeated observations.}
 
-\item{subjectidvar}{variable name for SubjectID}
-
 \item{lI}{initial block size}
 
 \item{omega}{percentage of repeated observations for subsampling}
+
+\item{subjectidvar}{variable name for SubjectID}
 }
 \value{
 list of ``MSE`` in calculating K with block sizes lC=1:(lI-1), ``Khat`` values with block sizes lC=1:(lI-1) and ``Khat.obs`` with lI

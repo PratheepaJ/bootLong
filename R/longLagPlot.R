@@ -17,9 +17,9 @@ longLagPlot <- function(ps,factors,time,taxon,lags,taxlevel="Species"){
     df.taxa <- data.frame(sample_data(ps),otu=as.numeric(t(otu_table(ps)[taxon,])))
     names(df.taxa)[names(df.taxa)==factors] <- "Group"
     names(df.taxa)[names(df.taxa)==time] <- "Time"
-    #   split by the levels of a factor
+
     df.taxa.sep <- split(df.taxa,df.taxa$Group)
-    #   compute correlogram for each level
+
     res.sep <- lapply(df.taxa.sep,function(m){
         m$Time <- as.factor(m$Time)
         m <- m %>% group_by(Time) %>% summarise(meant=mean(otu))

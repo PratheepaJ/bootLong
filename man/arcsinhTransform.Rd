@@ -4,29 +4,21 @@
 \alias{arcsinhTransform}
 \title{arcsinhTransform}
 \usage{
-arcsinhTransform(counts, design = NULL, lib.size = NULL,
-  normalize.method = "none", span = 0.5, plot = FALSE,
-  save.plot = FALSE, ...)
+arcsinhTransform(counts, design = NULL, lib.size = NULL, span = 0.5, ...)
 }
 \arguments{
-\item{counts}{\code{DGEList} as for \code{voom}.}
+\item{counts}{\code{DGEList}.}
 
-\item{design}{model matrix created by \code{computeStat()} as for \code{voom}.}
+\item{design}{a model matrix created by \code{computeStat()}.}
 
-\item{lib.size}{library size created by \code{computeStat()} as for \code{voom}.}
+\item{lib.size}{numeric vector containing library size normalization factor computed by \code{computeStat()}.}
 
-\item{normalize.method}{no need to use this argument because we do not use logCPM values}
-
-\item{span}{argument as for \code{voom}.}
-
-\item{plot}{logical, as for \code{voom}.}
-
-\item{save.plot}{logical, as for \code{voom}.}
+\item{span}{width of the lowess smoothing window as a proportion.}
 }
 \value{
-An EList object as \code{voom}. E is numeric matrix of transformed counts on the arcsine scale
+An EList object. E is numeric matrix of transformed counts on the arcsine scale
 }
 \description{
-This is a utility function used by the higher level function \code{computeStat}
-to compute arcsine transformation and weights for the glm and gee fits.
+This is a modified \code{voom} utility function used by the higher level function \code{computeStat()}
+to compute arcsinh transformation and weights for the \code{glm.nb} and \code{geem}.
 }

@@ -4,7 +4,7 @@
 \alias{bootLongPhyloseq}
 \title{bootLongPhyloseq}
 \usage{
-bootLongPhyloseq(ps, b, time)
+bootLongPhyloseq(ps, b, time, SubjectID_n = "SubjectID")
 }
 \arguments{
 \item{ps}{a \code{phyloseq} object.}

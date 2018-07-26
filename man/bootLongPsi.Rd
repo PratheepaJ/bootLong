@@ -4,7 +4,8 @@
 \alias{bootLongPsi}
 \title{bootLongPsi}
 \usage{
-bootLongPsi(ps, b, R, RR, factors, time, T.obs.full = NULL)
+bootLongPsi(ps, b, R, RR, factors, time, T.obs.full = NULL,
+  SubjectID_n = "SubjectID", para = FALSE)
 }
 \arguments{
 \item{ps}{Observed \code{phyloseq} class object.}

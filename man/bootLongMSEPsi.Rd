@@ -5,7 +5,7 @@
 \title{bootLongMSEPsi}
 \usage{
 bootLongMSEPsi(ps, qj, Wj, b, R, RR, factors, time, Khat.obs = NULL,
-  T.obs.full = NULL)
+  T.obs.full = NULL, SubjectID_n = "SubjectID")
 }
 \arguments{
 \item{ps}{Observed \code{phyloseq} class object.}

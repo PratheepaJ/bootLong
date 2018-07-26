@@ -4,7 +4,8 @@
 \alias{bootLongMethod}
 \title{bootLongMethod}
 \usage{
-bootLongMethod(ps, b, R, RR, factors, time, FDR = 0.1)
+bootLongMethod(ps, b, R, RR, factors, time, FDR = 0.1,
+  SubjectID_n = "SubjectID")
 }
 \arguments{
 \item{ps}{Observed \code{phyloseq} class object.}

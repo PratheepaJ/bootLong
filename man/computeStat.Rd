@@ -4,14 +4,14 @@
 \alias{computeStat}
 \title{computeStat}
 \usage{
-computeStat(ps, factors, time, b)
+computeStat(ps, factors, time, b, SubjectID_n = "SubjectID")
 }
 \arguments{
 \item{ps}{Observed \code{phyloseq} class object.}
 
 \item{factors}{vector of factor variable(s) in the sample data of ps.}
 
-\item{time}{Time variable at repeated observations.}
+\item{time}{numeric, time variable at repeated observations.}
 
 \item{b}{numeric, optimal block size to account for dependence within-subject.}
 }

@@ -13,51 +13,38 @@
 #' @return A list of indices to include in the block bootstrap realization.
 #' @export
 bootLongIndices <- function(x,b,time,L,blks_first_index){
-        
+
         if(!is.numeric(x[,time])){x[,time] <- as.numeric(x[,time])}
-    
-        #   if repeated samples are not ordered by 'time'
-        if(!is.unsorted(x[,time])){# argument for `is.unsorted()` must be 1-dim
-        x <- x
+
+        if(!is.unsorted(x[,time])){
+            x <- x
         }else{
-        x <- arrange_(x,time)
+            x <- arrange_(x,time)
         }
 
-    #   number of repeated biological samples per subject
-    num.of.rep.obs.x <- dim(x)[1]
 
-    #   number of ovelapping blocks per subject
-    num.of.blks <- num.of.rep.obs.x-b+1
+        num.of.rep.obs.x <- dim(x)[1]
 
-    if(L>num.of.blks){
-        # how many rows should be added or how many times repeated
-        # impute using the block size
-        if((L-num.of.blks)%%num.of.rep.obs.x==0){
-            howrep <- rep(1:num.of.rep.obs.x,times=(L-num.of.blks)/num.of.rep.obs.x)
-        }else{
-                howrep <- c(rep(1:num.of.rep.obs.x,times=(L-num.of.blks)/num.of.rep.obs.x),1:((L-num.of.blks)%%num.of.rep.obs.x))
+        num.of.blks <- num.of.rep.obs.x-b+1
+
+        if(L>num.of.blks){
+            if((L-num.of.blks)%%num.of.rep.obs.x==0){
+                howrep <- rep(1:num.of.rep.obs.x,times=(L-num.of.blks)/num.of.rep.obs.x)
+            }else{
+                    howrep <- c(rep(1:num.of.rep.obs.x,times=(L-num.of.blks)/num.of.rep.obs.x),1:((L-num.of.blks)%%num.of.rep.obs.x))
+            }
+            expand.x <- bind_rows(x,x[howrep,])
+            x <- expand.x
         }
 
-        expand.x <- bind_rows(x,x[howrep,])
-        x <- expand.x
-    }
+        subject.sample.indices <- numeric(0)
 
+        if(L==0){
+            subject.sample.indices <- x$Index
+        }else{
+            subject.sample.indices <- x$Index[unlist(lapply(blks_first_index,FUN=function(y){y:(y+b-1)}))]
+            subject.sample.indices <- subject.sample.indices[1:num.of.rep.obs.x]
+        }
 
-    #  indices of biological samples selected in the bootstrap sample
-    subject.sample.indices <- numeric(0)
-
-    #   if there is less number of repeated observations
-    #   than the block size (can happen for an unbalanced design),
-    #   choose all the observations to the bootstrap sample
-    if(L==0){#no need because we make up the series to account for the larger number of blocks
-        subject.sample.indices <- x$Index
-
-    }else{
-        #   consecutive indices
-        subject.sample.indices <- x$Index[unlist(lapply(blks_first_index,FUN=function(y){y:(y+b-1)}))]
-        #   number of repeated observations in the bootstrap samples
-        #   should be same as in the observed number of repeated observations
-        subject.sample.indices <- subject.sample.indices[1:num.of.rep.obs.x]
-    }
-    return(list(subject.sample.indices))
+        return(list(subject.sample.indices))
 }
