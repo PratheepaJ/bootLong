@@ -19,15 +19,13 @@ pkgs <- c("ggplot2","dplyr","tidyr",
           "phyloseq","DESeq2","edgeR",
           "limma","ashr","gridExtra",
           "geepack","MASS","geeM","R.utils",
-          "BiocParallel")
+          "BiocParallel",
+          "PratheepaJ/bbootLong")
 
 
 #   installed packages that were not installed already
-# source("http://bioconductor.org/biocLite.R")
-# biocLite(setdiff(pkgs,installed.packages()))
-
-devtools::install_github("PratheepaJ/bbootLong")
-
+source("http://bioconductor.org/biocLite.R")
+biocLite(setdiff(pkgs,installed.packages()))
 ```
 
 load packages:
@@ -36,9 +34,7 @@ lpckges<-pkgs%in%(.packages())
 if(any(!lpckges)){
     sapply(pkgs[!lpckges],require,character.only=TRUE)
 }
-#library(bootLong)
 devtools::load_all(".")
-#sourceDirectory("../R")
 ```
 
 #   Read data

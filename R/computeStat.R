@@ -16,8 +16,6 @@
 #'
 #' @import "edgeR"
 #' @import "phyloseq"
-#' @import "MASS"
-#' @import "geeM"
 #' @export
 computeStat <- function(ps,factors,time,b,SubjectID_n="SubjectID"){
 

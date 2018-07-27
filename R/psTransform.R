@@ -8,18 +8,16 @@
 #' @return \code{phyloseq} object with transformed \code{otu_table}
 #' @export
 #' @import "joineR"
-#' @import "MASS"
 psTransform <- function(ps,factors){
         ot <- as.matrix(round(otu_table(ps),digits = 0))
         samd <- data.frame(sample_data(ps))
         anno <- data.frame(tax_table(ps))
         dgeList <- edgeR::DGEList(counts=ot, genes=anno, samples = samd)
 
-        #   setting up the model
         des <- as.formula(paste("~", paste(factors, collapse="+")))
         mm <- model.matrix(des,data=samd)
         des2 <- as.formula(paste("otu","~", paste(factors, collapse="+"),"+","offset(arcsinhLink()$linkfun(sj))"))
-        #   estimate the size factors
+
         geo.mean.row <- apply((ot+1),1,function(x){exp(sum(log(x))/length(x))})
         sj <- apply((ot+1),2,function(x){median(x/geo.mean.row)})
 
@@ -34,17 +32,7 @@ psTransform <- function(ps,factors){
                 we <- as.numeric(we[ind,])
                 dff <- samd
                 dff <- cbind(samd,otu=otu,sj=sj,we=we)
-                #       remove trend
-                # if(!is.factor(dff[,SubjectID_n])){dff[,SubjectID_n] <- as.factor(dff[,SubjectID_n])}
-                # if(!is.numeric(dff[,time])){dff[,time] <- as.numeric(as.factor(dff[,time]))}
-                # dff <- arrange_(dff,SubjectID_n,time)
-                
-                # g <- dff[,SubjectID_n]
-                # splSubID <- split(dff,g)
-                # 
-                # subsplSubID <- splSubID[[1]][,"otu"]
-                # de <- pracma::detrend(subsplSubID)
-                #       negative binomial family with arcsinh link
+
                 glmft.tx <- MASS::glm.nb(des2,data = dff,weights = we,method = "glm.fit",link = arcsinhLink())
                 return(glmft.tx$residuals)
         }
@@ -68,31 +56,3 @@ psTransform <- function(ps,factors){
             return(rt)
 }
 
-
-
-# psTransform <- function(ps,factors){
-#     ot <- as.matrix(otu_table(ps))
-#     anno <- data.frame(tax_table(ps))
-#     samdf <- data.frame(sample_data(ps))
-#     dgeList <- edgeR::DGEList(counts=ot, genes=anno, samples = samdf)
-#
-#     #   setting up the model
-#     des <- as.formula(paste("~", paste(factors, collapse="+")))
-#     mm <- model.matrix(des,data=samdf)
-#     pse <- ps
-#     otu_table(pse) <- otu_table(ps)+1
-#     pDE <- suppressMessages(phyloseq_to_deseq2(pse,design=des))
-#     rm(pse)
-#     pDE <- DESeq2::estimateSizeFactors(pDE)
-#     sj <- DESeq2::sizeFactors(pDE)
-#     #   NOTE: if we want to use gene specific size factor, then
-#     #sij <- normalizationFactors(pDE) # matrix
-#
-#     v <- arcsinhTransform(counts=dgeList, design=mm, lib.size=sj,plot = F)
-#
-#     transformed.ot <- data.frame(v$E)
-#     colnames(transformed.ot) <- sample_names(ps)
-#
-#     pstr <- merge_phyloseq(otu_table(transformed.ot,taxa_are_rows = TRUE),sample_data(ps),tax_table(ps))
-#     return(pstr)
-# }
