@@ -1,20 +1,19 @@
-# Overview
-The Block Bootstrap Method Inference for Longitudinal Microbiome Data
+# bootLong
 
-`bootLongIndices()` Creates sample indices to construct a moving block bootstrap realization. 
+bootLong implements the block bootstrap method inference for longitudinal microbiome data.
 
-`bootLongPhyloseq()` Creates a moving block bootstrap phyloseq realization: given the block size, this function creates blocks of temporally contiguous observations for each subject by calling `bootLongIndices()`.
+bootLong strats with a `phyloseq` object and returns the confidence interval and adjusted p-values for the differential abundance analysis. 
 
-`bootLongMethod()` Computes the adjusted p-values and confidence sets: given a block size, this function calls `bootLongPhyloseq()` to create moving block bootstrap phyloseq realizations. Then, it calls ``computeStat`` on each bootstrap realization to compute the statistic and pivotal statistic. Finally, this function computes the adjusted p-values and confidence sets.
+The input `phyloseq` must have the count data. 
 
-`bootLongSubsampling()` Computes the MSE of two-sided probability using subsampling procedure. Given an initial block size and percentage of repeated observations to make subsamples, this function computes the mean squared error (MSE) in estimating the two-sided probability with different block sizes less than the initital block size. 
 
-# Installation
+##  Installation
 
+Install the development version from GitHub with:
 ```{r}
-# Install the the development version from GitHub:
+# install.packages("devtools")
 devtools::install_github("PratheepaJ/bootLong")
 ```
 
-# Workflow
+## Workflow
 See vignettes for detailed workflow.
