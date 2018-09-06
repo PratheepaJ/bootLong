@@ -16,4 +16,4 @@ devtools::install_github("PratheepaJ/bootLong")
 ```
 
 ## Workflow
-See vignettes for detailed workflow.
+See vignettes for the detailed workflow.
