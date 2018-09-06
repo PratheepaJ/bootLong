@@ -8,8 +8,30 @@
 #' @return \code{phyloseq} object with transformed \code{otu_table}
 #' @export
 #' @import "joineR"
-psTransform <- function(ps,factors){
-        ot <- as.matrix(round(otu_table(ps),digits = 0))
+psTransform = function(ps,factors){
+    if(dim(otu_table(ps))[2]!=nsamples(ps)){
+        otu_table(ps)=t(otu_table(ps))
+        }
+    ot = as.matrix(round(otu_table(ps),digits = 0))
+    geo_mean = function(x){
+        val = exp(mean(log(x[x>0])))
+    }
+
+    geom_mean_row = apply(ot, 1, FUN = geo_mean)
+
+    median_of_ratios = function(x, geom_mean_row){
+        rat = x/geom_mean_row
+        median_rat <- median(rat)
+        return(median_rat)
+    }
+
+    sj = apply(ot, 2, FUN = median_of_ratios, geom_mean_row = geom_mean_row)
+    ot_trans = asinh(ot/sj)
+
+
+
+
+        ot = as.matrix(round(otu_table(ps),digits = 0))
         samd <- data.frame(sample_data(ps))
         anno <- data.frame(tax_table(ps))
         dgeList <- edgeR::DGEList(counts=ot, genes=anno, samples = samd)
