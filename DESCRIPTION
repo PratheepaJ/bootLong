@@ -1,27 +1,35 @@
 Package: bootLong
 Type: Package
-Title: The Block Bootstrap Method for Longitudinal Microbiome Data 
+Title: The Block Bootstrap Method for Longitudinal Count Data 
 Version: 0.1.0
-Author: Pratheepa Jeganathan
+Authors@R: c(
+    person("Jeganathan", "Pratheepa", , "pjeganat@stanford.edu", role = "cre"),
+    person("Jeganathan", "Pratheepa", , "pjeganat@stanford.edu", role = "aut"),
+    person("Holmes, Susan", role = "aut")
+  )
 Maintainer: Pratheepa Jeganathan <pjeganat@stanford.edu>
-Description: bootLong provides a set of tools for differential abundance analysis and subsampling method to compute the optimal block size for the block bootstrap method of longitudinal microbiome data.It also provides a set of tools to visulaize the correlogram, lag-plot, and variogram of longitudinal microbiome data. 
+Description: This implements the block bootstrap method, 
+    subsampling method for choosing optimal block length, 
+    and exploratory tools such as correlogram, lag-plot, 
+    variogram for longitudinal count data.
 License: GPL-2
 Encoding: UTF-8
 LazyData: true
 Imports:
-    limma,
-    edgeR,
-    DESeq2,
-    phyloseq,
-    dplyr,
-    tidyr,
-    lazyeval,
     ashr,
     BiocParallel,
-    parallel,
+    dplyr,
+    DESeq2,
     doParallel,
-    joineR
+    edgeR,
+    joineR,
+    lazyeval,
+    limma,
+    parallel,
+    phyloseq,
+    tidyr
 RoxygenNote: 6.0.1
-Suggests: knitr,
+Suggests: 
+    knitr,
     rmarkdown
 VignetteBuilder: knitr
