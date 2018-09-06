@@ -3,8 +3,7 @@ Type: Package
 Title: The Block Bootstrap Method for Longitudinal Count Data 
 Version: 0.1.0
 Authors@R: c(
-    person("Jeganathan", "Pratheepa", , "pjeganat@stanford.edu", role = "cre"),
-    person("Jeganathan", "Pratheepa", , "pjeganat@stanford.edu", role = "aut"),
+    person("Jeganathan", "Pratheepa", , "jpratheepa31@gmail.com", role = c("cre","aut")),
     person("Holmes, Susan", role = "aut")
   )
 Maintainer: Pratheepa Jeganathan <pjeganat@stanford.edu>
@@ -33,3 +32,4 @@ Suggests:
     knitr,
     rmarkdown
 VignetteBuilder: knitr
+BugReports: https://github.com/PratheepaJ/bootLong/issues
