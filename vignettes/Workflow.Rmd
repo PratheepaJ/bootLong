@@ -1,56 +1,85 @@
 ---
 title: "Workflow : The Block Bootstrap Method for Longitudinal Microbiome Data"
-author: "Pratheepa Jeganathan"
+author:
+  name: Pratheepa Jeganathan
+  affiliation: Department of Statistics, Stanford University
+  email: jpratheepa31@gmail.com
 date: "`r Sys.Date()`"
-output: rmarkdown::html_vignette
+output: 
+    rmarkdown::html_vignette:
+        toc_float:  true
 vignette: >
   %\VignetteIndexEntry{Vignette Title}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+bibliography: bootLong.bib
 ---
 
-```{r}
-rm(list = ls())
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 ```
 
+Install [R](https://www.r-project.org/) and [RStudio](https://www.rstudio.com/). Open this `Rmd` file in RStudio. Then run the following code to install all required packages.
+
+
 Install packages: 
-```{r message=FALSE,warning=FALSE}
+```{r install_packages}
 pkgs <- c("ggplot2","dplyr","tidyr",
           "phyloseq","DESeq2","edgeR",
           "limma","ashr","gridExtra",
-          "geepack","MASS","geeM","R.utils",
-          "BiocParallel",
-          "PratheepaJ/bbootLong")
-
+          "geepack","MASS","geeM",
+          "R.utils", "BiocParallel","doParallel",
+          "parallel")
 
 #   installed packages that were not installed already
 source("http://bioconductor.org/biocLite.R")
 biocLite(setdiff(pkgs,installed.packages()))
+
+#devtools::install_github("PratheepaJ/bootLong")
 ```
 
 load packages:
-```{r message=FALSE,warning=FALSE}
-lpckges<-pkgs%in%(.packages())
-if(any(!lpckges)){
-    sapply(pkgs[!lpckges],require,character.only=TRUE)
-}
+```{r load_packages}
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+library(phyloseq)
+library(DESeq2)
+library(edgeR)
+library(limma)
+library(ashr)
+library(gridExtra)
+library(geepack)
+library(MASS)
+library(geeM)
+library(R.utils)
+library(BiocParallel)
+library(doParallel)
+library(parallel)
 devtools::load_all(".")
 ```
 
-#   Read data
+Set the computational resources
+```{r}
+ncores = as.integer(Sys.getenv("SLURM_NTASKS"))
+if(is.na(ncores)) ncores <- parallel::detectCores()
+```
+
+##  Load the phyloseq
+
+### Load the example dataset stored as a phyloseq object in the ``bootLong`` package (or use your own data stored as a phyloseq object)
+
 ```{r }
 ps <- pssim
 ```
 
-# MBS
-```{r eval=FALSE}
+##  Summaries
 
-psm <- merge_samples(ps, "SubjectID")  # OTU_COUNTS ARE SUMMED
-#   otu count of psm: columns- taxa, rows-subjects
-#   coercion is for SampleID...that's ok
+###   Merge by subject    
+```{r eval=FALSE}
+psm <- merge_samples(ps, "SubjectID")  
 sample_data(psm)$SubjectID <- rownames(sample_data(psm))
 sample_data(psm)$Preterm <- factor(sample_data(psm)$Preterm)
-# Make mean OTU-counts
 omat <- as(otu_table(psm), "matrix")
 nsam <- table(sample_data(ps)$SubjectID)
 omn <- omat/as.vector(nsam)
@@ -59,15 +88,15 @@ if(dim(otu_table(psm))[2]!=nsamples(psm)){otu_table(psm)=t(otu_table(psm))}
     
 ```
 
-#   sumamry of data
+###   Summary
 
 ```{r eval=FALSE}
-table(sample_data(ps)$SubjectID)
+table(sample_data(ps)$SubjectID,sample_data(ps)$Time)
 ```
 
-#   sampling schedule
+###   Sampling schedule
 
-```{r eval=FALSE}
+```{r }
 samdf <- sample_data(ps)
 theme_set(theme_bw())
 set.theme <- theme_update(panel.border = element_blank(),
@@ -80,6 +109,7 @@ set.theme <- theme_update(panel.border = element_blank(),
                     strip.background = element_blank(),
                     strip.text = element_text(size = 8),
                     legend.key = element_blank())
+
 p <- ggplot(samdf)+
     geom_point(aes(x = Time, y = SubjectID, color=Preterm), position = position_jitter(width = .2,height = .1),size = 1)+
     theme_set(set.theme)+
@@ -89,23 +119,28 @@ p <- ggplot(samdf)+
 #ggsave("./sampling_schedule.pdf",plot=p,width = 8,height = 5.5)
 ```
 
-#   Preprocessig
+##   Preprocessig
+
+-   Filter ASVs
 ```{r }
-#   Filter taxa
-ps <- prune_taxa((apply(otu_table(ps),1,function(x){sum(x>0)}))>.1*nsamples(ps),ps)
+threshold <- .01
+keep_asv <- apply(otu_table(ps),1,function(x){sum(x>0)}) > threshold*nsamples(ps)
+ps <- prune_taxa(keep_asv,ps)
 ```
 
+##  Exploratory analysis
+
+- Extract the common legend [https://github.com/hadley/ggplot2/wiki/Share-a-legend-between-two-ggplot2-graphs]
 ```{r }
-#   make a common legend
-plot.legend <- function(p){
-    gg.fea <- ggplot_gtable(ggplot_build(p))
-    gg.fea.l.box <- which(sapply(gg.fea$grobs, function(x) x$name) == "guide-box")
-    l <- gg.fea$grobs[[gg.fea.l.box]]
+plot_common_legend <- function(p){
+    ggplot_feature = ggplot_gtable(ggplot_build(p))
+    le <- which(sapply(ggplot_feature$grobs, function(x) x$name) == "guide-box")
+    l <- ggplot_feature$grobs[[le]]
     return(l)
 }
 ```
 
-#   EDA: correlogram
+###  Correlogram
 ```{r message=FALSE,warning=FALSE,fig.width=7.5,fig.height=5.5}
 ps.tr <- psTransform(ps,factors="Preterm") 
 p.all <- longCorreloMultiple(ps.tr[[1]],ps.tr[[2]], factors="Preterm",time="Time",1,6,taxlevel = "Genus")
@@ -114,7 +149,7 @@ p.all <- longCorreloMultiple(ps.tr[[1]],ps.tr[[2]], factors="Preterm",time="Time
 p.all <- lapply(p.all, function(x){x+scale_fill_discrete(name  ="Group",breaks=c("FALSE", "TRUE"),labels=c("Term", "Preterm"))})
 
 #   add only a common legend for all taxa
-leg <- plot.legend(p.all[[1]])
+leg <- plot_common_legend(p.all[[1]])
 plist <- lapply(p.all,function(x){x+theme(legend.position="none")})
 
 #pp1 <- grid.arrange(arrangeGrob(grobs=plist,nrow=2,widths=c(3,3,3)),leg,ncol=2,widths=c(10,2))
@@ -130,7 +165,7 @@ p.lags <- lapply(lags,function(x){longLagPlot(ps.tr[[2]],factors="Preterm",time=
 #   Change the legend labels
 p.lags <- lapply(p.lags, function(x){x+scale_color_discrete(name  ="Group",breaks=c("FALSE", "TRUE"),labels=c("Term", "Preterm"))})
 
-leg <- plot.legend(p.lags[[1]])
+leg <- plot_common_legend(p.lags[[1]])
 plist <- lapply(p.lags,function(x){x+theme(legend.position="none")})
 
 #pp2 <- grid.arrange(arrangeGrob(grobs=plist,nrow=2,widths=c(3,3,3,3)),leg,ncol=2,widths=c(10,2))
@@ -146,7 +181,7 @@ p.all <- longVarioMultiple(ps.tr[[1]],ps.tr[[2]], factors="Preterm",time="Time",
 #   Change the legend labels
 p.all <- lapply(p.all, function(x){x+scale_color_discrete(name  ="Group",breaks=c("FALSE", "TRUE"),labels=c("Term", "Preterm "))})
 
-leg <- plot.legend(p.all[[1]])
+leg <- plot_common_legend(p.all[[1]])
 plist <- lapply(p.all,function(x){x+theme(legend.position="none")})
 
 #pp3 <- grid.arrange(arrangeGrob(grobs=plist,nrow=2,widths=c(3,3,3)),leg,ncol=2,widths=c(10,2))
