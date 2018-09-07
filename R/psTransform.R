@@ -1,14 +1,21 @@
 #' psTransform
-#' This function takes the \code{phyloseq} object and apply
-#' the arcsinh transformation.
+#'
+#' This function ctakes the \code{phyloseq} object, apply
+#' the arcsinh transformation, computes the mean-variance relationship for arcsinh transformed counts, assign a weight for each observation based on the predicted variance.
 #'
 #' @param ps \code{phyloseq} object
-#' @param factors factor, variable in the sample data of ps.
+#' @param span the smoother span. see \code{lowess}
 #'
 #' @return \code{phyloseq} object with transformed \code{otu_table}
 #' @export
 #' @import "joineR"
-psTransform = function(ps,factors){
+psTransform = function(ps, span = 0.5){
+
+    inv_arcs = function(x) {
+        y = 0.5*exp(-x)*(exp(2*x)-1)
+        return(y)
+    }
+
     if(dim(otu_table(ps))[2]!=nsamples(ps)){
         otu_table(ps)=t(otu_table(ps))
         }
@@ -27,6 +34,25 @@ psTransform = function(ps,factors){
 
     sj = apply(ot, 2, FUN = median_of_ratios, geom_mean_row = geom_mean_row)
     ot_trans = asinh(ot/sj)
+
+    lib.size <- colSums(ot)*sj
+
+    lapply(seq_len(dim(ot_trans)[1]), function(x){fit <- lm(ot_trans[x,]~1); fit$coefficients %*% t(fit$design)})
+
+    #   compute weight for each observation using the mean-variance relationship
+    mean_asv = apply(ot_trans, 1, FUN = mean)
+    sd_asv = sqrt(apply(ot_trans, 1, FUN = sd))
+
+    allzero = (rowSums(ot) == 0)
+
+    if (any(allzero)) {
+        mean_asv = mean_asv[!allzero]
+        sd_asv = sd_asv[!allzero]
+    }
+
+    l <- lowess(mean_asv, sd_asv, f = span)
+
+    f <- approxfun(l, rule = 2)
 
 
 

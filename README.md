@@ -2,7 +2,7 @@
 
 bootLong implements the block bootstrap method inference for longitudinal microbiome data.
 
-bootLong strats with a `phyloseq` object and returns the confidence interval and adjusted p-values for the differential abundance analysis. 
+bootLong strats with a `phyloseq` object and returns the confidence intervals and adjusted p-values for the differential abundance analysis. 
 
 The input `phyloseq` must have the count data. 
 
