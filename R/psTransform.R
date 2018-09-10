@@ -12,13 +12,13 @@
 #' @importFrom MASS glm.nb
 psTransform = function(ps, main_factor, span = 0.5){
 
-    inv_arcs = function(x) {
+    inv_arcs = function(x){
         y = 0.5*exp(-x)*(exp(2*x)-1)
         return(y)
     }
 
-    if(dim(otu_table(ps))[2]!=nsamples(ps)){
-        otu_table(ps)=t(otu_table(ps))
+    if(dim(otu_table(ps))[2] != nsamples(ps)){
+        otu_table(ps) = t(otu_table(ps))
     }
 
     ot = otu_table(ps) %>% data.frame %>% as.matrix
@@ -40,28 +40,43 @@ psTransform = function(ps, main_factor, span = 0.5){
         return(median_rat)
     }
 
+    # library size normalization factor
     sj = apply(ot, 2, FUN = median_ratios, geom_mean_row = geom_mean_row)
+
+    #   normalized library size
+    #lib.size = colSums(ot)*sj
 
     #   matrix/vector or matrix*vector - rowwise division or rowwise multiplication
     ot_trans = t(asinh(t(ot)*sj))
-    lib.size = colSums(ot)*sj
-    #   compute weights and residuals
+
+    ##   compute residuals and weights
     samdf = sample_data(ps) %>% data.frame
     des = as.formula(paste("otu","~", paste(main_factor, collapse="+"),"+","offset(arcsinhLink()$linkfun(sj))"))
 
-    residulas_response <- function(ind, samdf, ot, sj, des){
+    response_residulas_fitted <- function(ind, samdf, ot, sj, des){
         otu = as.numeric(ot[ind,])
         sj = as.numeric(sj)
         dff = mutate(samdf, otu=otu, sj=sj)
         glmft = MASS::glm.nb(des, data = dff, method = "glm.fit", link = arcsinhLink())
         res_residuals = resid(glmft,"response")
-        return(res_residuals)
+        res_fitted = fitted(glmft, "response")
+        rt = list(res_residuals, res_fitted)
+        names(rt) <- c("response_residuals", "response_fitted")
+        return(rt)
     }
 
+    resi_fitted = lapply(seq_len(ntaxa(ps)),function(x){
+        response_residulas_fitted(x,samdf = samdf,ot = (ot+1), sj = sj,des = des)
+        })
 
-    lapply(seq_len(dim(ot_trans)[1]), function(x){fit <- lm(ot_trans[x,]~1); fit$coefficients %*% t(fit$design)})
+    resi = lapply(resi_fitted, "[[", 1)
+    resi = data.frame(do.call("rbind",resi))
+    colnames(resi) = sample_names(ps)
+    rownames(resi) = taxa_names(ps)
 
-    #   compute weight for each observation using the mean-variance relationship
+    resi_trans = t(asinh(t(resi)*sj))
+
+    #   compute weight for each observation using the mean-variance relationship of asinh transformed observations accounting for library size
     mean_asv = apply(ot_trans, 1, FUN = mean)
     sd_asv = sqrt(apply(ot_trans, 1, FUN = sd))
 
@@ -72,58 +87,30 @@ psTransform = function(ps, main_factor, span = 0.5){
         sd_asv = sd_asv[!allzero]
     }
 
-    l <- lowess(mean_asv, sd_asv, f = span)
+    l = lowess(mean_asv, sd_asv, f = span)
 
-    f <- approxfun(l, rule = 2)
+    f = approxfun(l, rule = 2)
 
+    fited = lapply(resi_fitted, "[[", 2)
+    fited = data.frame(do.call("rbind",fited))
+    colnames(fited) = sample_names(ps)
+    rownames(fited) = taxa_names(ps)
 
+    fited_trans = t(asinh(t(fited)*sj))
 
+    w = 1/f(fited_trans)^4
+    dim(w) = dim(fited_trans)
 
-        ot = as.matrix(otu_table(ps))
-        samd <- data.frame(sample_data(ps))
-        anno <- data.frame(tax_table(ps))
-        dgeList <- edgeR::DGEList(counts=ot, genes=anno, samples = samd)
+    ps_resid_asinh = phyloseq(otu_table(resi_trans,taxa_are_rows = T),
+                       sample_data(ps),
+                       tax_table(ps))
 
-        des <- as.formula(paste("~", paste(main_factor, collapse="+")))
-        mm <- model.matrix(des,data=samd)
-        des2 <- as.formula(paste("otu","~", paste(main_factor, collapse="+"),"+","offset(arcsinhLink()$linkfun(sj))"))
+    ps_ot_asinh = phyloseq(otu_table(ot_trans,taxa_are_rows = TRUE),
+                        sample_data(ps),
+                        tax_table(ps))
 
-        geo.mean.row <- apply((ot+1),1,function(x){exp(sum(log(x))/length(x))})
-        sj <- apply((ot+1),2,function(x){median(x/geo.mean.row)})
-
-        v <- arcsinhTransform(counts=dgeList, design=mm,plot = F)
-        we <- v$weights
-
-        nt <- as.list(seq(1,ntaxa(ps)))
-
-        com.res <- function(ind,samd,ot,sj,we,des2){
-                otu <- as.numeric(ot[ind,])
-                sj <- as.numeric(sj)
-                otu_sj <-otu*sj
-                we <- as.numeric(we[ind,])
-                dff <- samd
-                dff <- cbind(samd,otu=otu,sj=sj,we=we)
-
-                glmft.tx <- MASS::glm.nb(des2,data = dff,weights = we,method = "glm.fit",link = arcsinhLink())
-                return(glmft.tx$residuals)
-        }
-
-        resi <- lapply(nt,function(x){com.res(x,samd,(ot+1),sj,we,des2)})
-        resi <- data.frame(do.call("rbind",resi))
-
-        colnames(resi) <- sample_names(ps)
-        rownames(resi) <- taxa_names(ps)
-
-        ps_res <- phyloseq(otu_table(resi,taxa_are_rows = T),sample_data(ps),tax_table(ps))
-
-            v <- arcsinhTransform(counts=dgeList, design=mm, lib.size=sj,plot = F)
-
-            transformed.ot <- data.frame(v$E)
-            colnames(transformed.ot) <- sample_names(ps)
-
-            pstr <- phyloseq(otu_table(transformed.ot,taxa_are_rows = TRUE),sample_data(ps),tax_table(ps))
-
-            rt <- list(pstr,ps_res)
-            return(rt)
+    rt <- list(ps_ot_asinh, ps_resid_asinh)
+    names(rt) <- c("asinh_transformed_counts", "asinh_transformed_residulas")
+    return(rt)
 }
 
