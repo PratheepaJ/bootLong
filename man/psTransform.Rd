@@ -2,19 +2,20 @@
 % Please edit documentation in R/psTransform.R
 \name{psTransform}
 \alias{psTransform}
-\title{psTransform}
+\title{Variance-stablized values of otu table and residuals.}
 \usage{
-psTransform(ps, span = 0.5)
+psTransform(ps, main_factor, span = 0.5)
 }
 \arguments{
-\item{ps}{\code{phyloseq} object}
+\item{ps}{phyloseq object}
 
-\item{span}{the smoother span. see \code{lowess}}
+\item{main_factor}{Character string. The name of the variable to map main factor in the plot (factor vector).}
+
+\item{span}{the smoother span. see \code{\link[stats]{lowess}}}
 }
 \value{
-\code{phyloseq} object with transformed \code{otu_table}
+A list of phyloseq objects. The first element is the asinh transfomed of the otu_table and the second element is the asinh transformed of the response residuals of the \code{\link[MASS]{glm.nb}} fit.
 }
 \description{
-This function ctakes the \code{phyloseq} object, apply
-the arcsinh transformation, computes the mean-variance relationship for arcsinh transformed counts, assign a weight for each observation based on the predicted variance.
+Variance-stablized values of otu table and residuals.
 }

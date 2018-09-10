@@ -80,11 +80,177 @@ threshold <- .01
 keep_asv <- apply(otu_table(ps),1,function(x){sum(x>0)}) > threshold*nsamples(ps)
 ps <- prune_taxa(keep_asv,ps)
 
-## ------------------------------------------------------------------------
+## ----common-legend-------------------------------------------------------
 plot_common_legend <- function(p){
     ggplot_feature = ggplot_gtable(ggplot_build(p))
     le <- which(sapply(ggplot_feature$grobs, function(x) x$name) == "guide-box")
     l <- ggplot_feature$grobs[[le]]
     return(l)
 }
+
+## ----corr----------------------------------------------------------------
+ps.tr <- psTransform(ps, 
+                     main_factor = "Preterm", 
+                     span = .5) 
+
+p.all <- longCorreloMultiple(ps.tr[[1]],
+                             ps.tr[[2]], 
+                             factors="Preterm", 
+                             time="Time", 
+                             1, 
+                             6,
+                             taxlevel = "Genus")
+
+#   Change the legend labels
+p.all <- lapply(p.all, function(x){
+    x+scale_fill_discrete(name  ="Group", breaks=c("FALSE", "TRUE"), labels = c("Term", "Preterm"))
+    })
+
+#   extract the common legend for all taxa
+leg <- plot_common_legend(p.all[[1]])
+
+plist <- lapply(p.all,function(x){
+    x+theme(legend.position="none")
+    })
+
+# p <- grid.arrange(arrangeGrob(grobs=plist,nrow=2,widths=c(3,3,3)),
+#                   leg,
+#                   ncol=2,
+#                   widths=c(10,2))
+# ggsave("./core_Sim.eps",plot=p,width = 8,height = 5.5)
+
+grid.arrange(arrangeGrob(grobs=plist,nrow=2,widths=c(3,3,3)),
+             leg,
+             ncol=2,
+             widths=c(10,2))
+
+## ----message=FALSE,warning=FALSE,fig.width=7.5,fig.height=5.5------------
+lags <- as.list(seq(1,8))
+p.lags <- lapply(lags,function(x){longLagPlot(ps.tr[[2]],factors="Preterm",time="Time",taxon=1,x,taxlevel="Genus")})
+
+#   Change the legend labels
+p.lags <- lapply(p.lags, function(x){x+scale_color_discrete(name  ="Group",breaks=c("FALSE", "TRUE"),labels=c("Term", "Preterm"))})
+
+leg <- plot_common_legend(p.lags[[1]])
+plist <- lapply(p.lags,function(x){x+theme(legend.position="none")})
+
+#pp2 <- grid.arrange(arrangeGrob(grobs=plist,nrow=2,widths=c(3,3,3,3)),leg,ncol=2,widths=c(10,2))
+grid.arrange(arrangeGrob(grobs=plist,nrow=2,widths=c(3,3,3,3)),leg,ncol=2,widths=c(10,2))
+#ggsave("./lag_sim.eps",plot=pp2,width = 8,height = 5.5)
+
+
+## ----message=FALSE,warning=FALSE,fig.width=7.5,fig.height=5.5------------
+p.all <- longVarioMultiple(ps.tr[[1]],ps.tr[[2]], factors="Preterm",time="Time",1,6,taxlevel = "Genus")
+
+#   Change the legend labels
+p.all <- lapply(p.all, function(x){x+scale_color_discrete(name  ="Group",breaks=c("FALSE", "TRUE"),labels=c("Term", "Preterm "))})
+
+leg <- plot_common_legend(p.all[[1]])
+plist <- lapply(p.all,function(x){x+theme(legend.position="none")})
+
+#pp3 <- grid.arrange(arrangeGrob(grobs=plist,nrow=2,widths=c(3,3,3)),leg,ncol=2,widths=c(10,2))
+grid.arrange(arrangeGrob(grobs=plist,nrow=2,widths=c(3,3,3)),leg,ncol=2,widths=c(10,2))
+#ggsave("./vario_sim.eps",plot=pp3,width = 8,height = 5.5)
+
+## ----message=FALSE,warning=FALSE,eval=FALSE------------------------------
+#  R <- 100
+#  RR <- 25
+#  factors <- "Preterm"
+#  time <- "Time"
+#  lI <- 5
+#  omega <- .6
+#  system.time(mse_results <- bootLongSubsampling(ps,R=R,RR=RR,factors=factors,time=time,subjectidvar="SubjectID",lI=lI,omega=omega))
+#  
+#  saveRDS(mse_results,"./bboot_sim.rds")
+
+## ----message=FALSE,warning=FALSE,eval=FALSE------------------------------
+#  omega <- .6
+#  mse_results <- readRDS("./bboot_sim.rds")
+#  blks <- length(mse_results)
+#  mse <- list();for(i in 1:blks){mse[[i]] <- mse_results[[i]]$MSE_i}
+#  
+#  mse.avg <- lapply(mse,function(x){mean(x,na.rm=T)})
+#  mse.sum <- lapply(mse,function(x){sum(x,na.rm=T)})
+#  
+#  mse <- unlist(mse.sum)
+#  lblk <- seq(1,length(mse),by=1)
+#  lblk.f <- as.factor(lblk)
+#  dfp <- data.frame(mse=mse,lblk=lblk.f)
+#  
+#  p.mse <- ggplot(dfp,aes(x=lblk,y=mse,group=1))+
+#      geom_point()+
+#      geom_line()+
+#      xlab("block size")+
+#      ylab("Mean squared error")+
+#      ggtitle(paste("MSE for Simulation",omega*100,"%","subsample"))+theme(plot.title = element_text(hjust = 0.5))
+#  
+#  ggsave("./mse_sim.eps",plot=p.mse,width = 8,height = 5.5)
+#  
+#  l.M <- lblk[mse==min(mse)]
+#  l.M
+#  l.opt <- ceiling((100/(omega*100))^(1/5)*l.M)
+#  l.opt
+
+## ----message=FALSE,warning=FALSE,eval=FALSE------------------------------
+#  R <- 1000
+#  RR <- 50
+#  factors <- "Preterm"
+#  time <- "Time"
+#  
+#  system.time(boot_res <- bootLongMethod(ps,b=l.opt,R=R,RR=RR,factors=factors,time=time))
+#  
+#  saveRDS(boot_res,"./boot_sim.rds")
+
+## ----message=FALSE,warning=FALSE,eval=FALSE------------------------------
+#  boot_res <- readRDS("./bboot_sim.rds")
+#  FDR <- .05
+#  taxalevel <- "Genus"
+#  out <- boot_res[[1]]
+#  
+#  #   bootstrap values
+#  T.star_obs <- boot_res[[5]]
+#  
+#  #  filter by FDR
+#  out <- dplyr::filter(out,pvalue.adj <= FDR)
+#  
+#  #   replace ASV by taxalevel
+#  taxaName <- as.character(tax_table(ps)[as.character(out$ASV),taxalevel])
+#  
+#  #   if you want to append Species names to Genus taxalevel
+#  specName <- as.character(tax_table(ps)[as.character(out$ASV),"Species"])
+#  tog <- character()
+#  
+#  for(i in 1:length(taxaName)){
+#      if(!is.na(specName[i])){
+#      tog[i] <- paste(taxaName[i],specName[i])
+#      }else{
+#          tog[i] <- taxaName[i]
+#      }
+#  }
+#  
+#  
+#  #   to remove taxa with no taxalevel name
+#  ind.na <- which(is.na(tog))
+#  
+#  #   to add sequence variants
+#  taxaN <- paste("SV",seq(1,length(out$ASV)),sep="")
+#  tn <- paste(tog,taxaN,sep=".")
+#  
+#  out$ASV <- tn #taxalevel name and variant number
+#  #out$ASV <- taxaName    #   only taxalevel names
+#  #out$ASV <- tog #   taxalevel and Species name
+#  #out <- out[-ind.na,]
+#  
+#  #   arrange by observed lfc
+#  out <- dplyr::arrange(out,desc(stat))
+#  #   dropped observed values of T
+#  out <- out[,-6]
+#  
+#  out <- dplyr::filter(out,!is.na(pvalue.adj))
+#  
+#  #out <- filter(out,abs(stat)>1)
+#  
+#  #   write the results table in latex
+#  library(xtable)
+#  print(xtable(out, type = "latex",digits = 3), file = "./boot_sim.tex")
 

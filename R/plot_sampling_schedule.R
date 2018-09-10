@@ -12,7 +12,7 @@
 #' @export
 #' @import ggplot2
 #' @import magrittr
-plot_sampling_schedule <- function(ps, time_var, subjectID_var, main_factor, theme_manual = set.theme){
+plot_sampling_schedule = function(ps, time_var, subjectID_var, main_factor, theme_manual = set.theme){
 
     samdf <- sample_data(ps) %>% data.frame
     if(!is.integer(samdf[,time_var])){
