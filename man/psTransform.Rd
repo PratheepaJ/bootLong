@@ -2,22 +2,19 @@
 % Please edit documentation in R/psTransform.R
 \name{psTransform}
 \alias{psTransform}
-\title{psTransform
-This function takes the \code{phyloseq} object and apply
-the arcsinh transformation.}
+\title{psTransform}
 \usage{
-psTransform(ps, factors)
+psTransform(ps, span = 0.5)
 }
 \arguments{
 \item{ps}{\code{phyloseq} object}
 
-\item{factors}{factor, variable in the sample data of ps.}
+\item{span}{the smoother span. see \code{lowess}}
 }
 \value{
 \code{phyloseq} object with transformed \code{otu_table}
 }
 \description{
-psTransform
-This function takes the \code{phyloseq} object and apply
-the arcsinh transformation.
+This function ctakes the \code{phyloseq} object, apply
+the arcsinh transformation, computes the mean-variance relationship for arcsinh transformed counts, assign a weight for each observation based on the predicted variance.
 }

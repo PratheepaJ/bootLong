@@ -4,8 +4,8 @@
 \alias{bootLongSubsampling}
 \title{bootLongSubsampling}
 \usage{
-bootLongSubsampling(ps, R, RR, factors, time, SubjectID_n = "SubjectID", lI,
-  omega = 0.6, lC1 = 1, lC2 = NULL)
+bootLongSubsampling(ps, R, RR, factors, time, SubjectID_n = "SubjectID",
+  lI, omega = 0.6, lC1 = 1, lC2 = NULL)
 }
 \arguments{
 \item{ps}{a \code{phyloseq} object.}

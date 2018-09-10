@@ -12,7 +12,7 @@
 #' @return \code{ggplot2} object of correlogram for multiple taxa.
 #' @export
 #'
-longCorreloMultiple <- function(pstr,psres,factors,time,starttaxa=1,endtaxa=4,taxlevel="Species"){
+longCorreloMultiple <- function(pstr, psres, factors,time,starttaxa=1,endtaxa=4,taxlevel="Species"){
         taxa_order <- sort(taxa_sums(pstr),decreasing = T)
         ind <- which(taxa_names(pstr)%in%names(taxa_order)[starttaxa:endtaxa])
         taxa <- as.list(ind)

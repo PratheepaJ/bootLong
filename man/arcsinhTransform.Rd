@@ -4,7 +4,8 @@
 \alias{arcsinhTransform}
 \title{arcsinhTransform}
 \usage{
-arcsinhTransform(counts, design = NULL, lib.size = NULL, span = 0.5, ...)
+arcsinhTransform(counts, design = NULL, lib.size = NULL, span = 0.5,
+  ...)
 }
 \arguments{
 \item{counts}{\code{DGEList}.}

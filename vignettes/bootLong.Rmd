@@ -29,7 +29,7 @@ pkgs <- c("ggplot2","dplyr","tidyr",
           "limma","ashr","gridExtra",
           "geepack","MASS","geeM",
           "R.utils", "BiocParallel","doParallel",
-          "parallel")
+          "parallel","magrittr")
 
 #   installed packages that were not installed already
 source("http://bioconductor.org/biocLite.R")
@@ -56,6 +56,7 @@ library(R.utils)
 library(BiocParallel)
 library(doParallel)
 library(parallel)
+library(magrittr)
 devtools::load_all(".")
 ```
 
@@ -97,7 +98,6 @@ table(sample_data(ps)$SubjectID,sample_data(ps)$Time)
 ###   Sampling schedule
 
 ```{r }
-samdf <- sample_data(ps)
 theme_set(theme_bw())
 set.theme <- theme_update(panel.border = element_blank(),
                     panel.grid = element_line(size = .8),
@@ -110,16 +110,14 @@ set.theme <- theme_update(panel.border = element_blank(),
                     strip.text = element_text(size = 8),
                     legend.key = element_blank())
 
-p <- ggplot(samdf)+
-    geom_point(aes(x = Time, y = SubjectID, color=Preterm), position = position_jitter(width = .2,height = .1),size = 1)+
-    theme_set(set.theme)+
-    facet_wrap(~Preterm)+
-    scale_color_discrete(name  ="Group",breaks=c("FALSE", "TRUE"),labels=c("Term", "Preterm"))
 
+sample_data(ps)$Preterm <- as.factor(sample_data(ps)$Preterm)
+p <- plot_sampling_schedule(ps, time_var = "Time", subjectID_var = "SubjectID", main_factor = "Preterm", theme_manual = set.theme)
+p <- p + scale_color_discrete(name  ="Group",breaks=c("FALSE", "TRUE"),labels=c("Term", "Preterm"))
 #ggsave("./sampling_schedule.pdf",plot=p,width = 8,height = 5.5)
 ```
 
-##   Preprocessig
+##   Preprocessing
 
 -   Filter ASVs
 ```{r }
@@ -142,7 +140,7 @@ plot_common_legend <- function(p){
 
 ###  Correlogram
 ```{r message=FALSE,warning=FALSE,fig.width=7.5,fig.height=5.5}
-ps.tr <- psTransform(ps,factors="Preterm") 
+ps.tr <- psTransform(ps, main_factor="Preterm", span = .5) 
 p.all <- longCorreloMultiple(ps.tr[[1]],ps.tr[[2]], factors="Preterm",time="Time",1,6,taxlevel = "Genus")
 
 #   Change the legend labels

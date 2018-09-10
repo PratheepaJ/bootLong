@@ -4,8 +4,8 @@
 \alias{longCorreloMultiple}
 \title{longCorreloMultiple}
 \usage{
-longCorreloMultiple(pstr, psres, factors, time, starttaxa = 1, endtaxa = 4,
-  taxlevel = "Species")
+longCorreloMultiple(pstr, psres, factors, time, starttaxa = 1,
+  endtaxa = 4, taxlevel = "Species")
 }
 \arguments{
 \item{factors}{factor, variable in the sample data of ps.}

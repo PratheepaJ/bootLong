@@ -24,27 +24,30 @@ arcsinhTransform <- function (counts, design = NULL, lib.size = NULL,span = 0.5,
         out <- list()
 
         if (is(counts, "DGEList")){
-        out$genes <- counts$genes
-        out$targets <- counts$samples
-        if (is.null(design) && diff(range(as.numeric(counts$sample$group))) >
-            0)
-            design <- model.matrix(~group, data = counts$samples)
-        if (is.null(lib.size))
-            lib.size <- with(counts$samples, lib.size * norm.factors)
-        counts <- counts$counts
+            out$genes <- counts$genes
+            out$targets <- counts$samples
+            if (is.null(design) && diff(range(as.numeric(counts$sample$group))) >
+                0){
+                design <- model.matrix(~group, data = counts$samples)
+                }
+            if (is.null(lib.size)){
+                lib.size <- with(counts$samples, lib.size * norm.factors)
+                }
+            counts <- counts$counts
         }else{
-        isExpressionSet <- suppressPackageStartupMessages(is(counts,"ExpressionSet"))
-        if (isExpressionSet) {
-            if (length(Biobase::fData(counts)))
-                out$genes <- Biobase::fData(counts)
-            if (length(Biobase::pData(counts)))
-                out$targets <- Biobase::pData(counts)
-            counts <- Biobase::exprs(counts)
+            isExpressionSet <- suppressPackageStartupMessages(is(counts,"ExpressionSet"))
+            if (isExpressionSet) {
+                if (length(Biobase::fData(counts)))
+                    out$genes <- Biobase::fData(counts)
+                if (length(Biobase::pData(counts)))
+                    out$targets <- Biobase::pData(counts)
+                counts <- Biobase::exprs(counts)
+            }
+            else {
+                counts <- as.matrix(counts)
+            }
         }
-        else {
-            counts <- as.matrix(counts)
-        }
-        }
+
 
         n <- nrow(counts)
 
@@ -62,7 +65,9 @@ arcsinhTransform <- function (counts, design = NULL, lib.size = NULL,span = 0.5,
 
         fit <- lmFit(y, design, ...)
 
-        if (is.null(fit$Amean)){fit$Amean <- rowMeans(y, na.rm = TRUE)}
+        if (is.null(fit$Amean)){
+            fit$Amean <- rowMeans(y, na.rm = TRUE)
+            }
 
         sx <- fit$Amean
 
@@ -81,11 +86,11 @@ arcsinhTransform <- function (counts, design = NULL, lib.size = NULL,span = 0.5,
         f <- approxfun(l, rule = 2)
 
         if(fit$rank < ncol(design)){
-        j <- fit$pivot[1:fit$rank]
-        fitted.values <- fit$coef[, j, drop = FALSE] %*% t(fit$design[,
-                                                                      j, drop = FALSE])
+            j <- fit$pivot[1:fit$rank]
+            fitted.values <- fit$coef[, j, drop = FALSE] %*% t(fit$design[,
+                                                                          j, drop = FALSE])
         }else{
-        fitted.values <- fit$coef %*% t(fit$design)
+            fitted.values <- fit$coef %*% t(fit$design)
         }
 
         fitted.cpm <- inv_arcs(fitted.values)

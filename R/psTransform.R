@@ -9,7 +9,8 @@
 #' @return \code{phyloseq} object with transformed \code{otu_table}
 #' @export
 #' @import "joineR"
-psTransform = function(ps, span = 0.5){
+#' @importFrom MASS glm.nb
+psTransform = function(ps, main_factor, span = 0.5){
 
     inv_arcs = function(x) {
         y = 0.5*exp(-x)*(exp(2*x)-1)
@@ -18,24 +19,45 @@ psTransform = function(ps, span = 0.5){
 
     if(dim(otu_table(ps))[2]!=nsamples(ps)){
         otu_table(ps)=t(otu_table(ps))
-        }
-    ot = as.matrix(round(otu_table(ps),digits = 0))
+    }
+
+    ot = otu_table(ps) %>% data.frame %>% as.matrix
+
+    if(!isTRUE(all(ot == floor(ot)))){
+        stop("otu_table entries must be integer")
+    }
+
+    #   variance stabilization for negative binomial distribution accounting for library sizes.
     geo_mean = function(x){
         val = exp(mean(log(x[x>0])))
     }
 
     geom_mean_row = apply(ot, 1, FUN = geo_mean)
 
-    median_of_ratios = function(x, geom_mean_row){
+    median_ratios = function(x, geom_mean_row){
         rat = x/geom_mean_row
         median_rat <- median(rat)
         return(median_rat)
     }
 
-    sj = apply(ot, 2, FUN = median_of_ratios, geom_mean_row = geom_mean_row)
-    ot_trans = asinh(ot/sj)
+    sj = apply(ot, 2, FUN = median_ratios, geom_mean_row = geom_mean_row)
 
-    lib.size <- colSums(ot)*sj
+    #   matrix/vector or matrix*vector - rowwise division or rowwise multiplication
+    ot_trans = t(asinh(t(ot)*sj))
+    lib.size = colSums(ot)*sj
+    #   compute weights and residuals
+    samdf = sample_data(ps) %>% data.frame
+    des = as.formula(paste("otu","~", paste(main_factor, collapse="+"),"+","offset(arcsinhLink()$linkfun(sj))"))
+
+    residulas_response <- function(ind, samdf, ot, sj, des){
+        otu = as.numeric(ot[ind,])
+        sj = as.numeric(sj)
+        dff = mutate(samdf, otu=otu, sj=sj)
+        glmft = MASS::glm.nb(des, data = dff, method = "glm.fit", link = arcsinhLink())
+        res_residuals = resid(glmft,"response")
+        return(res_residuals)
+    }
+
 
     lapply(seq_len(dim(ot_trans)[1]), function(x){fit <- lm(ot_trans[x,]~1); fit$coefficients %*% t(fit$design)})
 
@@ -57,19 +79,19 @@ psTransform = function(ps, span = 0.5){
 
 
 
-        ot = as.matrix(round(otu_table(ps),digits = 0))
+        ot = as.matrix(otu_table(ps))
         samd <- data.frame(sample_data(ps))
         anno <- data.frame(tax_table(ps))
         dgeList <- edgeR::DGEList(counts=ot, genes=anno, samples = samd)
 
-        des <- as.formula(paste("~", paste(factors, collapse="+")))
+        des <- as.formula(paste("~", paste(main_factor, collapse="+")))
         mm <- model.matrix(des,data=samd)
-        des2 <- as.formula(paste("otu","~", paste(factors, collapse="+"),"+","offset(arcsinhLink()$linkfun(sj))"))
+        des2 <- as.formula(paste("otu","~", paste(main_factor, collapse="+"),"+","offset(arcsinhLink()$linkfun(sj))"))
 
         geo.mean.row <- apply((ot+1),1,function(x){exp(sum(log(x))/length(x))})
         sj <- apply((ot+1),2,function(x){median(x/geo.mean.row)})
 
-        v <- arcsinhTransform(counts=dgeList, design=mm, lib.size=sj,plot = F)
+        v <- arcsinhTransform(counts=dgeList, design=mm,plot = F)
         we <- v$weights
 
         nt <- as.list(seq(1,ntaxa(ps)))
@@ -77,6 +99,7 @@ psTransform = function(ps, span = 0.5){
         com.res <- function(ind,samd,ot,sj,we,des2){
                 otu <- as.numeric(ot[ind,])
                 sj <- as.numeric(sj)
+                otu_sj <-otu*sj
                 we <- as.numeric(we[ind,])
                 dff <- samd
                 dff <- cbind(samd,otu=otu,sj=sj,we=we)

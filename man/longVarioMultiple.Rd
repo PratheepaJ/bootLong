@@ -4,8 +4,8 @@
 \alias{longVarioMultiple}
 \title{longVarioMultiple}
 \usage{
-longVarioMultiple(pstr, psres, factors, time, starttaxa = 1, endtaxa = 4,
-  point = FALSE, taxlevel = "Species")
+longVarioMultiple(pstr, psres, factors, time, starttaxa = 1,
+  endtaxa = 4, point = FALSE, taxlevel = "Species")
 }
 \arguments{
 \item{factors}{factor, variable in the sample data of ps.}
