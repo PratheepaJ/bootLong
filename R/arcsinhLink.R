@@ -1,5 +1,4 @@
-#' arcsinhLink
-#' arcsinh link function for GLM
+#' asinh link function for glm.nb
 #'
 #' @return An object of class "link-glm"
 #' @export
