@@ -1,22 +1,23 @@
-#' longCorreloSingle
+#' Plots the correlogram given the taxon index.
 #'
-#' This function plots the correlogram given the taxon index.
-#'
-#' @param ps \code{phyloseq} object
-#' @param factors factor variable in the sample data of ps.
-#' @param time character, time variable at repeated observations.
-#' @param taxon numeric, index of taxon to get the variogram
-#' @param taxlevel character, taxonomy level to put the title
+#' @param taxon Numeric, index of taxon to get the correlogram
+#' @param taxlevel Character string. The taxonomy level for the plot title
+#' @inheritParams plot_sampling_schedule
 #'
 #' @return \code{ggplot2} object of correlogram for one taxon according to the taxon index.
 #' @export
 #'
 
-longCorreloSingle <- function(ps,factors,time,taxon,taxlevel="Species"){
+longCorreloSingle <- function(ps,
+                              main_factor,
+                              time_var,
+                              taxon,
+                              taxlevel = "Species"){
+
         taxon_name <- tax_table(ps)[taxon,taxlevel]
         df.taxa <- data.frame(sample_data(ps),otu=as.numeric(t(otu_table(ps)[taxon,])))
-        names(df.taxa)[names(df.taxa)==factors] <- "Group"
-        names(df.taxa)[names(df.taxa)==time] <- "Time"
+        names(df.taxa)[names(df.taxa)==main_factor] <- "Group"
+        names(df.taxa)[names(df.taxa)==time_var] <- "Time"
 
         df.taxa.sep <- split(df.taxa,df.taxa$Group)
 

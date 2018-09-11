@@ -2,27 +2,29 @@
 % Please edit documentation in R/longCorreloMultiple.R
 \name{longCorreloMultiple}
 \alias{longCorreloMultiple}
-\title{longCorreloMultiple}
+\title{Plots the correlogram given the multiple taxa indices.}
 \usage{
-longCorreloMultiple(pstr, psres, factors, time, starttaxa = 1,
+longCorreloMultiple(pstr, psres, main_factor, time_var, starttaxa = 1,
   endtaxa = 4, taxlevel = "Species")
 }
 \arguments{
-\item{factors}{factor, variable in the sample data of ps.}
+\item{pstr}{phyloseq object. The asinh transfomed of the otu_table.}
 
-\item{time}{character, time variable at repeated observations.}
+\item{psres}{phyloseq object. The asinh transformed of the response residuals.}
 
-\item{starttaxa}{numeric, first index of taxa ordered by total reads}
+\item{main_factor}{Character string. The name of the variable to map main factor in the plot (factor vector).}
 
-\item{endtaxa}{numeric, the last index of taxa ordered by total reads}
+\item{time_var}{Character string. The name of the variable to map time in the plot (integer vector).}
 
-\item{taxlevel}{character, taxonomy level to put the title}
+\item{starttaxa}{Numeric. The first index of taxa ordered by total reads}
 
-\item{ps}{\code{phyloseq} object}
+\item{endtaxa}{Numeric. The last index of taxa ordered by total reads}
+
+\item{taxlevel}{Character string. The taxonomy level for the plot title}
 }
 \value{
 \code{ggplot2} object of correlogram for multiple taxa.
 }
 \description{
-This function plots the correlogram given the taxa indices.
+Plots the correlogram given the multiple taxa indices.
 }

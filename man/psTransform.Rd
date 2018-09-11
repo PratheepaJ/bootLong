@@ -2,7 +2,7 @@
 % Please edit documentation in R/psTransform.R
 \name{psTransform}
 \alias{psTransform}
-\title{Variance-stablized values of otu table and residuals.}
+\title{psTransform}
 \usage{
 psTransform(ps, main_factor, span = 0.5)
 }

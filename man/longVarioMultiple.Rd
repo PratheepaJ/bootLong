@@ -2,27 +2,33 @@
 % Please edit documentation in R/LongVarioMultiple.R
 \name{longVarioMultiple}
 \alias{longVarioMultiple}
-\title{longVarioMultiple}
+\title{Plots the variogram for multiple taxa given the indices.}
 \usage{
-longVarioMultiple(pstr, psres, factors, time, starttaxa = 1,
-  endtaxa = 4, point = FALSE, taxlevel = "Species")
+longVarioMultiple(pstr, psres, main_factor, time_var, subjectID_var,
+  starttaxa = 1, endtaxa = 4, point = FALSE, taxlevel = "Species")
 }
 \arguments{
-\item{factors}{factor, variable in the sample data of ps.}
+\item{pstr}{phyloseq object. The asinh transfomed of the otu_table.}
 
-\item{time}{character, time variable at repeated observations.}
+\item{psres}{phyloseq object. The asinh transformed of the response residuals.}
 
-\item{starttaxa}{numeric, starting index of taxon: taxa will be ordered inside the function}
+\item{main_factor}{Character string. The name of the variable to map main factor in the plot (factor vector).}
 
-\item{endtaxa}{numeric, last index of taxon: taxa will be ordered inside the function}
+\item{time_var}{Character string. The name of the variable to map time in the plot (integer vector).}
 
-\item{taxlevel}{character, taxonomy level to make the title}
+\item{subjectID_var}{Character string. The name of the variable to map Subject Ids in the plot (factor vector).}
 
-\item{ps}{\code{phyloseq} object}
+\item{starttaxa}{Numeric. The first index of taxa ordered by total reads}
+
+\item{endtaxa}{Numeric. The last index of taxa ordered by total reads}
+
+\item{point}{Logical. Whether variogram with observed values.}
+
+\item{taxlevel}{Character string. The taxonomy level for the plot title}
 }
 \value{
-\code{ggplot} object of variogram for starttaxa:endtaxa taxa
+\code{ggplot} object of variogram for for multiple taxa.
 }
 \description{
-This function plots the variogram for multiple taxa given the indeices.
+Plots the variogram for multiple taxa given the indices.
 }

@@ -2,25 +2,29 @@
 % Please edit documentation in R/LongVarioSingle.R
 \name{longVarioSingle}
 \alias{longVarioSingle}
-\title{longVarioSingle}
+\title{Plot the variogram given the taxon index.}
 \usage{
-longVarioSingle(ps, factors, time, taxon, point = FALSE,
-  taxlevel = "Species")
+longVarioSingle(ps, main_factor, time_var, subjectID_var, taxon,
+  point = FALSE, taxlevel = "Species")
 }
 \arguments{
-\item{ps}{\code{phyloseq} object}
+\item{ps}{phyloseq object}
 
-\item{factors}{factor, variable in the sample data of ps.}
+\item{main_factor}{Character string. The name of the variable to map main factor in the plot (factor vector).}
 
-\item{time}{character, time variable at repeated observations.}
+\item{time_var}{Character string. The name of the variable to map time in the plot (integer vector).}
 
-\item{taxon}{numeric, index of taxon to get the variogram}
+\item{subjectID_var}{Character string. The name of the variable to map Subject Ids in the plot (factor vector).}
 
-\item{taxlevel}{character, taxonomy level to put the title}
+\item{taxon}{Numeric, index of taxon to get the correlogram}
+
+\item{point}{Logical. Whether variogram with observed values.}
+
+\item{taxlevel}{Character string. The taxonomy level for the plot title}
 }
 \value{
 \code{ggplot} object of variogram
 }
 \description{
-This function plot the variogram given the taxon index.
+Plot the variogram given the taxon index.
 }

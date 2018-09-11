@@ -1,22 +1,23 @@
-#' longLagPlot
+#' Plots the lagged-plot given the taxon index.
 #'
-#' This produce the lagged plot given the taxon index.
-#'
-#' @param ps ps \code{phyloseq} object
-#' @param factors factor, variable in the sample data of ps.
-#' @param time character, time variable at repeated observations.
-#' @param taxon numeric, index of taxon to get the variogram
+#' @param taxon A numeric. The index of taxon to get the variogram
 #' @param lags numeric (vector) how many lags to plot
-#' @param taxlevel character, taxonomy level to put the title
+#' @inheritParams longCorreloSingle
 #'
 #' @return \code{ggplot2} object of lagged plot for speciec taxon.
 #' @export
 #'
-longLagPlot <- function(ps,factors,time,taxon,lags,taxlevel="Species"){
+longLagPlot <- function(ps,
+                        main_factor,
+                        time_var,
+                        taxon,
+                        lags,
+                        taxlevel="Species"){
+
     taxon_name <- tax_table(ps)[taxon,taxlevel]
     df.taxa <- data.frame(sample_data(ps),otu=as.numeric(t(otu_table(ps)[taxon,])))
-    names(df.taxa)[names(df.taxa)==factors] <- "Group"
-    names(df.taxa)[names(df.taxa)==time] <- "Time"
+    names(df.taxa)[names(df.taxa)==main_factor] <- "Group"
+    names(df.taxa)[names(df.taxa)==time_var] <- "Time"
 
     df.taxa.sep <- split(df.taxa,df.taxa$Group)
 
@@ -38,6 +39,7 @@ longLagPlot <- function(ps,factors,time,taxon,lags,taxlevel="Species"){
 
     df.sep <- do.call("rbind",df.sep)
     df.sep$Group <- as.factor(df.sep$Group)
+
 
     p <- ggplot(df.sep,aes(x=xax,y=yax,col=Group,group=Group))+
         geom_point()+

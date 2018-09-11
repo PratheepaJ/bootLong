@@ -1,21 +1,32 @@
-#' longVarioMultiple
+#' Plots the variogram for multiple taxa given the indices.
 #'
-#' This function plots the variogram for multiple taxa given the indeices.
+#' @inheritParams longCorreloMultiple
+#' @inheritParams longVarioSingle
 #'
-#' @param ps \code{phyloseq} object
-#' @param factors factor, variable in the sample data of ps.
-#' @param starttaxa numeric, starting index of taxon: taxa will be ordered inside the function
-#' @param endtaxa numeric, last index of taxon: taxa will be ordered inside the function
-#' @param time character, time variable at repeated observations.
-#' @param taxlevel character, taxonomy level to make the title
-#'
-#' @return \code{ggplot} object of variogram for starttaxa:endtaxa taxa
+#' @return \code{ggplot} object of variogram for for multiple taxa.
 #' @export
-#'
-longVarioMultiple <- function(pstr,psres,factors,time,starttaxa=1,endtaxa=4,point=FALSE,taxlevel="Species"){
-        taxa_order <- sort(taxa_sums(pstr),decreasing = T)
-        ind <- which(taxa_names(pstr)%in%names(taxa_order)[starttaxa:endtaxa])
-        taxa <- as.list(ind)
-        p.all <- lapply(taxa,function(x){longVarioSingle(ps=psres,factors=factors,time=time,taxon=x,point=point,taxlevel = taxlevel)})
+
+longVarioMultiple <- function(pstr,
+                              psres,
+                              main_factor,
+                              time_var,
+                              subjectID_var,
+                              starttaxa=1,
+                              endtaxa=4,
+                              point=FALSE,
+                              taxlevel="Species"){
+
+        taxa_order = sort(taxa_sums(pstr),decreasing = T)
+        ind = which(taxa_names(pstr)%in%names(taxa_order)[starttaxa:endtaxa])
+        taxa = as.list(ind)
+        p.all <- lapply(taxa, function(x){
+            longVarioSingle(ps = psres,
+                            main_factor =  main_factor,
+                            time_var = time_var,
+                            subjectID_var = subjectID_var,
+                            taxon=x,
+                            point = point,
+                            taxlevel = taxlevel)
+            })
         return(p.all)
 }

@@ -2,26 +2,26 @@
 % Please edit documentation in R/longLagPlot.R
 \name{longLagPlot}
 \alias{longLagPlot}
-\title{longLagPlot}
+\title{Plots the lagged-plot given the taxon index.}
 \usage{
-longLagPlot(ps, factors, time, taxon, lags, taxlevel = "Species")
+longLagPlot(ps, main_factor, time_var, taxon, lags, taxlevel = "Species")
 }
 \arguments{
-\item{ps}{ps \code{phyloseq} object}
+\item{ps}{phyloseq object}
 
-\item{factors}{factor, variable in the sample data of ps.}
+\item{main_factor}{Character string. The name of the variable to map main factor in the plot (factor vector).}
 
-\item{time}{character, time variable at repeated observations.}
+\item{time_var}{Character string. The name of the variable to map time in the plot (integer vector).}
 
-\item{taxon}{numeric, index of taxon to get the variogram}
+\item{taxon}{A numeric. The index of taxon to get the variogram}
 
 \item{lags}{numeric (vector) how many lags to plot}
 
-\item{taxlevel}{character, taxonomy level to put the title}
+\item{taxlevel}{Character string. The taxonomy level for the plot title}
 }
 \value{
 \code{ggplot2} object of lagged plot for speciec taxon.
 }
 \description{
-This produce the lagged plot given the taxon index.
+Plots the lagged-plot given the taxon index.
 }

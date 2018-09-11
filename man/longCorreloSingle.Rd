@@ -2,24 +2,24 @@
 % Please edit documentation in R/longCorreloSingle.R
 \name{longCorreloSingle}
 \alias{longCorreloSingle}
-\title{longCorreloSingle}
+\title{Plots the correlogram given the taxon index.}
 \usage{
-longCorreloSingle(ps, factors, time, taxon, taxlevel = "Species")
+longCorreloSingle(ps, main_factor, time_var, taxon, taxlevel = "Species")
 }
 \arguments{
-\item{ps}{\code{phyloseq} object}
+\item{ps}{phyloseq object}
 
-\item{factors}{factor variable in the sample data of ps.}
+\item{main_factor}{Character string. The name of the variable to map main factor in the plot (factor vector).}
 
-\item{time}{character, time variable at repeated observations.}
+\item{time_var}{Character string. The name of the variable to map time in the plot (integer vector).}
 
-\item{taxon}{numeric, index of taxon to get the variogram}
+\item{taxon}{Numeric, index of taxon to get the correlogram}
 
-\item{taxlevel}{character, taxonomy level to put the title}
+\item{taxlevel}{Character string. The taxonomy level for the plot title}
 }
 \value{
 \code{ggplot2} object of correlogram for one taxon according to the taxon index.
 }
 \description{
-This function plots the correlogram given the taxon index.
+Plots the correlogram given the taxon index.
 }
