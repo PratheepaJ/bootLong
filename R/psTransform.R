@@ -11,11 +11,6 @@
 #' @importFrom MASS glm.nb
 psTransform = function(ps, main_factor, span = 0.5){
 
-        # inv_asinh = function(x){
-        #     y = 0.5*exp(-x)*(exp(2*x)-1)
-        #     return(y)
-        # }
-
         if(dim(otu_table(ps))[2] != nsamples(ps)){
             otu_table(ps) = t(otu_table(ps))
         }
