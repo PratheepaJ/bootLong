@@ -14,26 +14,26 @@
 #'         second element ``observed statistic``
 #'
 #' @export
-bootLongPsi <- function(ps,b,R,RR,factors,time,T.obs.full=NULL,SubjectID_n="SubjectID",para=FALSE){
+bootLongPsi <- function(ps,b,R,RR,factors,time,T.obs.full=NULL,subjectID_var="SubjectID",para=FALSE){
 
         if(dim(otu_table(ps))[1]==nsamples(ps)){
         otu_table(ps) <- t(otu_table(ps,taxa_are_rows = T))
         }
 
-        res.obs <- computeStat(ps=ps,factors=factors,time=time,b=b,SubjectID_n=SubjectID_n)
+        res.obs <- computeStat(ps=ps,factors=factors,time=time,b=b,subjectID_var=subjectID_var)
 
         boot.results <- list()
 
         boot.results <- lapply(seq_len(R),FUN=function(i){
-                ps.boot <- bootLongPhyloseq(ps,b,time,SubjectID_n=SubjectID_n)
+                ps.boot <- bootLongPhyloseq(ps,b,time,subjectID_var=subjectID_var)
                 ps.boot <- ps.boot[[1]]
 
-                df.boot <- computeStat(ps=ps.boot,factors=factors,time=time,b=b,SubjectID_n=SubjectID_n)
+                df.boot <- computeStat(ps=ps.boot,factors=factors,time=time,b=b,subjectID_var=subjectID_var)
 
                 boot.results.bb <- lapply(seq_len(RR),FUN=function(j){
-                        ps.boot.bb <- bootLongPhyloseq(ps.boot,b,time,SubjectID_n=SubjectID_n)
+                        ps.boot.bb <- bootLongPhyloseq(ps.boot,b,time,subjectID_var=subjectID_var)
                         ps.boot.bb <- ps.boot.bb[[1]]
-                        df.boot.bb <- computeStat(ps=ps.boot.bb,factors=factors,time=time,b=b,SubjectID_n=SubjectID_n)
+                        df.boot.bb <- computeStat(ps=ps.boot.bb, factors=factors,time=time,b=b,subjectID_var=subjectID_var)
                         rm(ps.boot.bb)
                         return(df.boot.bb)
 

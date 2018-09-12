@@ -11,6 +11,7 @@
 #'
 #' @return
 #' @export
+#' @importFrom limma lmFit
 
 asinh_voom = function (counts,
                        design = NULL,
