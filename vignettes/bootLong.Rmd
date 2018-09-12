@@ -247,7 +247,10 @@ grid.arrange(arrangeGrob(grobs=plist, nrow=2, widths=c(3,3,3)),
              widths=c(10,2))
 ```
 
-#   Run subsampling procedure with initial block size 
+
+#   The block bootstrap method
+
+## Subsampling   
 ```{r message=FALSE,warning=FALSE,eval=FALSE}
 R <- 100
 RR <- 25
@@ -260,7 +263,7 @@ system.time(mse_results <- bootLongSubsampling(ps,R=R,RR=RR,factors=factors,time
 saveRDS(mse_results,"./bboot_sim.rds")
 ```
 
-#   Inspect MSE plot
+###   Inspect MSE plot
 ```{r message=FALSE,warning=FALSE,eval=FALSE}
 omega <- .6
 mse_results <- readRDS("./bboot_sim.rds")
@@ -290,7 +293,7 @@ l.opt <- ceiling((100/(omega*100))^(1/5)*l.M)
 l.opt
 ```
 
-#   Run MBB with the optimal block size
+##   Run MBB with the optimal block size
 ```{r message=FALSE,warning=FALSE,eval=FALSE}
 R <- 1000
 RR <- 50
@@ -302,7 +305,7 @@ system.time(boot_res <- bootLongMethod(ps,b=l.opt,R=R,RR=RR,factors=factors,time
 saveRDS(boot_res,"./boot_sim.rds")
 ```
 
-#   Inspect the results
+###   Inspect the MBB results
 
 ```{r message=FALSE,warning=FALSE,eval=FALSE}
 boot_res <- readRDS("./bboot_sim.rds")
