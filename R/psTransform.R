@@ -50,14 +50,13 @@ psTransform = function(ps, main_factor, span = 0.5){
             dff = mutate(samdf, otu=otu, sj=sj)
             glmft = MASS::glm.nb(des, data = dff, method = "glm.fit", link = arcsinhLink())
             res_residuals = resid(glmft,"response")
-            res_fitted = fitted(glmft, "response")
-            rt = list(res_residuals, res_fitted)
-            names(rt) <- c("response_residuals", "response_fitted")
+            rt = list(res_residuals)
+            names(rt) <- c("response_residuals")
             return(rt)
         }
 
         resi_fitted = lapply(seq_len(ntaxa(ps)),function(x){
-            response_residulas_fitted(x,samdf = samdf,ot = (ot+1), sj = sj,des = des)
+            response_residulas_fitted(x, samdf = samdf, ot = (ot+1), sj = sj, des = des)
             })
 
         resi = lapply(resi_fitted, "[[", 1)
