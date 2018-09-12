@@ -6,34 +6,54 @@
 #' @param b numeric, block size to account for dependence within-subject.
 #' @param R Number of block bootstrap realization.
 #' @param RR Number of double block bootstrap realization.
-#' @param factors vector of factor variable(s) in the sample data of ps.
-#' @param time Time variable at repeated observations.
+#' @param main_factor vector of factor variable(s) in the sample data of ps.
+#' @param time_var Time variable at repeated observations.
 #' @param T.obs.full If observed statistic is already computed
 #'
 #' @return a list with first element ``K.val`` - two-sided significance probability.
 #'         second element ``observed statistic``
 #'
 #' @export
-bootLongPsi <- function(ps,b,R,RR,factors,time,T.obs.full=NULL,subjectID_var="SubjectID",para=FALSE){
+bootLongPsi = function(ps,
+                        main_factor,
+                        time_var,
+                        subjectID_var,
+                        b,
+                        R,
+                        RR,
+                        T.obs.full=NULL,
+                        para=FALSE){
 
         if(dim(otu_table(ps))[1]==nsamples(ps)){
-        otu_table(ps) <- t(otu_table(ps,taxa_are_rows = T))
+        otu_table(ps) = t(otu_table(ps,taxa_are_rows = T))
         }
 
-        res.obs <- computeStat(ps=ps,factors=factors,time=time,b=b,subjectID_var=subjectID_var)
+        res.obs = computeStat(ps=ps,
+                               main_factor=main_factor,
+                               time_var=time_var,
+                               subjectID_var=subjectID_var,
+                               b=b)
 
-        boot.results <- list()
+        boot.results = list()
 
-        boot.results <- lapply(seq_len(R),FUN=function(i){
-                ps.boot <- bootLongPhyloseq(ps,b,time,subjectID_var=subjectID_var)
-                ps.boot <- ps.boot[[1]]
+        boot.results = lapply(seq_len(R),FUN=function(i){
+                ps.boot = bootLongPhyloseq(ps,b,time_var,subjectID_var=subjectID_var)
+                ps.boot = ps.boot[[1]]
 
-                df.boot <- computeStat(ps=ps.boot,factors=factors,time=time,b=b,subjectID_var=subjectID_var)
+                df.boot = computeStat(ps = ps.boot,
+                                      main_factor = main_factor,
+                                      time_var = time_var,
+                                      subjectID_var = subjectID_var,
+                                      b=b)
 
-                boot.results.bb <- lapply(seq_len(RR),FUN=function(j){
-                        ps.boot.bb <- bootLongPhyloseq(ps.boot,b,time,subjectID_var=subjectID_var)
-                        ps.boot.bb <- ps.boot.bb[[1]]
-                        df.boot.bb <- computeStat(ps=ps.boot.bb, factors=factors,time=time,b=b,subjectID_var=subjectID_var)
+                boot.results.bb = lapply(seq_len(RR),FUN=function(j){
+                        ps.boot.bb = bootLongPhyloseq(ps.boot,b,time_var,subjectID_var=subjectID_var)
+                        ps.boot.bb = ps.boot.bb[[1]]
+                        df.boot.bb = computeStat(ps = ps.boot.bb,
+                                                 main_factor = main_factor,
+                                                 time_var = time_var,
+                                                 subjectID_var=subjectID_var,
+                                                 b=b)
                         rm(ps.boot.bb)
                         return(df.boot.bb)
 
@@ -46,58 +66,58 @@ bootLongPsi <- function(ps,b,R,RR,factors,time,T.obs.full=NULL,subjectID_var="Su
 
         })
 
-        boot.results.all <- lapply(boot.results,"[[",1)
+        boot.results.all = lapply(boot.results,"[[",1)
 
-        boot.results.bb <- lapply(boot.results,"[[",2)
+        boot.results.bb = lapply(boot.results,"[[",2)
 
         rm(boot.results)
 
-        stat.star <- do.call("cbind",lapply(boot.results.all,FUN=function(x){x[,2]}))
-        stat.star <- as.data.frame(stat.star)
+        stat.star = do.call("cbind",lapply(boot.results.all,FUN=function(x){x[,2]}))
+        stat.star = as.data.frame(stat.star)
 
-        sd.stat <- apply(stat.star,1,FUN=sd,na.rm=FALSE)
+        sd.stat = apply(stat.star,1,FUN=sd,na.rm=FALSE)
 
-        beta.obs <- res.obs[,2]
-        shrink.beta.obs <- suppressMessages(ash(beta.obs,sebetahat = sd.stat,mixcompdist = "normal"))
-        shrink.beta.est <- shrink.beta.obs$result$PosteriorMean
+        beta.obs = res.obs[,2]
+        shrink.beta.obs = suppressMessages(ash(beta.obs,sebetahat = sd.stat,mixcompdist = "normal"))
+        shrink.beta.est = shrink.beta.obs$result$PosteriorMean
 
         rm(boot.results.all)
 
-        stat.obs <- data.frame(stat.obs=shrink.beta.est)
+        stat.obs = data.frame(stat.obs=shrink.beta.est)
 
-        T.obs <- data.frame(T.obs=stat.obs/sd.stat)
+        T.obs = data.frame(T.obs=stat.obs/sd.stat)
         if(is.null(T.obs.full)){
-        T.obs <- T.obs
+        T.obs = T.obs
         }else{
-        T.obs <- as.data.frame(T.obs.full)
+        T.obs = as.data.frame(T.obs.full)
         }
 
-        stat.star.star <-  lapply(boot.results.bb,function(x){
+        stat.star.star =  lapply(boot.results.bb,function(x){
             do.call("cbind",lapply(x,FUN=function(x){x[,2]}))
 
         })
 
-        sd.stat.star <- do.call("cbind",lapply(stat.star.star,function(x){data.frame(sd.stat.star=apply(x,1,FUN=sd,na.rm=TRUE))}))
+        sd.stat.star = do.call("cbind",lapply(stat.star.star,function(x){data.frame(sd.stat.star=apply(x,1,FUN=sd,na.rm=TRUE))}))
 
-        shrink.beta.boot <- lapply(seq_len(R),function(i){
+        shrink.beta.boot = lapply(seq_len(R),function(i){
                 suppressMessages(ash(stat.star[,i],sebetahat = sd.stat.star[,i],mixcompdist = "normal"))$result
         })
 
-        shrink.beta.boot.est <- lapply(shrink.beta.boot,function(ii){
+        shrink.beta.boot.est = lapply(shrink.beta.boot,function(ii){
                 ii$PosteriorMean
         })
 
-        stat.star <- do.call("cbind",shrink.beta.boot.est)
+        stat.star = do.call("cbind",shrink.beta.boot.est)
 
-        T.num.star <- data.frame(apply(stat.star,2,function(x){x-stat.obs}))
+        T.num.star = data.frame(apply(stat.star,2,function(x){x-stat.obs}))
 
-        T.star <- T.num.star/sd.stat.star
+        T.star = T.num.star/sd.stat.star
 
-        df.stat <- bind_cols(T.star,T.obs=T.obs[,1])
+        df.stat = bind_cols(T.star,T.obs=T.obs[,1])
 
-        K.val <- apply(df.stat,1,function(x){sum(abs(x[1:R])>=abs(x[(R+1)]))/R})
+        K.val = apply(df.stat,1,function(x){sum(abs(x[1:R])>=abs(x[(R+1)]))/R})
 
-        rt <- list(K.val, T.obs)
+        rt = list(K.val, T.obs)
 
         rm(list=c("stat.star","stat.obs","sd.stat","stat.star.star","sd.stat.star","T.num.star","df.stat"))
         gc(reset = TRUE)
