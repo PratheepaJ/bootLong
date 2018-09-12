@@ -1,24 +1,20 @@
 #' computeStat
 #'
-#' This function computes size factors for each samples using \code{estimateSizeFactors}.
-#' Then, it transforms count data to inverse hyperbolic sine transformation.
-#' Using the transformed counts, this function estimates the mean-variance relationship and
-#' appropriate observation-level weights. These weights and the transformed data is used to fit a linear model
-#' for each taxa. The empirical Bayes is applied to compute the shirnkage estimates for each factor.
+#' Computes the regression coefficients.
 #'
-#' @param ps Observed \code{phyloseq} class object.
-#' @param main_factor vector of factor variable(s) in the sample data of ps.
-#' @param time_var numeric, time_var variable at repeated observations.
-#' @param b numeric, optimal block size to account for dependence within-subject.
+#' Computes the library normalization factors using the median-ratio method, computes the observation-level weight using the mean-variance relationship (modification to \code{\link[limma]{voom}}), computes the residuals using glm \code{\link[MASS]{glm.nb}}, computes the working correlation based on the given block size, computes the regression coefficient using the generalized estimating equation \code{\link[geeM]{geem}}.
+#'
+#' @inheritParams plot_sampling_schedule
+#' @param b A numeric. The block size to account for the dependence within-subject.
 #'
 #' @return dataframe with the last column corresponds to taxa names
-#' and other columns are for estimated coefficients for each factors using GEE, including Intercept.
+#' and other columns are for estimated coefficients for each covariate using GEE, including Intercept.
 #'
 #' @importFrom geeM geem
 #' @import phyloseq
 #' @importFrom MASS glm.nb
 #' @export
-computeStat <- function(ps,
+computeStat = function(ps,
                         main_factor,
                         time_var,
                         subjectID_var,

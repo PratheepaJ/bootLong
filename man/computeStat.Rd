@@ -7,22 +7,23 @@
 computeStat(ps, main_factor, time_var, subjectID_var, b)
 }
 \arguments{
-\item{ps}{Observed \code{phyloseq} class object.}
+\item{ps}{phyloseq object}
 
-\item{main_factor}{vector of factor variable(s) in the sample data of ps.}
+\item{main_factor}{Character string. The name of the variable to map main factor in the plot (factor vector).}
 
-\item{time_var}{numeric, time_var variable at repeated observations.}
+\item{time_var}{Character string. The name of the variable to map time in the plot (integer vector).}
 
-\item{b}{numeric, optimal block size to account for dependence within-subject.}
+\item{subjectID_var}{Character string. The name of the variable to map Subject Ids in the plot (factor vector).}
+
+\item{b}{A numeric. The block size to account for the dependence within-subject.}
 }
 \value{
 dataframe with the last column corresponds to taxa names
-and other columns are for estimated coefficients for each factors using GEE, including Intercept.
+and other columns are for estimated coefficients for each covariate using GEE, including Intercept.
 }
 \description{
-This function computes size factors for each samples using \code{estimateSizeFactors}.
-Then, it transforms count data to inverse hyperbolic sine transformation.
-Using the transformed counts, this function estimates the mean-variance relationship and
-appropriate observation-level weights. These weights and the transformed data is used to fit a linear model
-for each taxa. The empirical Bayes is applied to compute the shirnkage estimates for each factor.
+Computes the regression coefficients.
+}
+\details{
+Computes the library normalization factors using the median-ratio method, computes the observation-level weight using the mean-variance relationship (modification to \code{\link[limma]{voom}}), computes the residuals using glm \code{\link[MASS]{glm.nb}}, computes the working correlation based on the given block size, computes the regression coefficient using the generalized estimating equation \code{\link[geeM]{geem}}.
 }

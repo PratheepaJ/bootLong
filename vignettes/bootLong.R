@@ -90,8 +90,7 @@ plot_common_legend <- function(p){
 
 ## ----corr, message=FALSE, warning=FALSE----------------------------------
 ps.tr <- psTransform(ps, 
-                     main_factor = "Preterm", 
-                     span = .5) 
+                     main_factor = "Preterm") 
 
 p.all <- longCorreloMultiple(ps.tr[[1]],
                              ps.tr[[2]], 

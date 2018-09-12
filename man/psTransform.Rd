@@ -4,14 +4,12 @@
 \alias{psTransform}
 \title{psTransform}
 \usage{
-psTransform(ps, main_factor, span = 0.5)
+psTransform(ps, main_factor)
 }
 \arguments{
 \item{ps}{phyloseq object}
 
 \item{main_factor}{Character string. The name of the variable to map main factor in the plot (factor vector).}
-
-\item{span}{the smoother span. see \code{\link[stats]{lowess}}}
 }
 \value{
 A list of phyloseq objects. The first element is the asinh transfomed of the otu_table and the second element is the asinh transformed of the response residuals of the \code{\link[MASS]{glm.nb}} fit.
