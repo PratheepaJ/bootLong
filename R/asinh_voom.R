@@ -40,7 +40,7 @@ asinh_voom = function (counts,
 
         y = t(asinh(t(counts)*sj))
 
-        fit = lmFit(y, design, ...)
+        fit = lmFit(y, design)
 
         if (is.null(fit$Amean))
             fit$Amean = rowMeans(y, na.rm = TRUE)
