@@ -48,7 +48,6 @@ computeStat <- function(ps,
 
     sj = apply(ot, 2, FUN = median_ratios, geom_mean_row = geom_mean_row)
 
-
     des = as.formula(paste("otuT","~", paste(main_factor, collapse="+"),"+","offset(arcsinhLink()$linkfun(sj))"))
 
 
@@ -58,6 +57,7 @@ computeStat <- function(ps,
     mm <- model.matrix(des_v,data=samdf)
     v <- asinh_voom(counts=ot, design=mm, lib.size=sj)
     weights.cal = v$weights
+
     #   Estimate regression coefficients
     com_beta <- function(taxIndex,
                          sampleDf,

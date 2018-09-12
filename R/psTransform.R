@@ -44,11 +44,22 @@ psTransform = function(ps, main_factor, span = 0.5){
         samdf = sample_data(ps) %>% data.frame
         des = as.formula(paste("otu","~", paste(main_factor, collapse="+"),"+","offset(arcsinhLink()$linkfun(sj))"))
 
-        response_residulas_fitted <- function(ind, samdf, ot, sj, des){
+        ##   compute weights
+        des_v <- as.formula(paste("~", paste(main_factor, collapse="+")))
+        mm <- model.matrix(des_v,data=samdf)
+        v <- asinh_voom(counts=ot, design=mm, lib.size=sj)
+        weights.cal = v$weights
+
+        response_residulas_fitted <- function(ind, samdf, ot, sj, des, weights.cal){
             otu = as.numeric(ot[ind,])
             sj = as.numeric(sj)
-            dff = mutate(samdf, otu=otu, sj=sj)
-            glmft = MASS::glm.nb(des, data = dff, method = "glm.fit", link = arcsinhLink())
+            weightT = as.numeric(weights.cal[ind,])
+            dff = mutate(samdf, otu = otu, sj = sj, weightT = weightT)
+            glmft = MASS::glm.nb(des,
+                                 data = dff,
+                                 weights = weightT,
+                                 method = "glm.fit",
+                                 link = arcsinhLink())
             res_residuals = resid(glmft,"response")
             rt = list(res_residuals)
             names(rt) <- c("response_residuals")
