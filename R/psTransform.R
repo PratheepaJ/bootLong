@@ -37,9 +37,6 @@ psTransform = function(ps, main_factor, span = 0.5){
         # library size normalization factor
         sj = apply(ot, 2, FUN = median_ratios, geom_mean_row = geom_mean_row)
 
-        #   normalized library size
-        #lib.size = colSums(ot)*sj
-
         #   matrix/vector or matrix*vector - rowwise division or rowwise multiplication
         ot_trans = t(asinh(t(ot)*sj))
 
@@ -69,31 +66,6 @@ psTransform = function(ps, main_factor, span = 0.5){
         rownames(resi) = taxa_names(ps)
 
         resi_trans = t(asinh(t(resi)*sj))
-
-        #   compute weight for each observation using the mean-variance relationship of asinh transformed observations accounting for library size
-        mean_asv = apply(ot_trans, 1, FUN = mean)
-        sd_asv = sqrt(apply(ot_trans, 1, FUN = sd))
-
-        allzero = (rowSums(ot) == 0)
-
-        if (any(allzero)) {
-            mean_asv = mean_asv[!allzero]
-            sd_asv = sd_asv[!allzero]
-        }
-
-        l = lowess(mean_asv, sd_asv, f = span)
-
-        f = approxfun(l, rule = 2)
-
-        fited = lapply(resi_fitted, "[[", 2)
-        fited = data.frame(do.call("rbind",fited))
-        colnames(fited) = sample_names(ps)
-        rownames(fited) = taxa_names(ps)
-
-        fited_trans = t(asinh(t(fited)*sj))
-
-        w = 1/f(fited_trans)^4
-        dim(w) = dim(fited_trans)
 
         ps_resid_asinh = phyloseq(otu_table(resi_trans,taxa_are_rows = T),
                            sample_data(ps),

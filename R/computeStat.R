@@ -126,7 +126,7 @@ computeStat <- function(ps,
                           link = arcsinhLink())
 
         #rese = as.vector(residuals(glmft.tx))
-        rese = resid(glmft.tx,"response")
+        rese = resid(glmft.tx, "response")
         rese = t(asinh(t(rese)*sj))
 
         dffT$res = rese
