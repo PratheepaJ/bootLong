@@ -1,8 +1,22 @@
+#' Modifications to \code{\link[limma]{voom}}
+#'
+#'Computes the observation level weight based on the mean-variance relationship.
+#'
+#'
+#' @param counts A numeric matrix of otu_table.
+#' @param design A design matrix with rows corresponding to samples and columns to coefficients to be estimated. Defaults to the unit vector meaning that samples are treated as replicates.
+#' @param sj A numeric vector containing library size normalization factor based on the median-ratio method.
+#' @param span A numeric. Width of the lowess smoothing window as a proportion.
+#' @param plot A logical, should a plot of the mean-variance trend be displayed?
+#'
+#' @return
+#' @export
+
 asinh_voom = function (counts,
                        design = NULL,
                        sj,
                        span = 0.5,
-                       plot = FALSE, ...){
+                       plot = FALSE){
 
         inv_asinh = function(x) {
             y = 0.5*exp(-x)*(exp(2*x)-1)

@@ -2,6 +2,7 @@
 
 export(arcsinhLink)
 export(arcsinhlstLink)
+export(asinh_voom)
 export(bootLongIndices)
 export(bootLongMSEPsi)
 export(bootLongMethod)

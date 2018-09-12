@@ -2,8 +2,7 @@
 % Please edit documentation in R/arcsinhlstLink.R
 \name{arcsinhlstLink}
 \alias{arcsinhlstLink}
-\title{arcsinhlstLink
-asinh link function to be used in the negative binomial regression fitting}
+\title{link function to be used in the negative binomial regression fitting}
 \usage{
 arcsinhlstLink()
 }
@@ -12,6 +11,5 @@ A list of linkFun (link function), varFun(variance function),
 InvLink (inverse of link function), and InvLinkDeriv (derivative of inverse of the link function)
 }
 \description{
-arcsinhlstLink
-asinh link function to be used in the negative binomial regression fitting
+link function to be used in the negative binomial regression fitting
 }
