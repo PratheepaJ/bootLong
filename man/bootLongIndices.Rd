@@ -4,14 +4,14 @@
 \alias{bootLongIndices}
 \title{bootLongIndices}
 \usage{
-bootLongIndices(x, b, time, L, blks_first_index)
+bootLongIndices(x, time_var, b, L, blks_first_index)
 }
 \arguments{
 \item{x}{a data frame. It must have \code{Index} column that will be added by \code{bootLongPhyloseq}.}
 
-\item{b}{a numeric. Block size.}
+\item{time_var}{Character string. The name of the variable to map time in the plot (integer vector).}
 
-\item{time}{a character. Name of the time variable.}
+\item{b}{A numeric. The block size to account for the dependence within-subject.}
 
 \item{L}{a numeric. Number of overlapping blocks per subject that will be added by \code{bootLongPhyloseq}.}
 

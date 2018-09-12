@@ -2,45 +2,57 @@
 #'
 #' Compute MSE in computing K = two-sided probability with different block sizes
 #'
-#' @param ps Observed \code{phyloseq} class object.
 #' @param Wj subset of repeated observations for j-th subject
 #' @param qj number of repeated observations for j-th subject
-#' @param b numeric, block lenght to account for dependence within-subject.
-#' @param R Number of block bootstrap realization.
-#' @param RR Number of double block bootstrap realization.
-#' @param factors vector of factor variable(s) in the sample data of ps.
 #' @param Khat.obs second element of the output of \code{bootLongPsi} evaluated using the initial block length and full data
-#' @param time Time variable at repeated observations.
-#' @param T.obs.full If observed statistic is already computed
-#' @param computeStat
+#' @inheritParams bootLongPsi
 #'
 #' @return list of MSE computed with block length b, Khat is all subsamples, Khat with initial block length
 #'
 #'
 #' @export
-bootLongMSEPsi <- function(ps, qj, Wj, b, R, RR, factors, time, Khat.obs = NULL, T.obs.full = NULL, SubjectID_n = "SubjectID"){
+bootLongMSEPsi <- function(ps,
+                           main_factor,
+                           time_var,
+                           subjectID_var,
+                           b,
+                           R,
+                           RR,
+                           qj,
+                           Wj,
+                           Khat.obs = NULL,
+                           T.obs.full = NULL){
+
         doParallel::registerDoParallel(parallel::detectCores())
         BiocParallel::register(BiocParallel::DoparParam())
 
-        if(is.null(Khat.obs)){stop("User needs to run bootLongPsi() function with initial block length ")}
-        if(is.null(T.obs.full)){stop("User needs to provide observed test statistic")}
+        if(is.null(Khat.obs)){
+            stop("User needs to run bootLongPsi() function with an initial block length ")
+            }
+        if(is.null(T.obs.full)){
+            stop("User needs to provide observed test statistic")
+            }
 
 
-        samdf <- data.frame(sample_data(ps))
-        if(!is.numeric(samdf[,time])){samdf[,time] <- as.numeric(samdf[,time])}
-        g <- samdf[,SubjectID_n]
+        samdf <- sample_data(ps) %>% data.frame
+        if(!is.numeric(samdf[,time_var])){
+            samdf[,time_var] <- as.numeric(samdf[,time_var])
+            }
+        g <- samdf[,subjectID_var]
         samdf <- split(samdf,g)
         num.sub.sam <- max(qj)-max(Wj)+1
 
-        samdf.q.W <- mapply(samdf,as.list(qj),as.list(Wj),FUN=list,SIMPLIFY = FALSE)
+        samdf.q.W <- mapply(samdf,as.list(qj), as.list(Wj), FUN=list,SIMPLIFY = FALSE)
 
         samdf.q.W.or <- lapply(samdf.q.W,function(x){
-            x[[1]] <- dplyr::arrange_(x[[1]],time)
+            x[[1]] <- dplyr::arrange_(x[[1]],time_var)
             return(x)
         })
 
 
-        if(num.sub.sam < 5){stop("decrease omega")}
+        if(num.sub.sam < 5){
+            stop("decrease omega")
+            }
 
         ps.sub <- list()
         for(i in 1:num.sub.sam){
@@ -58,7 +70,14 @@ bootLongMSEPsi <- function(ps, qj, Wj, b, R, RR, factors, time, Khat.obs = NULL,
         }
 
         Khat <- BiocParallel::bplapply(ps.sub,function(x){
-            k.hat <- bootLongPsi(x,b=b,R=R,RR=RR,factors=factors,time=time,T.obs.full=T.obs.full)
+            k.hat <- bootLongPsi(x,
+                                 main_factor=main_factor,
+                                 time_var=time_var,
+                                 subjectID_var = subjectID_var,
+                                 b=b,
+                                 R=R,
+                                 RR=RR,
+                                 T.obs.full=T.obs.full)
             k.hat <- k.hat[[1]]
             return(k.hat)
         })
@@ -69,11 +88,15 @@ bootLongMSEPsi <- function(ps, qj, Wj, b, R, RR, factors, time, Khat.obs = NULL,
         rm(samdf.q.W.or)
         rm(ps.sub)
 
-        Khat.squared.diff <- lapply(Khat,FUN=function(w){(w-Khat.obs)^2})
+        Khat.squared.diff <- lapply(Khat, FUN=function(w){
+            (w-Khat.obs)^2
+            })
 
-        Khat.squared.diff.df <- do.call("cbind",Khat.squared.diff)
+        Khat.squared.diff.df <- do.call("cbind", Khat.squared.diff)
 
-        MSE_i <- apply(Khat.squared.diff.df,1,FUN=function(x){mean(x)})
+        MSE_i <- apply(Khat.squared.diff.df, 1 , FUN=function(x){
+            mean(x)
+            })
 
         rm(Khat.squared.diff.df)
 

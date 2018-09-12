@@ -24,6 +24,7 @@ Imports:
     joineR,
     lazyeval,
     limma,
+    magrittr,
     parallel,
     phyloseq,
     tidyr

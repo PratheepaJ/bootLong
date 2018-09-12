@@ -2,9 +2,9 @@
 #'
 #' Finding optimal block size
 #'
+#' @param lI A numeric. The initial block size.
 #' @param R A numeric. The number of block bootstrap realizations.
 #' @param RR A numeric. The number of double block bootstrap realizations.
-#' @param lI A numeric. The initial block size.
 #' @param omega A numeric. The proportion between 0 and 1 of repeated observations for subsampling.
 #' @param lC1 A numeric. (optional) any block size to start with. defualt is 1.
 #' @param lC2 A numeric. (optional) any block size to end with. defualt is (lI-1).
@@ -20,9 +20,9 @@ bootLongSubsampling = function(ps,
                                main_factor,
                                time_var,
                                subjectID_var,
+                               lI,
                                R,
                                RR,
-                               lI,
                                omega=.6,
                                lC1=1, lC2=NULL){
 
@@ -40,11 +40,32 @@ bootLongSubsampling = function(ps,
 
         lC = seq(lC1, lC2, by=1)
 
-        psi.hat.lI  = bootLongPsi(ps=ps,b=lI,R=R,RR=RR,main_factor=main_factor,time_var=time_var,T.obs.full=NULL,subjectID_var=subjectID_var)
+        psi.hat.lI  = bootLongPsi(ps = ps,
+                                  main_factor = main_factor,
+                                  time_var = time_var,
+                                  subjectID_var = subjectID_var,
+                                  b = lI,
+                                  R = R,
+                                  RR = RR,
+                                  T.obs.full=NULL,
+                                  para=FALSE)
+
 
         Khat.obs = psi.hat.lI[[1]]
         T.obs = psi.hat.lI[[2]]
 
-        mseKhatKobs = lapply(seq_len(length(lC)),function(y){bootLongMSEPsi(ps=ps,qj=qj,Wj=Wj,b=y,R=R,RR=RR,main_factor=main_factor,time_var=time_var,Khat.obs=Khat.obs,T.obs.full=T.obs,subjectID_var = subjectID_var)})
+        mseKhatKobs = lapply(seq_len(length(lC)),function(y){
+            bootLongMSEPsi(ps=ps,
+                           main_factor=main_factor,
+                           time_var=time_var,
+                           subjectID_var = subjectID_var,
+                           b=y,
+                           R=R,
+                           RR=RR,
+                           qj=qj,
+                           Wj=Wj,
+                           Khat.obs=Khat.obs,
+                           T.obs.full=T.obs)})
+
         return(mseKhatKobs)
 }

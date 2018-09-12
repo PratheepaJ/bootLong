@@ -4,28 +4,32 @@
 \alias{bootLongSubsampling}
 \title{bootLongSubsampling}
 \usage{
-bootLongSubsampling(ps, R, RR, factors, time, SubjectID_n = "SubjectID",
-  lI, omega = 0.6, lC1 = 1, lC2 = NULL)
+bootLongSubsampling(ps, main_factor, time_var, subjectID_var, lI, R, RR,
+  omega = 0.6, lC1 = 1, lC2 = NULL)
 }
 \arguments{
-\item{ps}{a \code{phyloseq} object.}
+\item{ps}{phyloseq object}
 
-\item{R}{numeric. Number of block bootstrap realizations.}
+\item{main_factor}{Character string. The name of the variable to map main factor in the plot (factor vector).}
 
-\item{RR}{numeric. Number of double block bootstrap realization.}
+\item{time_var}{Character string. The name of the variable to map time in the plot (integer vector).}
 
-\item{factors}{vector of factor variable(s) in the sample data of ps.}
+\item{subjectID_var}{Character string. The name of the variable to map Subject Ids in the plot (factor vector).}
 
-\item{time}{Time variable at repeated observations.}
+\item{lI}{A numeric. The initial block size.}
 
-\item{lI}{initial block size}
+\item{R}{A numeric. The number of block bootstrap realizations.}
 
-\item{omega}{percentage of repeated observations for subsampling}
+\item{RR}{A numeric. The number of double block bootstrap realizations.}
 
-\item{subjectidvar}{variable name for SubjectID}
+\item{omega}{A numeric. The proportion between 0 and 1 of repeated observations for subsampling.}
+
+\item{lC1}{A numeric. (optional) any block size to start with. defualt is 1.}
+
+\item{lC2}{A numeric. (optional) any block size to end with. defualt is (lI-1).}
 }
 \value{
-list of ``MSE`` in calculating K with block sizes lC=1:(lI-1), ``Khat`` values with block sizes lC=1:(lI-1) and ``Khat.obs`` with lI
+A list of ``MSE`` in calculating K with block sizes lC=1:(lI-1), ``Khat`` values with block sizes lC=1:(lI-1) and ``Khat.obs`` with lI
 }
 \description{
 Finding optimal block size

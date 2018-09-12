@@ -4,18 +4,20 @@
 \alias{bootLongPhyloseq}
 \title{bootLongPhyloseq}
 \usage{
-bootLongPhyloseq(ps, b, time, SubjectID_n = "SubjectID")
+bootLongPhyloseq(ps, time_var, subjectID_var, b)
 }
 \arguments{
-\item{ps}{a \code{phyloseq} object.}
+\item{ps}{phyloseq object}
 
-\item{b}{a numeric. Block size.}
+\item{time_var}{Character string. The name of the variable to map time in the plot (integer vector).}
 
-\item{time}{a character. Name of the time variable.}
+\item{subjectID_var}{Character string. The name of the variable to map Subject Ids in the plot (factor vector).}
+
+\item{b}{A numeric. The block size to account for the dependence within-subject.}
 }
 \value{
-a \code{phyloseq} object. This will be a block bootstrap realization of input \code{ps}.
+a \code{phyloseq} object. A block bootstrap realization of \code{ps}.
 }
 \description{
-Creates block bootstrap realizations as \code{phyloseq} objects.
+Creates block bootstrap realization of a \code{phyloseq}.
 }

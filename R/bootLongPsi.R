@@ -1,14 +1,10 @@
 #' bootLongPsi
 #'
-#' Compute \eqn{\psi} = two-sided probability with a given block size
+#' Compute \eqn{\psi} = two-sided probability with a given block size.
 #'
-#' @param ps Observed \code{phyloseq} class object.
-#' @param b numeric, block size to account for dependence within-subject.
-#' @param R Number of block bootstrap realization.
-#' @param RR Number of double block bootstrap realization.
-#' @param main_factor vector of factor variable(s) in the sample data of ps.
-#' @param time_var Time variable at repeated observations.
-#' @param T.obs.full If observed statistic is already computed
+#' @inheritParams computeStat
+#' @inheritParams bootLongSubsampling
+#' @param T.obs.full A numeric vector. The numeric vector of observed statistic.
 #'
 #' @return a list with first element ``K.val`` - two-sided significance probability.
 #'         second element ``observed statistic``
@@ -22,7 +18,7 @@ bootLongPsi = function(ps,
                         R,
                         RR,
                         T.obs.full=NULL,
-                        para=FALSE){
+                        para = FALSE){
 
         if(dim(otu_table(ps))[1]==nsamples(ps)){
         otu_table(ps) = t(otu_table(ps,taxa_are_rows = T))
@@ -37,31 +33,37 @@ bootLongPsi = function(ps,
         boot.results = list()
 
         boot.results = lapply(seq_len(R),FUN=function(i){
-                ps.boot = bootLongPhyloseq(ps,b,time_var,subjectID_var=subjectID_var)
-                ps.boot = ps.boot[[1]]
+            ps.boot = bootLongPhyloseq(ps = ps,
+                                       time_var = time_var,
+                                       subjectID_var = subjectID_var,
+                                       b = b)
+            ps.boot = ps.boot[[1]]
 
-                df.boot = computeStat(ps = ps.boot,
-                                      main_factor = main_factor,
-                                      time_var = time_var,
-                                      subjectID_var = subjectID_var,
-                                      b=b)
+            df.boot = computeStat(ps = ps.boot,
+                                  main_factor = main_factor,
+                                  time_var = time_var,
+                                  subjectID_var = subjectID_var,
+                                  b=b)
 
-                boot.results.bb = lapply(seq_len(RR),FUN=function(j){
-                        ps.boot.bb = bootLongPhyloseq(ps.boot,b,time_var,subjectID_var=subjectID_var)
-                        ps.boot.bb = ps.boot.bb[[1]]
-                        df.boot.bb = computeStat(ps = ps.boot.bb,
-                                                 main_factor = main_factor,
-                                                 time_var = time_var,
-                                                 subjectID_var=subjectID_var,
-                                                 b=b)
-                        rm(ps.boot.bb)
-                        return(df.boot.bb)
+            boot.results.bb = lapply(seq_len(RR), FUN=function(j){
+                    ps.boot.bb = bootLongPhyloseq(ps.boot,
+                                                  time_var = time_var,
+                                                  subjectID_var = subjectID_var,
+                                                  b=b)
+                    ps.boot.bb = ps.boot.bb[[1]]
+                    df.boot.bb = computeStat(ps = ps.boot.bb,
+                                             main_factor = main_factor,
+                                             time_var = time_var,
+                                             subjectID_var=subjectID_var,
+                                             b=b)
+                    rm(ps.boot.bb)
+                    return(df.boot.bb)
 
-                })
+            })
 
-                rm(ps.boot)
+            rm(ps.boot)
 
-                return(list(df.boot,boot.results.bb))
+            return(list(df.boot,boot.results.bb))
 
 
         })
@@ -72,38 +74,43 @@ bootLongPsi = function(ps,
 
         rm(boot.results)
 
-        stat.star = do.call("cbind",lapply(boot.results.all,FUN=function(x){x[,2]}))
+        stat.star = do.call("cbind", lapply(boot.results.all, FUN=function(x){
+            x[,2]
+            }))
         stat.star = as.data.frame(stat.star)
 
         sd.stat = apply(stat.star,1,FUN=sd,na.rm=FALSE)
 
         beta.obs = res.obs[,2]
-        shrink.beta.obs = suppressMessages(ash(beta.obs,sebetahat = sd.stat,mixcompdist = "normal"))
+        shrink.beta.obs = suppressMessages(ash(beta.obs, sebetahat = sd.stat, mixcompdist = "normal"))
         shrink.beta.est = shrink.beta.obs$result$PosteriorMean
 
         rm(boot.results.all)
 
-        stat.obs = data.frame(stat.obs=shrink.beta.est)
+        stat.obs = data.frame(stat.obs = shrink.beta.est)
 
         T.obs = data.frame(T.obs=stat.obs/sd.stat)
+
         if(is.null(T.obs.full)){
-        T.obs = T.obs
+            T.obs = T.obs
         }else{
-        T.obs = as.data.frame(T.obs.full)
+            T.obs = as.data.frame(T.obs.full)
         }
 
-        stat.star.star =  lapply(boot.results.bb,function(x){
+        stat.star.star =  lapply(boot.results.bb, function(x){
             do.call("cbind",lapply(x,FUN=function(x){x[,2]}))
 
         })
 
-        sd.stat.star = do.call("cbind",lapply(stat.star.star,function(x){data.frame(sd.stat.star=apply(x,1,FUN=sd,na.rm=TRUE))}))
+        sd.stat.star = do.call("cbind", lapply(stat.star.star,function(x){
+            data.frame(sd.stat.star=apply(x,1,FUN=sd,na.rm=TRUE))
+            }))
 
         shrink.beta.boot = lapply(seq_len(R),function(i){
-                suppressMessages(ash(stat.star[,i],sebetahat = sd.stat.star[,i],mixcompdist = "normal"))$result
+                suppressMessages(ash(stat.star[,i], sebetahat = sd.stat.star[,i], mixcompdist = "normal"))$result
         })
 
-        shrink.beta.boot.est = lapply(shrink.beta.boot,function(ii){
+        shrink.beta.boot.est = lapply(shrink.beta.boot, function(ii){
                 ii$PosteriorMean
         })
 

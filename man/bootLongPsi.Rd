@@ -4,28 +4,30 @@
 \alias{bootLongPsi}
 \title{bootLongPsi}
 \usage{
-bootLongPsi(ps, b, R, RR, factors, time, T.obs.full = NULL,
-  SubjectID_n = "SubjectID", para = FALSE)
+bootLongPsi(ps, main_factor, time_var, subjectID_var, b, R, RR,
+  T.obs.full = NULL, para = FALSE)
 }
 \arguments{
-\item{ps}{Observed \code{phyloseq} class object.}
+\item{ps}{phyloseq object}
 
-\item{b}{numeric, block size to account for dependence within-subject.}
+\item{main_factor}{Character string. The name of the variable to map main factor in the plot (factor vector).}
 
-\item{R}{Number of block bootstrap realization.}
+\item{time_var}{Character string. The name of the variable to map time in the plot (integer vector).}
 
-\item{RR}{Number of double block bootstrap realization.}
+\item{subjectID_var}{Character string. The name of the variable to map Subject Ids in the plot (factor vector).}
 
-\item{factors}{vector of factor variable(s) in the sample data of ps.}
+\item{b}{A numeric. The block size to account for the dependence within-subject.}
 
-\item{time}{Time variable at repeated observations.}
+\item{R}{A numeric. The number of block bootstrap realizations.}
 
-\item{T.obs.full}{If observed statistic is already computed}
+\item{RR}{A numeric. The number of double block bootstrap realizations.}
+
+\item{T.obs.full}{A numeric vector. The numeric vector of observed statistic.}
 }
 \value{
 a list with first element ``K.val`` - two-sided significance probability.
         second element ``observed statistic``
 }
 \description{
-Compute \eqn{\psi} = two-sided probability with a given block size
+Compute \eqn{\psi} = two-sided probability with a given block size.
 }

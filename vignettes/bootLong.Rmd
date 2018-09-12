@@ -251,15 +251,25 @@ grid.arrange(arrangeGrob(grobs=plist, nrow=2, widths=c(3,3,3)),
 
 ## Subsampling   
 ```{r message=FALSE,warning=FALSE,eval=FALSE}
-R <- 100
-RR <- 25
-factors <- "Preterm"
-time <- "Time"
+R <- 2
+RR <- 2
+main_factor <- "Preterm"
+time_var <- "Time"
+subjectID_var = "SubjectID"
 lI <- 5
 omega <- .6
-system.time(mse_results <- bootLongSubsampling(ps,R=R,RR=RR,factors=factors,time=time,subjectidvar="SubjectID",lI=lI,omega=omega))
+system.time(
+    mse_results <- bootLongSubsampling(ps, 
+                                       main_factor = main_factor,
+                                       time_var = time_var, 
+                                       subjectID_var = subjectID_var,
+                                       lI=lI,  
+                                       R=R, 
+                                       RR=RR,
+                                       omega=omega)
+    )
 
-saveRDS(mse_results,"./bboot_sim.rds")
+#saveRDS(mse_results,"./bboot_sim.rds")
 ```
 
 ###   Inspect MSE plot

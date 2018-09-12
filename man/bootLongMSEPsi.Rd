@@ -4,31 +4,31 @@
 \alias{bootLongMSEPsi}
 \title{bootLongMSEPsi}
 \usage{
-bootLongMSEPsi(ps, qj, Wj, b, R, RR, factors, time, Khat.obs = NULL,
-  T.obs.full = NULL, SubjectID_n = "SubjectID")
+bootLongMSEPsi(ps, main_factor, time_var, subjectID_var, b, R, RR, qj, Wj,
+  Khat.obs = NULL, T.obs.full = NULL)
 }
 \arguments{
-\item{ps}{Observed \code{phyloseq} class object.}
+\item{ps}{phyloseq object}
+
+\item{main_factor}{Character string. The name of the variable to map main factor in the plot (factor vector).}
+
+\item{time_var}{Character string. The name of the variable to map time in the plot (integer vector).}
+
+\item{subjectID_var}{Character string. The name of the variable to map Subject Ids in the plot (factor vector).}
+
+\item{b}{A numeric. The block size to account for the dependence within-subject.}
+
+\item{R}{A numeric. The number of block bootstrap realizations.}
+
+\item{RR}{A numeric. The number of double block bootstrap realizations.}
 
 \item{qj}{number of repeated observations for j-th subject}
 
 \item{Wj}{subset of repeated observations for j-th subject}
 
-\item{b}{numeric, block lenght to account for dependence within-subject.}
-
-\item{R}{Number of block bootstrap realization.}
-
-\item{RR}{Number of double block bootstrap realization.}
-
-\item{factors}{vector of factor variable(s) in the sample data of ps.}
-
-\item{time}{Time variable at repeated observations.}
-
 \item{Khat.obs}{second element of the output of \code{bootLongPsi} evaluated using the initial block length and full data}
 
-\item{T.obs.full}{If observed statistic is already computed}
-
-\item{computeStat}{}
+\item{T.obs.full}{A numeric vector. The numeric vector of observed statistic.}
 }
 \value{
 list of MSE computed with block length b, Khat is all subsamples, Khat with initial block length

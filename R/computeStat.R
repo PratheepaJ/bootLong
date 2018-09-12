@@ -90,7 +90,7 @@ computeStat = function(ps,
                 dfsub[,time_var] = as.factor(dfsub[,time_var])
             }
 
-            meanT = data.frame(dfsub %>% group_by_(time_var) %>% summarise(meanr=mean(res)))
+            meanT = data.frame(dfsub %>% group_by_(time_var) %>% summarise(meanr = mean(res)))
 
             if(!is.numeric(meanT[,time_var])){
                 meanT[,time_var] = as.numeric(as.character(meanT[,time_var]))
@@ -115,6 +115,7 @@ computeStat = function(ps,
             if(!is.numeric(dffT[,time_var])){
                 dffT[,time_var] = as.numeric(as.character(dffT[,time_var]))
                 }
+
             wavesTime = dffT[,time_var]
             idvarV = dffT[,"idvar"]
             theta = glmft.tx$theta
