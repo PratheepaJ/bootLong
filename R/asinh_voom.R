@@ -1,7 +1,6 @@
 asinh_voom = function (counts,
                        design = NULL,
                        sj,
-                       normalize.method = "none",
                        span = 0.5,
                        plot = FALSE,
                        save.plot = FALSE, ...){
@@ -42,6 +41,7 @@ asinh_voom = function (counts,
         n <- nrow(counts)
         if (n < 2L)
             stop("Need at least two genes to fit a mean-variance trend")
+
         if (is.null(design)) {
             design <- matrix(1, ncol(counts), 1)
             rownames(design) <- colnames(counts)
@@ -50,10 +50,13 @@ asinh_voom = function (counts,
         # if (is.null(sj))
         #     sj <- colSums(counts)
         y <- t(asinh(t(counts)*sj))
-        y <- normalizeBetweenArrays(y, method = normalize.method)
+
+        # y <- normalizeBetweenArrays(y, method = normalize.method)
         fit <- lmFit(y, design, ...)
+
         if (is.null(fit$Amean))
             fit$Amean <- rowMeans(y, na.rm = TRUE)
+
         sx <- fit$Amean - mean(asinh(sj))
         sy <- sqrt(fit$sigma)
         allzero <- rowSums(counts) == 0
@@ -69,6 +72,7 @@ asinh_voom = function (counts,
             lines(l, col = "red")
         }
         f <- approxfun(l, rule = 2)
+
         if (fit$rank < ncol(design)) {
             j <- fit$pivot[1:fit$rank]
             fitted.values <- fit$coef[, j, drop = FALSE] %*% t(fit$design[,
@@ -77,19 +81,22 @@ asinh_voom = function (counts,
         else {
             fitted.values <- fit$coef %*% t(fit$design)
         }
+
         fitted.adj.library <- inv_asinh(fitted.values)
-        fitted.count <- t(t(fitted.adj.library) / (sj))
+        fitted.count <- t(t(fitted.adj.library)/(sj))
         fitted.logcount <- asinh(fitted.count)
         w <- 1/f(fitted.logcount)^4
         dim(w) <- dim(fitted.logcount)
+
         out$E <- y
         out$weights <- w
         out$design <- design
+
         if (is.null(out$targets))
             out$targets <- data.frame(sj = sj)
         else out$targets$sj <- sj
         if (save.plot) {
-            out$voom.xy <- list(x = sx, y = sy, xlab = "log2( count size + 0.5 )",
+            out$voom.xy <- list(x = sx, y = sy, xlab = "asinh( count )",
                                 ylab = "Sqrt( standard deviation )")
             out$voom.line <- l
         }
