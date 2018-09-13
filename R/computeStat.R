@@ -153,18 +153,6 @@ computeStat = function(ps,
                      time_var=time_var)
             })
 
-        # df.beta.hat <- list()
-        # for(i in 1:ntaxa(ps)){
-        #     df.beta.hat[[i]] <- com_beta(i,
-        #              sampleDf = samdf,
-        #              otuDf = (ot+1),
-        #              allSj = sj,
-        #              weightDf = weights.cal,
-        #              desingGEE = des,
-        #              b=b,
-        #              subjectID_var=subjectID_var,
-        #              time_var=time_var)
-        # }
 
         df.beta.hat = data.frame(do.call("rbind", df.beta.hat))
 
