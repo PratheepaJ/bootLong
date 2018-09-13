@@ -24,11 +24,11 @@ bootLongPsi = function(ps,
         otu_table(ps) = t(otu_table(ps,taxa_are_rows = T))
         }
 
-        res.obs = computeStat(ps=ps,
-                               main_factor=main_factor,
-                               time_var=time_var,
-                               subjectID_var=subjectID_var,
-                               b=b)
+        res.obs = computeStat(ps = ps,
+                               main_factor = main_factor,
+                               time_var = time_var,
+                               subjectID_var = subjectID_var,
+                               b = b)
 
         boot.results = list()
 

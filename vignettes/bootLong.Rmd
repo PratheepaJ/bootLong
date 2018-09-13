@@ -251,8 +251,8 @@ grid.arrange(arrangeGrob(grobs=plist, nrow=2, widths=c(3,3,3)),
 
 ## Subsampling   
 ```{r message=FALSE,warning=FALSE,eval=FALSE}
-R <- 2
-RR <- 2
+R <- 5
+RR <- 5
 main_factor <- "Preterm"
 time_var <- "Time"
 subjectID_var = "SubjectID"
@@ -263,10 +263,10 @@ system.time(
                                        main_factor = main_factor,
                                        time_var = time_var, 
                                        subjectID_var = subjectID_var,
-                                       lI=lI,  
-                                       R=R, 
-                                       RR=RR,
-                                       omega=omega)
+                                       lI = lI,  
+                                       R = R, 
+                                       RR = RR,
+                                       omega = omega)
     )
 
 #saveRDS(mse_results,"./bboot_sim.rds")
