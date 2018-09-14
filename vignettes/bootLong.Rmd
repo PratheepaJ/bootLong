@@ -16,7 +16,7 @@ bibliography: bootLong.bib
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE,eval = FALSE)
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 ```
 
 Install [R](https://www.r-project.org/) and [RStudio](https://www.rstudio.com/). Open this `Rmd` file in RStudio. Then run the following code to install all required packages.
@@ -252,8 +252,8 @@ grid.arrange(arrangeGrob(grobs=plist, nrow=2, widths=c(3,3,3)),
 
 ## Subsampling   
 ```{r message=FALSE,warning=FALSE}
-R <- 10
-RR <- 10
+R <- 3
+RR <- 2
 main_factor <- "Preterm"
 time_var <- "Time"
 subjectID_var = "SubjectID"
@@ -310,14 +310,25 @@ l.opt
 
 ##   Run MBB with the optimal block size
 ```{r message=FALSE,warning=FALSE,eval=FALSE}
-R <- 1000
-RR <- 50
-factors <- "Preterm"
-time <- "Time"
+R <- 3
+RR <- 2
+main_factor <- "Preterm"
+time_var <- "Time"
+subjectID_var = "SubjectID"
+sampleID_var = "SampleID"
+l.opt = 3
 
-system.time(boot_res <- bootLongMethod(ps,b=l.opt,R=R,RR=RR,factors=factors,time=time))
+system.time(
+    boot_res <- bootLongMethod(ps, 
+                               main_factor = main_factor, 
+                               time_var = time_var, 
+                               subjectID_var = subjectID_var, 
+                               b = l.opt, 
+                               R = R, 
+                               RR = RR)
+    )
 
-saveRDS(boot_res,"./boot_sim.rds")
+#saveRDS(boot_res,"./boot_sim.rds")
 ```
 
 ###   Inspect the MBB results

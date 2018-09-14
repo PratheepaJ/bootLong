@@ -94,18 +94,6 @@ bootLongMSEPsi = function(ps,
             return(k.hat)
         },mc.cores = ncores)
 
-        # Khat = list()
-        # for(i in 1:length(ps.sub)){
-        #     k.hat_t.obs = bootLongPsi(ps.sub[[i]],
-        #                               main_factor = main_factor,
-        #                               time_var = time_var,
-        #                               subjectID_var = subjectID_var,
-        #                               b = b,
-        #                               R = R,
-        #                               RR = RR,
-        #                               T.obs.full = T.obs.full)
-        #     Khat[[i]] = k.hat_t.obs[[1]]
-        # }
 
         rm(ps)
         rm(samdf)
