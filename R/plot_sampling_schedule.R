@@ -10,8 +10,6 @@
 #'
 #' @return an object of ggplot that displays the sampling schedule.
 #' @export
-#' @import ggplot2
-#' @import magrittr
 plot_sampling_schedule = function(ps, time_var, subjectID_var, main_factor, theme_manual = set.theme){
 
     samdf <- sample_data(ps) %>% data.frame

@@ -251,7 +251,7 @@ grid.arrange(arrangeGrob(grobs=plist, nrow=2, widths=c(3,3,3)),
 #   The block bootstrap method
 
 ## Subsampling   
-```{r message=FALSE,warning=FALSE}
+```{r message=FALSE,warning=FALSE,eval=FALSE}
 R <- 3
 RR <- 2
 main_factor <- "Preterm"
@@ -309,7 +309,7 @@ l.opt
 ```
 
 ##   Run MBB with the optimal block size
-```{r message=FALSE,warning=FALSE,eval=FALSE}
+```{r message=FALSE, warning=FALSE, eval=FALSE}
 R <- 3
 RR <- 2
 main_factor <- "Preterm"

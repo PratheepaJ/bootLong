@@ -4,23 +4,25 @@
 \alias{bootLongMethod}
 \title{bootLongMethod}
 \usage{
-bootLongMethod(ps, b, R, RR, factors, time, FDR = 0.1,
-  SubjectID_n = "SubjectID")
+bootLongMethod(ps, main_factor, time_var, subjectID_var, b, R, RR,
+  FDR = 0.1)
 }
 \arguments{
-\item{ps}{Observed \code{phyloseq} class object.}
+\item{ps}{phyloseq object}
 
-\item{b}{numeric, optimal block size to account for dependence within-subject.}
+\item{main_factor}{Character string. The name of the variable to map main factor in the plot (factor vector).}
 
-\item{R}{Number of block bootstrap realization.}
+\item{time_var}{Character string. The name of the variable to map time in the plot (integer vector).}
 
-\item{RR}{Number of double block bootstrap realization.}
+\item{subjectID_var}{Character string. The name of the variable to map Subject Ids in the plot (factor vector).}
 
-\item{factors}{vector of factor variable(s) in the sample data of ps.}
+\item{b}{A numeric. The block size to account for the dependence within-subject.}
 
-\item{time}{Time variable at repeated observations.}
+\item{R}{A numeric. The number of block bootstrap realizations.}
 
-\item{FDR}{False discovery rate}
+\item{RR}{A numeric. The number of double block bootstrap realizations.}
+
+\item{FDR}{False discovery rate.}
 }
 \value{
 list of dataframe with ASV, observed stat, pvalues, adjusted pvalues, lcl, ucl, observed pivotal quantity; stat.obs; stat.star; stat.star.star; T.star_obs.

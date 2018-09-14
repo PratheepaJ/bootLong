@@ -1,12 +1,8 @@
 #' bootLongMethod
 #'
-#' @param ps Observed \code{phyloseq} class object.
-#' @param b numeric, optimal block size to account for dependence within-subject.
-#' @param R Number of block bootstrap realization.
-#' @param RR Number of double block bootstrap realization.
-#' @param main_factor vector of factor variable(s) in the sample data of ps.
-#' @param time_var Time variable at repeated observations.
-#' @param FDR False discovery rate
+#' @param FDR False discovery rate.
+#' @inheritParams bootLongPhyloseq
+#' @inheritParams bootLongSubsampling
 #'
 #' @return list of dataframe with ASV, observed stat, pvalues, adjusted pvalues, lcl, ucl, observed pivotal quantity; stat.obs; stat.star; stat.star.star; T.star_obs.
 #' @export
@@ -35,6 +31,7 @@ bootLongMethod <- function(ps,
         boot.results <- list()
 
         boot.results <- bplapply(seq_len(R), FUN = function(i){
+
             ps.boot <- bootLongPhyloseq(ps,
                                         time_var = time_var,
                                         subjectID_var=subjectID_var,

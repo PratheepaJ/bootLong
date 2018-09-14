@@ -6,7 +6,6 @@
 #'
 #' @return \code{ggplot} object of variogram
 #' @export
-#' @importFrom joineR variogram
 longVarioSingle <- function(ps,
                             main_factor,
                             time_var,

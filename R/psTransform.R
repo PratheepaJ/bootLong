@@ -6,7 +6,6 @@
 #'
 #' @return A list of phyloseq objects. The first element is the asinh transfomed of the otu_table and the second element is the asinh transformed of the response residuals of the \code{\link[MASS]{glm.nb}} fit.
 #' @export
-#' @import phyloseq
 #' @importFrom MASS glm.nb
 psTransform = function(ps, main_factor){
 

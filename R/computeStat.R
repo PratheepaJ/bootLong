@@ -9,10 +9,6 @@
 #'
 #' @return dataframe with the last column corresponds to taxa names
 #' and other columns are for estimated coefficients for each covariate using GEE, including Intercept.
-#'
-#' @importFrom geeM geem
-#' @import phyloseq
-#' @importFrom MASS glm.nb
 #' @export
 computeStat = function(ps,
                         main_factor,
