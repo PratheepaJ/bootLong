@@ -25,8 +25,7 @@ Install [R](https://www.r-project.org/) and [RStudio](https://www.rstudio.com/).
 Install packages: 
 ```{r install_packages}
 pkgs <- c("ggplot2","dplyr","tidyr",
-          "phyloseq","DESeq2","edgeR",
-          "limma","ashr","gridExtra",
+          "phyloseq", "limma","ashr","gridExtra",
           "geepack","MASS","geeM",
           "R.utils", "BiocParallel","doParallel",
           "parallel","magrittr")
@@ -57,13 +56,14 @@ library(BiocParallel)
 library(doParallel)
 library(parallel)
 library(magrittr)
-devtools::load_all(".")
+#library(bootLong)
 ```
 
 Set the computational resources
 ```{r}
 ncores = as.integer(Sys.getenv("SLURM_NTASKS"))
 if(is.na(ncores)) ncores <- parallel::detectCores()
+ncores
 ```
 
 ##  Load the phyloseq
@@ -250,15 +250,14 @@ grid.arrange(arrangeGrob(grobs=plist, nrow=2, widths=c(3,3,3)),
 #   The block bootstrap method
 
 ## Subsampling   
-```{r message=FALSE,warning=FALSE,eval=FALSE}
-R <- 5
-RR <- 5
+```{r message=FALSE,warning=FALSE}
+R <- 10
+RR <- 10
 main_factor <- "Preterm"
 time_var <- "Time"
 subjectID_var = "SubjectID"
 sampleID_var = "SampleID"
-lI <- 3
-#   lC2 <- 2
+lI <- 5
 omega <- .6
 system.time(
     mse_results <- bootLongSubsampling(ps, 

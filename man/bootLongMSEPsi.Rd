@@ -4,8 +4,8 @@
 \alias{bootLongMSEPsi}
 \title{bootLongMSEPsi}
 \usage{
-bootLongMSEPsi(ps, main_factor, time_var, subjectID_var, b, R, RR, qj, Wj,
-  Khat.obs = NULL, T.obs.full = NULL)
+bootLongMSEPsi(ps, main_factor, time_var, subjectID_var, sampleID_var, b,
+  R, RR, qj, Wj, Khat.obs = NULL, T.obs.full = NULL, ncores)
 }
 \arguments{
 \item{ps}{phyloseq object}
@@ -29,6 +29,8 @@ bootLongMSEPsi(ps, main_factor, time_var, subjectID_var, b, R, RR, qj, Wj,
 \item{Khat.obs}{second element of the output of \code{bootLongPsi} evaluated using the initial block length and full data}
 
 \item{T.obs.full}{A numeric vector. The numeric vector of observed statistic.}
+
+\item{ncores}{A numeric. The number of cores to use in \code{\link[parallel]{mclapply}}.}
 }
 \value{
 list of MSE computed with block length b, Khat is all subsamples, Khat with initial block length

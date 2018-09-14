@@ -9,7 +9,7 @@
 #' @param span A numeric. Width of the lowess smoothing window as a proportion.
 #' @param plot A logical, should a plot of the mean-variance trend be displayed?
 #'
-#' @return
+#' @return A matrix of variance stablized counts.
 #' @export
 #' @importFrom limma lmFit
 

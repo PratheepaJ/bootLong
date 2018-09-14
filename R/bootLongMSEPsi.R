@@ -5,12 +5,14 @@
 #' @param Wj subset of repeated observations for j-th subject
 #' @param qj number of repeated observations for j-th subject
 #' @param Khat.obs second element of the output of \code{bootLongPsi} evaluated using the initial block length and full data
+#' @param ncores A numeric. The number of cores to use in \code{\link[parallel]{mclapply}}.
 #' @inheritParams bootLongPsi
 #'
 #' @return list of MSE computed with block length b, Khat is all subsamples, Khat with initial block length
 #'
 #'
 #' @export
+#' @importFrom parallel mclapply
 bootLongMSEPsi = function(ps,
                            main_factor,
                            time_var,

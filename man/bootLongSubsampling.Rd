@@ -4,8 +4,8 @@
 \alias{bootLongSubsampling}
 \title{bootLongSubsampling}
 \usage{
-bootLongSubsampling(ps, main_factor, time_var, subjectID_var, lI, R, RR,
-  omega = 0.6, lC1 = 1, lC2 = NULL)
+bootLongSubsampling(ps, main_factor, time_var, subjectID_var, sampleID_var,
+  lI, R, RR, omega = 0.6, lC1 = 1, lC2 = NULL, ncores = 3)
 }
 \arguments{
 \item{ps}{phyloseq object}
@@ -27,6 +27,8 @@ bootLongSubsampling(ps, main_factor, time_var, subjectID_var, lI, R, RR,
 \item{lC1}{A numeric. (optional) any block size to start with. defualt is 1.}
 
 \item{lC2}{A numeric. (optional) any block size to end with. defualt is (lI-1).}
+
+\item{ncores}{A numeric. The number of cores to use in \code{\link[parallel]{mclapply}}.}
 }
 \value{
 A list of ``MSE`` in calculating K with block sizes lC=1:(lI-1), ``Khat`` values with block sizes lC=1:(lI-1) and ``Khat.obs`` with lI
