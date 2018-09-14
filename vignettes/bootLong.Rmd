@@ -257,16 +257,20 @@ main_factor <- "Preterm"
 time_var <- "Time"
 subjectID_var = "SubjectID"
 lI <- 3
+#   lC2 <- 2
 omega <- .6
 system.time(
     mse_results <- bootLongSubsampling(ps, 
                                        main_factor = main_factor,
                                        time_var = time_var, 
                                        subjectID_var = subjectID_var,
+                                       sampleID_var = sampleID_var,
                                        lI = lI,  
                                        R = R, 
                                        RR = RR,
-                                       omega = omega)
+                                       omega = omega,
+                                       lC1 = 1, 
+                                       lC2 = NULL)
     )
 
 #saveRDS(mse_results,"./bboot_sim.rds")

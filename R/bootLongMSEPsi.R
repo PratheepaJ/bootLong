@@ -15,6 +15,7 @@ bootLongMSEPsi <- function(ps,
                            main_factor,
                            time_var,
                            subjectID_var,
+                           sampleID_var,
                            b,
                            R,
                            RR,
@@ -71,37 +72,37 @@ bootLongMSEPsi <- function(ps,
                 return(ss)
             })
             sub.sam.i <- do.call("rbind",sub.sam.i)
-            subsam.id <- sub.sam.i$SampleID
+            subsam.id <- sub.sam.i[,sampleID_var]
             subsam.id <- as.character(subsam.id)
             ps.sub[[i]] <- prune_samples(subsam.id,ps)
 
         }
 
-        # Khat <- BiocParallel::bplapply(ps.sub, function(x){
-        #     k.hat <- bootLongPsi(x,
-        #                          main_factor = main_factor,
-        #                          time_var = time_var,
-        #                          subjectID_var = subjectID_var,
-        #                          b = b,
-        #                          R = R,
-        #                          RR = RR,
-        #                          T.obs.full = T.obs.full)
-        #     k.hat <- k.hat[[1]]
-        #     return(k.hat)
-        # })
+        Khat <- mclapply(ps.sub, function(x){
+            k.hat <- bootLongPsi(x,
+                                 main_factor = main_factor,
+                                 time_var = time_var,
+                                 subjectID_var = subjectID_var,
+                                 b = b,
+                                 R = R,
+                                 RR = RR,
+                                 T.obs.full = T.obs.full)
+            k.hat <- k.hat[[1]]
+            return(k.hat)
+        },ncores = ncroes)
 
-        Khat <- list()
-        for(i in 1:length(ps.sub)){
-            k.hat_t.obs = bootLongPsi(ps.sub[[i]],
-                                      main_factor = main_factor,
-                                      time_var = time_var,
-                                      subjectID_var = subjectID_var,
-                                      b = b,
-                                      R = R,
-                                      RR = RR,
-                                      T.obs.full = T.obs.full)
-            Khat[[i]] = k.hat_t.obs[[1]]
-        }
+        # Khat <- list()
+        # for(i in 1:length(ps.sub)){
+        #     k.hat_t.obs = bootLongPsi(ps.sub[[i]],
+        #                               main_factor = main_factor,
+        #                               time_var = time_var,
+        #                               subjectID_var = subjectID_var,
+        #                               b = b,
+        #                               R = R,
+        #                               RR = RR,
+        #                               T.obs.full = T.obs.full)
+        #     Khat[[i]] = k.hat_t.obs[[1]]
+        # }
 
         rm(ps)
         rm(samdf)
