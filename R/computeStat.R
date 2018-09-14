@@ -141,7 +141,10 @@ computeStat = function(ps,
         }
 
         ind = as.list(c(1:ntaxa(ps)))
-        df.beta.hat = lapply(ind, FUN = com_beta, sampleDf = samdf, otuDf = (ot+1), allSj = sj, weightDf = weights.cal, desingGEE = des, b = b, subjectID_var = subjectID_var, time_var = time_var)
+        df.beta.hat = list()
+        for(ind in 1:ntaxa(ps)){
+            df.beta.hat[[ind]] = com_beta(ind, sampleDf = samdf, otuDf = (ot+1), allSj = sj, weightDf = weights.cal, desingGEE = des, b = b, subjectID_var = subjectID_var, time_var = time_var)
+        }
         # df.beta.hat = lapply(ind, function(x){
         #     com_beta(x,
         #              sampleDf = samdf,
