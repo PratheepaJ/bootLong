@@ -6,8 +6,6 @@
 #'
 #' @return \code{ggplot2} object of correlogram for one taxon according to the taxon index.
 #' @export
-#'
-
 longCorreloSingle <- function(ps,
                               main_factor,
                               time_var,

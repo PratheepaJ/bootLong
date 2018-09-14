@@ -16,7 +16,7 @@ bibliography: bootLong.bib
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE,eval = FALSE)
 ```
 
 Install [R](https://www.r-project.org/) and [RStudio](https://www.rstudio.com/). Open this `Rmd` file in RStudio. Then run the following code to install all required packages.
@@ -56,6 +56,7 @@ library(BiocParallel)
 library(doParallel)
 library(parallel)
 library(magrittr)
+devtools::load_all(".")
 #library(bootLong)
 ```
 

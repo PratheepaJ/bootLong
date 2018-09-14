@@ -4,14 +4,13 @@
 #' @param b numeric, optimal block size to account for dependence within-subject.
 #' @param R Number of block bootstrap realization.
 #' @param RR Number of double block bootstrap realization.
-#' @param factors vector of factor variable(s) in the sample data of ps.
-#' @param time Time variable at repeated observations.
+#' @param main_factor vector of factor variable(s) in the sample data of ps.
+#' @param time_var Time variable at repeated observations.
 #' @param FDR False discovery rate
 #'
 #' @return list of dataframe with ASV, observed stat, pvalues, adjusted pvalues, lcl, ucl, observed pivotal quantity; stat.obs; stat.star; stat.star.star; T.star_obs.
-#' @import "ashr"
 #' @export
-bootLongMethod <- function(ps,b,R,RR,factors,time,FDR=.1,SubjectID_n="SubjectID"){
+bootLongMethod <- function(ps,b,R,RR,main_factor,time_var,FDR=.1,subjectID_var="SubjectID"){
         doParallel::registerDoParallel(parallel::detectCores())
         BiocParallel::register(BiocParallel::DoparParam())
 
@@ -19,22 +18,31 @@ bootLongMethod <- function(ps,b,R,RR,factors,time,FDR=.1,SubjectID_n="SubjectID"
         otu_table(ps) <- t(otu_table(ps,taxa_are_rows = T))
         }
 
-        res.obs <- computeStat(ps=ps,factors=factors,time=time,b=b,SubjectID_n=SubjectID_n)
+        res.obs <- computeStat(ps=ps,
+                               main_factor=main_factor,
+                               time_var=time_var,
+                               subjectID_var=subjectID_var,
+                               b=b)
 
         stat.name <- colnames(res.obs)[2]
 
         boot.results <- list()
 
-        boot.results <- BiocParallel::bplapply(seq_len(R),FUN=function(i){
-        ps.boot <- bootLongPhyloseq(ps,b,time,SubjectID_n=SubjectID_n)
+        boot.results <- BiocParallel::bplapply(seq_len(R), FUN = function(i){
+        ps.boot <- bootLongPhyloseq(ps,b,time_var,subjectID_var=subjectID_var)
         ps.boot <- ps.boot[[1]]
 
-        df.boot <- computeStat(ps=ps.boot,factors=factors,time=time,b=b,SubjectID_n=SubjectID_n)
+        df.boot <- computeStat(ps=ps.boot,
+                               main_factor=main_factor,
+                               time_var=time_var,
+                               subjectID_var=subjectID_var,
+                               b=b)
 
-        boot.results.bb <- lapply(seq_len(RR),FUN=function(j){
-            ps.boot.bb <- bootLongPhyloseq(ps.boot,b,time,SubjectID_n=SubjectID_n)
+        ind_RR = as.list(c(1:RR))
+        boot.results.bb <- lapply(ind_RR, FUN=function(j){
+            ps.boot.bb <- bootLongPhyloseq(ps.boot,b,time_var,subjectID_var=subjectID_var)
             ps.boot.bb <- ps.boot.bb[[1]]
-            df.boot.bb <- computeStat(ps=ps.boot.bb,factors=factors,time=time,b=b,SubjectID_n=SubjectID_n)
+            df.boot.bb <- computeStat(ps=ps.boot.bb,main_factor=main_factor,time_var=time_var,b=b,subjectID_var=subjectID_var)
             rm(ps.boot.bb)
             return(df.boot.bb)
 

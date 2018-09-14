@@ -13,7 +13,7 @@
 #'
 #' @return A list of ``MSE`` in calculating K with block sizes lC=1:(lI-1), ``Khat`` values with block sizes lC=1:(lI-1) and ``Khat.obs`` with lI
 #' @export
-#' @import parallel mclapply
+#' @importFrom parallel mclapply
 
 bootLongSubsampling = function(ps,
                                main_factor,

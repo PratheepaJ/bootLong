@@ -17,6 +17,9 @@ asinh_voom(counts, design = NULL, sj, span = 0.5, plot = FALSE)
 
 \item{plot}{A logical, should a plot of the mean-variance trend be displayed?}
 }
+\value{
+A matrix of variance stablized counts.
+}
 \description{
 Computes the observation level weight based on the mean-variance relationship.
 }
