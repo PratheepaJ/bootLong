@@ -256,6 +256,7 @@ RR <- 5
 main_factor <- "Preterm"
 time_var <- "Time"
 subjectID_var = "SubjectID"
+sampleID_var = "SampleID"
 lI <- 3
 #   lC2 <- 2
 omega <- .6

@@ -11,7 +11,7 @@
 #'
 #'
 #' @export
-bootLongMSEPsi <- function(ps,
+bootLongMSEPsi = function(ps,
                            main_factor,
                            time_var,
                            subjectID_var,
@@ -36,26 +36,26 @@ bootLongMSEPsi <- function(ps,
             }
 
 
-        samdf <- sample_data(ps) %>% data.frame
+        samdf = sample_data(ps) %>% data.frame
 
         if(!is.numeric(samdf[,time_var])){
-            samdf[,time_var] <- as.numeric(samdf[,time_var])
+            samdf[,time_var] = as.numeric(samdf[,time_var])
         }
 
         if(!is.factor(samdf[,subjectID_var])){
-            samdf[,subjectID_var] <- as.factor(samdf[,subjectID_var])
+            samdf[,subjectID_var] = as.factor(samdf[,subjectID_var])
         }
 
-        g <- samdf[,subjectID_var]
+        g = samdf[,subjectID_var]
 
-        samdf <- split(samdf, g)
+        samdf = split(samdf, g)
 
-        num.sub.sam <- max(qj)-max(Wj)+1
+        num.sub.sam = max(qj)-max(Wj)+1
 
-        samdf.q.W <- mapply(samdf, as.list(qj), as.list(Wj), FUN = list, SIMPLIFY = FALSE)
+        samdf.q.W = mapply(samdf, as.list(qj), as.list(Wj), FUN = list, SIMPLIFY = FALSE)
 
-        samdf.q.W.or <- lapply(samdf.q.W, function(x){
-            x[[1]] <- dplyr::arrange_(x[[1]], time_var)
+        samdf.q.W.or = lapply(samdf.q.W, function(x){
+            x[[1]] = dplyr::arrange_(x[[1]], time_var)
             return(x)
         })
 
@@ -64,23 +64,23 @@ bootLongMSEPsi <- function(ps,
             stop("decrease omega")
             }
 
-        ps.sub <- list()
+        ps.sub = list()
         for(i in 1:num.sub.sam){
-            sub.sam.i <- lapply(samdf.q.W.or,function(x){
-                xd <- x[[1]]
-                W <- x[[3]]
-                ss <- data.frame(dplyr::slice(x[[1]],i:(W+i-1)))
+            sub.sam.i = lapply(samdf.q.W.or,function(x){
+                xd = x[[1]]
+                W = x[[3]]
+                ss = data.frame(dplyr::slice(x[[1]],i:(W+i-1)))
                 return(ss)
             })
-            sub.sam.i <- do.call("rbind",sub.sam.i)
-            subsam.id <- sub.sam.i[,sampleID_var]
-            subsam.id <- as.character(subsam.id)
-            ps.sub[[i]] <- prune_samples(subsam.id,ps)
+            sub.sam.i = do.call("rbind",sub.sam.i)
+            subsam.id = sub.sam.i[,sampleID_var]
+            subsam.id = as.character(subsam.id)
+            ps.sub[[i]] = prune_samples(subsam.id,ps)
 
         }
 
-        Khat <- mclapply(ps.sub, function(x){
-            k.hat <- bootLongPsi(x,
+        Khat = bplapply(ps.sub, function(x){
+            k.hat = bootLongPsi(x,
                                  main_factor = main_factor,
                                  time_var = time_var,
                                  subjectID_var = subjectID_var,
@@ -88,11 +88,11 @@ bootLongMSEPsi <- function(ps,
                                  R = R,
                                  RR = RR,
                                  T.obs.full = T.obs.full)
-            k.hat <- k.hat[[1]]
+            k.hat = k.hat[[1]]
             return(k.hat)
-        }, ncores = ncores)
+        })
 
-        # Khat <- list()
+        # Khat = list()
         # for(i in 1:length(ps.sub)){
         #     k.hat_t.obs = bootLongPsi(ps.sub[[i]],
         #                               main_factor = main_factor,
@@ -111,19 +111,19 @@ bootLongMSEPsi <- function(ps,
         rm(samdf.q.W.or)
         rm(ps.sub)
 
-        Khat.squared.diff <- lapply(Khat, FUN=function(w){
+        Khat.squared.diff = lapply(Khat, FUN=function(w){
             (w-Khat.obs)^2
             })
 
-        Khat.squared.diff.df <- do.call("cbind", Khat.squared.diff)
+        Khat.squared.diff.df = do.call("cbind", Khat.squared.diff)
 
-        MSE_i <- apply(Khat.squared.diff.df, 1 , FUN=function(x){
+        MSE_i = apply(Khat.squared.diff.df, 1 , FUN=function(x){
             mean(x)
             })
 
         rm(Khat.squared.diff.df)
 
-        rt <- list(MSE_i = MSE_i, Khat = Khat, Khat.obs = Khat.obs)
+        rt = list(MSE_i = MSE_i, Khat = Khat, Khat.obs = Khat.obs)
 
         gc(reset = TRUE)
 
