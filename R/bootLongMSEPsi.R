@@ -22,7 +22,8 @@ bootLongMSEPsi <- function(ps,
                            qj,
                            Wj,
                            Khat.obs = NULL,
-                           T.obs.full = NULL){
+                           T.obs.full = NULL,
+                           ncores){
 
         doParallel::registerDoParallel(parallel::detectCores())
         BiocParallel::register(BiocParallel::DoparParam())
@@ -89,7 +90,7 @@ bootLongMSEPsi <- function(ps,
                                  T.obs.full = T.obs.full)
             k.hat <- k.hat[[1]]
             return(k.hat)
-        },ncores = ncroes)
+        }, ncores = ncores)
 
         # Khat <- list()
         # for(i in 1:length(ps.sub)){

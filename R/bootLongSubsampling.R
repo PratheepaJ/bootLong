@@ -25,7 +25,9 @@ bootLongSubsampling = function(ps,
                                R,
                                RR,
                                omega=.6,
-                               lC1=1, lC2=NULL){
+                               lC1=1,
+                               lC2=NULL,
+                               ncores = 3){
 
         qj = table(sample_data(ps)[,subjectID_var])
 
@@ -68,7 +70,8 @@ bootLongSubsampling = function(ps,
                            qj = qj,
                            Wj = Wj,
                            Khat.obs = Khat.obs,
-                           T.obs.full = T.obs)})
+                           T.obs.full = T.obs,
+                           ncores = ncores)})
 
         return(mseKhatKobs)
 }

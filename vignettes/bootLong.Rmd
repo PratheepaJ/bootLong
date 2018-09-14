@@ -270,7 +270,8 @@ system.time(
                                        RR = RR,
                                        omega = omega,
                                        lC1 = 1, 
-                                       lC2 = NULL)
+                                       lC2 = NULL,
+                                       ncores = ncores)
     )
 
 #saveRDS(mse_results,"./bboot_sim.rds")
