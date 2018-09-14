@@ -48,7 +48,7 @@ bootLongSubsampling = function(ps,
                                   R = R,
                                   RR = RR,
                                   T.obs.full=NULL,
-                                  para=FALSE)
+                                  para = FALSE)
 
 
         Khat.obs = psi.hat.lI[[1]]

@@ -126,7 +126,7 @@ computeStat = function(ps,
                                         id = idvarV,
                                         waves = wavesTime,
                                         data = dffT,
-                                        family=arcsinhlstLink(),
+                                        family = arcsinhlstLink(),
                                         corstr = "fixed",
                                         weights = weightT,
                                         corr.mat = workCorr,
@@ -141,17 +141,18 @@ computeStat = function(ps,
         }
 
         ind = as.list(c(1:ntaxa(ps)))
-        df.beta.hat = lapply(ind, function(x){
-            com_beta(x,
-                     sampleDf = samdf,
-                     otuDf = (ot+1),
-                     allSj = sj,
-                     weightDf = weights.cal,
-                     desingGEE = des,
-                     b=b,
-                     subjectID_var=subjectID_var,
-                     time_var=time_var)
-            })
+        df.beta.hat = lapply(ind, FUN = com_beta, sampleDf = samdf, otuDf = (ot+1), allSj = sj, weightDf = weights.cal, desingGEE = des, b = b, subjectID_var = subjectID_var, time_var = time_var)
+        # df.beta.hat = lapply(ind, function(x){
+        #     com_beta(x,
+        #              sampleDf = samdf,
+        #              otuDf = (ot+1),
+        #              allSj = sj,
+        #              weightDf = weights.cal,
+        #              desingGEE = des,
+        #              b = b,
+        #              subjectID_var = subjectID_var,
+        #              time_var = time_var)
+        #     })
 
 
         df.beta.hat = data.frame(do.call("rbind", df.beta.hat))
