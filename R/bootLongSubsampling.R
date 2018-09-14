@@ -47,25 +47,26 @@ bootLongSubsampling = function(ps,
                                   b = lI,
                                   R = R,
                                   RR = RR,
-                                  T.obs.full=NULL,
+                                  T.obs.full = NULL,
                                   para = FALSE)
 
 
         Khat.obs = psi.hat.lI[[1]]
         T.obs = psi.hat.lI[[2]]
 
-        mseKhatKobs = lapply(seq_len(length(lC)),function(y){
-            bootLongMSEPsi(ps=ps,
-                           main_factor=main_factor,
-                           time_var=time_var,
+        blk_choice = as.list(c(1:length(lC)))
+        mseKhatKobs = lapply(blk_choice, function(y){
+            bootLongMSEPsi(ps = ps,
+                           main_factor = main_factor,
+                           time_var = time_var,
                            subjectID_var = subjectID_var,
-                           b=y,
-                           R=R,
-                           RR=RR,
-                           qj=qj,
-                           Wj=Wj,
-                           Khat.obs=Khat.obs,
-                           T.obs.full=T.obs)})
+                           b = y,
+                           R = R,
+                           RR = RR,
+                           qj = qj,
+                           Wj = Wj,
+                           Khat.obs = Khat.obs,
+                           T.obs.full = T.obs)})
 
         return(mseKhatKobs)
 }

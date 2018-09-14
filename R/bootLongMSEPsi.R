@@ -35,17 +35,25 @@ bootLongMSEPsi <- function(ps,
 
 
         samdf <- sample_data(ps) %>% data.frame
+
         if(!is.numeric(samdf[,time_var])){
             samdf[,time_var] <- as.numeric(samdf[,time_var])
-            }
+        }
+
+        if(!is.factor(samdf[,subjectID_var])){
+            samdf[,subjectID_var] <- as.factor(samdf[,subjectID_var])
+        }
+
         g <- samdf[,subjectID_var]
-        samdf <- split(samdf,g)
+
+        samdf <- split(samdf, g)
+
         num.sub.sam <- max(qj)-max(Wj)+1
 
-        samdf.q.W <- mapply(samdf,as.list(qj), as.list(Wj), FUN=list,SIMPLIFY = FALSE)
+        samdf.q.W <- mapply(samdf, as.list(qj), as.list(Wj), FUN = list, SIMPLIFY = FALSE)
 
-        samdf.q.W.or <- lapply(samdf.q.W,function(x){
-            x[[1]] <- dplyr::arrange_(x[[1]],time_var)
+        samdf.q.W.or <- lapply(samdf.q.W, function(x){
+            x[[1]] <- dplyr::arrange_(x[[1]], time_var)
             return(x)
         })
 
@@ -69,18 +77,43 @@ bootLongMSEPsi <- function(ps,
 
         }
 
-        Khat <- BiocParallel::bplapply(ps.sub,function(x){
-            k.hat <- bootLongPsi(x,
-                                 main_factor=main_factor,
-                                 time_var=time_var,
-                                 subjectID_var = subjectID_var,
-                                 b=b,
-                                 R=R,
-                                 RR=RR,
-                                 T.obs.full=T.obs.full)
-            k.hat <- k.hat[[1]]
-            return(k.hat)
-        })
+        # Khat <- BiocParallel::bplapply(ps.sub, function(x){
+        #     k.hat <- bootLongPsi(x,
+        #                          main_factor = main_factor,
+        #                          time_var = time_var,
+        #                          subjectID_var = subjectID_var,
+        #                          b = b,
+        #                          R = R,
+        #                          RR = RR,
+        #                          T.obs.full = T.obs.full)
+        #     k.hat <- k.hat[[1]]
+        #     return(k.hat)
+        # })
+
+        Khat <- list()
+        for(i in 1:length(ps.sub)){
+            k.hat_t.obs = bootLongPsi(ps.sub[[i]],
+                                      main_factor = main_factor,
+                                      time_var = time_var,
+                                      subjectID_var = subjectID_var,
+                                      b = b,
+                                      R = R,
+                                      RR = RR,
+                                      T.obs.full = T.obs.full)
+            Khat[[i]] = k.hat_t.obs[[1]]
+        }
+        # Khat <- BiocParallel::bplapply(ps.sub, function(x){
+        #     k.hat <- bootLongPsi(x,
+        #                          main_factor = main_factor,
+        #                          time_var = time_var,
+        #                          subjectID_var = subjectID_var,
+        #                          b = b,
+        #                          R = R,
+        #                          RR = RR,
+        #                          T.obs.full = T.obs.full)
+        #     k.hat <- k.hat[[1]]
+        #     return(k.hat)
+        # })
 
         rm(ps)
         rm(samdf)
@@ -100,7 +133,7 @@ bootLongMSEPsi <- function(ps,
 
         rm(Khat.squared.diff.df)
 
-        rt <- list(MSE_i=MSE_i,Khat=Khat,Khat.obs=Khat.obs)
+        rt <- list(MSE_i = MSE_i, Khat = Khat, Khat.obs = Khat.obs)
 
         gc(reset = TRUE)
 
