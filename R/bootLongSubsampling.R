@@ -54,8 +54,8 @@ bootLongSubsampling = function(ps,
         Khat.obs = psi.hat.lI[[1]]
         T.obs = psi.hat.lI[[2]]
 
-        blk_choice = as.list(c(1:length(lC)))
-        mseKhatKobs = lapply(blk_choice, function(y){
+        blk_size_choice = as.list(c(1:length(lC)))
+        mseKhatKobs = lapply(blk_size_choice, function(y){
             bootLongMSEPsi(ps = ps,
                            main_factor = main_factor,
                            time_var = time_var,

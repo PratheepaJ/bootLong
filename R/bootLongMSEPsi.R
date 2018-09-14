@@ -102,18 +102,6 @@ bootLongMSEPsi <- function(ps,
                                       T.obs.full = T.obs.full)
             Khat[[i]] = k.hat_t.obs[[1]]
         }
-        # Khat <- BiocParallel::bplapply(ps.sub, function(x){
-        #     k.hat <- bootLongPsi(x,
-        #                          main_factor = main_factor,
-        #                          time_var = time_var,
-        #                          subjectID_var = subjectID_var,
-        #                          b = b,
-        #                          R = R,
-        #                          RR = RR,
-        #                          T.obs.full = T.obs.full)
-        #     k.hat <- k.hat[[1]]
-        #     return(k.hat)
-        # })
 
         rm(ps)
         rm(samdf)

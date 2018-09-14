@@ -26,7 +26,7 @@ computeStat = function(ps,
 
         ot = otu_table(ps) %>% data.frame %>% as.matrix
 
-        if(!isTRUE(all(ot == floor(ot)))){
+        if(!isTRUE(all(ot == floor(ot)))){# regression for negative binomial data so the
             stop("otu_table entries must be integer")
         }
 

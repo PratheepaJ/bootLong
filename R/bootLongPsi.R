@@ -49,12 +49,12 @@ bootLongPsi = function(ps,
                     ps.boot.bb = bootLongPhyloseq(ps.boot,
                                                   time_var = time_var,
                                                   subjectID_var = subjectID_var,
-                                                  b=b)
+                                                  b = b)
                     ps.boot.bb = ps.boot.bb[[1]]
                     df.boot.bb = computeStat(ps = ps.boot.bb,
                                              main_factor = main_factor,
                                              time_var = time_var,
-                                             subjectID_var=subjectID_var,
+                                             subjectID_var = subjectID_var,
                                              b=b)
                     rm(ps.boot.bb)
                     return(df.boot.bb)
@@ -63,7 +63,7 @@ bootLongPsi = function(ps,
 
             rm(ps.boot)
 
-            return(list(df.boot,boot.results.bb))
+            return(list(df.boot, boot.results.bb))
 
 
         })
@@ -77,9 +77,10 @@ bootLongPsi = function(ps,
         stat.star = do.call("cbind", lapply(boot.results.all, FUN=function(x){
             x[,2]
             }))
+
         stat.star = as.data.frame(stat.star)
 
-        sd.stat = apply(stat.star,1,FUN=sd,na.rm=FALSE)
+        sd.stat = apply(stat.star, 1, FUN=sd, na.rm=FALSE)
 
         beta.obs = res.obs[,2]
         shrink.beta.obs = suppressMessages(ash(beta.obs, sebetahat = sd.stat, mixcompdist = "normal"))

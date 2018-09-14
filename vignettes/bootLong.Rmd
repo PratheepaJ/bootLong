@@ -251,12 +251,12 @@ grid.arrange(arrangeGrob(grobs=plist, nrow=2, widths=c(3,3,3)),
 
 ## Subsampling   
 ```{r message=FALSE,warning=FALSE,eval=FALSE}
-R <- 2
-RR <- 2
+R <- 5
+RR <- 5
 main_factor <- "Preterm"
 time_var <- "Time"
 subjectID_var = "SubjectID"
-lI <- 5
+lI <- 3
 omega <- .6
 system.time(
     mse_results <- bootLongSubsampling(ps, 
