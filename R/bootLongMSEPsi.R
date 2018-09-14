@@ -79,7 +79,7 @@ bootLongMSEPsi = function(ps,
 
         }
 
-        Khat = bplapply(ps.sub, function(x){
+        Khat = mclapply(ps.sub, function(x){
             k.hat = bootLongPsi(x,
                                  main_factor = main_factor,
                                  time_var = time_var,
@@ -90,7 +90,7 @@ bootLongMSEPsi = function(ps,
                                  T.obs.full = T.obs.full)
             k.hat = k.hat[[1]]
             return(k.hat)
-        })
+        },mc.cores = ncores)
 
         # Khat = list()
         # for(i in 1:length(ps.sub)){
