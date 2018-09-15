@@ -26,7 +26,7 @@ bootLongSubsampling = function(ps,
                                omega=.6,
                                lC1=1,
                                lC2=NULL,
-                               ncores = 3){
+                               ncores){
 
         qj = table(sample_data(ps)[,subjectID_var])
 
@@ -58,7 +58,7 @@ bootLongSubsampling = function(ps,
 
         blk_size_choice = as.list(c(1:length(lC)))
 
-        mseKhatKobs = lapply(blk_size_choice, function(y){
+        mseKhatKobs = mclapply(blk_size_choice, function(y){
             bootLongMSEPsi(ps = ps,
                            main_factor = main_factor,
                            time_var = time_var,
@@ -71,7 +71,7 @@ bootLongSubsampling = function(ps,
                            Wj = Wj,
                            Khat.obs = Khat.obs,
                            T.obs.full = T.obs,
-                           ncores = ncores)})
+                           ncores = ncores)}, mc.cores = ncores)
 
         return(mseKhatKobs)
 }
