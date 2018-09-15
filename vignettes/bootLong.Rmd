@@ -23,18 +23,19 @@ Install [R](https://www.r-project.org/) and [RStudio](https://www.rstudio.com/).
 
 
 Install packages: 
-```{r install_packages}
+```{r install_packages, eval=FALSE}
 pkgs <- c("ggplot2","dplyr","tidyr",
-          "phyloseq", "limma","ashr","gridExtra",
-          "geepack","MASS","geeM",
-          "R.utils", "BiocParallel","doParallel",
-          "parallel","magrittr")
+          "phyloseq", "limma","ashr",
+          "gridExtra", "geepack","MASS",
+          "geeM", "R.utils", "BiocParallel",
+          "doParallel", "parallel","magrittr",
+          "joineR")
 
 #   installed packages that were not installed already
 source("http://bioconductor.org/biocLite.R")
 biocLite(setdiff(pkgs,installed.packages()), suppressUpdates = TRUE)
 
-#devtools::install_github("PratheepaJ/bootLong")
+devtools::install_github("PratheepaJ/bootLong")
 ```
 
 load packages:
@@ -43,12 +44,10 @@ library(ggplot2)
 library(dplyr)
 library(tidyr)
 library(phyloseq)
-library(DESeq2)
-library(edgeR)
 library(limma)
 library(ashr)
 library(gridExtra)
-library(geepack)
+#library(geepack)
 library(MASS)
 library(geeM)
 library(R.utils)
@@ -56,8 +55,8 @@ library(BiocParallel)
 library(doParallel)
 library(parallel)
 library(magrittr)
-devtools::load_all(".")
-#library(bootLong)
+library(joineR)
+library(bootLong)
 ```
 
 Set the computational resources
@@ -251,9 +250,9 @@ grid.arrange(arrangeGrob(grobs=plist, nrow=2, widths=c(3,3,3)),
 #   The block bootstrap method
 
 ## Subsampling   
-```{r message=FALSE,warning=FALSE,eval=FALSE}
-R <- 3
-RR <- 2
+```{r message=FALSE,warning=FALSE}
+R <- 5
+RR <- 5
 main_factor <- "Preterm"
 time_var <- "Time"
 subjectID_var = "SubjectID"
@@ -310,8 +309,8 @@ l.opt
 
 ##   Run MBB with the optimal block size
 ```{r message=FALSE, warning=FALSE, eval=FALSE}
-R <- 3
-RR <- 2
+R <- 10
+RR <- 5
 main_factor <- "Preterm"
 time_var <- "Time"
 subjectID_var = "SubjectID"
