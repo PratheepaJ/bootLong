@@ -27,8 +27,6 @@ bootLongMSEPsi = function(ps,
                            T.obs.full = NULL,
                            ncores){
 
-        # doParallel::registerDoParallel(parallel::detectCores())
-        # BiocParallel::register(BiocParallel::DoparParam())
 
         if(is.null(Khat.obs)){
             stop("User needs to run bootLongPsi() function with an initial block length ")
@@ -38,25 +36,25 @@ bootLongMSEPsi = function(ps,
             }
 
 
-        samdf = sample_data(ps) %>% data.frame
+        sam_ps = sample_data(ps) %>% data.frame
 
-        if(!is.numeric(samdf[,time_var])){
-            samdf[,time_var] = as.numeric(samdf[,time_var])
-        }
+        # if(!is.numeric(sam_ps[,time_var])){
+        #     sam_ps[,time_var] = as.numeric(sam_ps[,time_var])
+        # }
+        #
+        # if(!is.factor(sam_ps[,subjectID_var])){
+        #     sam_ps[,subjectID_var] = as.factor(sam_ps[,subjectID_var])
+        # }
 
-        if(!is.factor(samdf[,subjectID_var])){
-            samdf[,subjectID_var] = as.factor(samdf[,subjectID_var])
-        }
+        g = sam_ps[,subjectID_var]
 
-        g = samdf[,subjectID_var]
-
-        samdf = split(samdf, g)
+        sam_ps = split(sam_ps, g)
 
         num.sub.sam = max(qj)-max(Wj)+1
 
-        samdf.q.W = mapply(samdf, as.list(qj), as.list(Wj), FUN = list, SIMPLIFY = FALSE)
+        sam_ps.q.W = mapply(sam_ps, as.list(qj), as.list(Wj), FUN = list, SIMPLIFY = FALSE)
 
-        samdf.q.W.or = lapply(samdf.q.W, function(x){
+        sam_ps.q.W.or = lapply(sam_ps.q.W, function(x){
             x[[1]] = dplyr::arrange_(x[[1]], time_var)
             return(x)
         })
@@ -68,7 +66,7 @@ bootLongMSEPsi = function(ps,
 
         ps.sub = list()
         for(i in 1:num.sub.sam){
-            sub.sam.i = lapply(samdf.q.W.or,function(x){
+            sub.sam.i = lapply(sam_ps.q.W.or,function(x){
                 xd = x[[1]]
                 W = x[[3]]
                 ss = data.frame(dplyr::slice(x[[1]],i:(W+i-1)))
@@ -96,9 +94,9 @@ bootLongMSEPsi = function(ps,
 
 
         rm(ps)
-        rm(samdf)
-        rm(samdf.q.W)
-        rm(samdf.q.W.or)
+        rm(sam_ps)
+        rm(sam_ps.q.W)
+        rm(sam_ps.q.W.or)
         rm(ps.sub)
 
         Khat.squared.diff = lapply(Khat, FUN=function(w){

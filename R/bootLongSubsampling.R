@@ -33,6 +33,21 @@ bootLongSubsampling = function(ps,
         }
 
         sam_ps = sample_data(ps) %>% data.frame
+
+        if(!is.numeric(sam_ps[,time_var])){
+            sam_ps[,time_var] = as.numeric(sam_ps[,time_var])
+        }
+
+        if(!is.factor(sam_ps[,subjectID_var])){
+            sam_ps[,subjectID_var] = as.factor(sam_ps[,subjectID_var])
+        }
+
+        if(!is.factor(sam_ps[,sampleID_var])){
+            sam_ps[,sampleID_var] = as.factor(sam_ps[,sampleID_var])
+        }
+
+        sample_data(ps) = sam_ps
+
         qj = table(sam_ps[,subjectID_var])
 
         Wj = trunc(table(sam_ps[, subjectID_var])*omega)
