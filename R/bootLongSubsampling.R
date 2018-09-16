@@ -28,6 +28,10 @@ bootLongSubsampling = function(ps,
                                lC2=NULL,
                                ncores){
 
+        if(dim(otu_table(ps))[1]==nsamples(ps)){
+            otu_table(ps) = t(otu_table(ps,taxa_are_rows = T))
+        }
+
         sam_ps = sample_data(ps) %>% data.frame
         qj = table(sam_ps[,subjectID_var])
 
