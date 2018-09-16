@@ -28,9 +28,10 @@ bootLongSubsampling = function(ps,
                                lC2=NULL,
                                ncores){
 
-        qj = table(sample_data(ps)[,subjectID_var])
+        sam_ps = sample_data(ps) %>% data.frame
+        qj = table(sam_ps[,subjectID_var])
 
-        Wj = trunc(table(sample_data(ps)[, subjectID_var])*omega)
+        Wj = trunc(table(sam_ps[, subjectID_var])*omega)
 
         if(lI > max(Wj)){
             stop(paste("choose lI at most", max(Wj)))
