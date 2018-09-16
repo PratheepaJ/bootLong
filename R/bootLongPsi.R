@@ -17,8 +17,7 @@ bootLongPsi = function(ps,
                         b,
                         R,
                         RR,
-                        T.obs.full=NULL,
-                        para = FALSE){
+                        T.obs.full=NULL){
 
         if(dim(otu_table(ps))[1]==nsamples(ps)){
         otu_table(ps) = t(otu_table(ps,taxa_are_rows = T))

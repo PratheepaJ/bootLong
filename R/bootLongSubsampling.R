@@ -30,7 +30,7 @@ bootLongSubsampling = function(ps,
 
         qj = table(sample_data(ps)[,subjectID_var])
 
-        Wj = trunc(table(sample_data(ps)[,subjectID_var])*omega)
+        Wj = trunc(table(sample_data(ps)[, subjectID_var])*omega)
 
         if(lI > max(Wj)){
             stop(paste("choose lI at most", max(Wj)))
@@ -49,8 +49,7 @@ bootLongSubsampling = function(ps,
                                   b = lI,
                                   R = R,
                                   RR = RR,
-                                  T.obs.full = NULL,
-                                  para = FALSE)
+                                  T.obs.full = NULL)
 
 
         Khat.obs = psi.hat.lI[[1]]

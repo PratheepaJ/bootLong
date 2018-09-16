@@ -19,7 +19,7 @@ asinh_voom = function (counts,
                        span = 0.5,
                        plot = FALSE){
 
-        inv_asinh = function(x) {
+        inv_asinh = function(x){
             y = 0.5*exp(-x)*(exp(2*x)-1)
             return(y)
         }
