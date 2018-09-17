@@ -52,7 +52,7 @@ bootLongPhyloseq = function(ps,
                             blks_first_index = blks.first.index)
             })
 
-        sampling.blks.within.subject.indices = lapply(sampling.blks.within.subject.indices,"[[",1)
+        # sampling.blks.within.subject.indices = lapply(sampling.blks.within.subject.indices,"[[",1)
 
         boot.sample.indices = as.numeric(unlist(sampling.blks.within.subject.indices))
 

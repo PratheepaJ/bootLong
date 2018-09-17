@@ -31,6 +31,14 @@ bootLongIndices = function(x,
 
         num_of_blks = num_of_rep_obs_x-b+1
 
+        # blk_sam_indices = lapply(blks.first.index, function(x){
+        #     x:(x+b-1)
+        #     }) %>% unlist
+        #
+        # sam_indices = x$Index[blk_sam_indices]
+        # sam_indices = sam_indices[!is.na(sam_indices)]
+        # sam_indices = sam_indices[1:num_of_rep_obs_x]
+
         if(L > num_of_blks){
             if((L-num_of_blks)%%num_of_rep_obs_x==0){
                     howrep = rep(1:num_of_rep_obs_x, times=(L-num_of_blks)/num_of_rep_obs_x)
@@ -43,7 +51,7 @@ bootLongIndices = function(x,
 
         subject_sample_indices = numeric(0)
 
-        if(L==0){
+        if(num_of_blks <= 0){
             subject_sample_indices = x$Index
         }else{
             subject_sample_indices = x$Index[unlist(lapply(blks.first.index,FUN=function(y){y:(y+b-1)}))]
@@ -51,4 +59,5 @@ bootLongIndices = function(x,
         }
 
         return(subject.sample.indices)
+        #return(sam_indices)
 }
