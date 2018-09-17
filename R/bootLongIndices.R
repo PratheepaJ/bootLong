@@ -6,7 +6,7 @@
 #'
 #' @param x a data frame. It must have \code{Index} column that will be added by \code{bootLongPhyloseq}.
 #' @param L a numeric. Number of overlapping blocks per subject that will be added by \code{bootLongPhyloseq}.
-#' @param blks_first_index a vector of positive integer. This will be added by \code{bootLongPhyloseq} (same for all subjects.)
+#' @param blks.first.index a vector of positive integer. This will be added by \code{bootLongPhyloseq} (same for all subjects.)
 #' @inheritParams computeStat
 #'
 #' @return A list of indices to include in the block bootstrap realization.
@@ -15,41 +15,40 @@ bootLongIndices = function(x,
                             time_var,
                             b,
                             L,
-                            blks_first_index){
+                            blks.first.index){
 
         # if(!is.numeric(x[,time_var])){
         #     x[,time_var] = as.numeric(x[,time_var])
         #     }
 
-        if(!is.unsorted(x[,time_var])){
+        if(!is.unsorted(x[, time_var])){
             x = x
         }else{
-            x = arrange_(x,time_var)
+            x = arrange_(x, time_var)
         }
 
+        num_of_rep_obs_x = dim(x)[1]
 
-        num.of.rep.obs.x = dim(x)[1]
+        num_of_blks = num_of_rep_obs_x-b+1
 
-        num.of.blks = num.of.rep.obs.x-b+1
-
-        if(L > num.of.blks){
-            if((L-num.of.blks)%%num.of.rep.obs.x==0){
-                howrep = rep(1:num.of.rep.obs.x, times=(L-num.of.blks)/num.of.rep.obs.x)
+        if(L > num_of_blks){
+            if((L-num_of_blks)%%num_of_rep_obs_x==0){
+                    howrep = rep(1:num_of_rep_obs_x, times=(L-num_of_blks)/num_of_rep_obs_x)
             }else{
-                    howrep = c(rep(1:num.of.rep.obs.x, times=(L-num.of.blks)/num.of.rep.obs.x),1:((L-num.of.blks)%%num.of.rep.obs.x))
+                    howrep = c(rep(1:num_of_rep_obs_x, times=(L-num_of_blks)/num_of_rep_obs_x),1:((L-num_of_blks)%%num_of_rep_obs_x))
             }
-            expand.x = bind_rows(x,x[howrep,])
-            x = expand.x
+            expand_x = bind_rows(x,x[howrep,])
+            x = expand_x
         }
 
-        subject.sample.indices = numeric(0)
+        subject_sample_indices = numeric(0)
 
         if(L==0){
-            subject.sample.indices = x$Index
+            subject_sample_indices = x$Index
         }else{
-            subject.sample.indices = x$Index[unlist(lapply(blks_first_index,FUN=function(y){y:(y+b-1)}))]
-            subject.sample.indices = subject.sample.indices[1:num.of.rep.obs.x]
+            subject_sample_indices = x$Index[unlist(lapply(blks.first.index,FUN=function(y){y:(y+b-1)}))]
+            subject_sample_indices = subject.sample.indices[1:num_of_rep_obs_x]
         }
 
-        return(list(subject.sample.indices))
+        return(subject.sample.indices)
 }

@@ -44,7 +44,7 @@ bootLongPhyloseq = function(ps,
         L = num.of.blks %>% unlist %>% max
         blks.first.index = sample(1:L, L, replace = TRUE)
 
-        sampling.blks.within.subject.indices = lapply(sam_ps.split.by.subjects,FUN=function(q){
+        sampling.blks.within.subject.indices = lapply(sam_ps.split.by.subjects, FUN=function(q){
             bootLongIndices(x = q,
                             time_var = time_var,
                             b = b,
