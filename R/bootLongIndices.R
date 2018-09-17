@@ -11,44 +11,43 @@
 #'
 #' @return A list of indices to include in the block bootstrap realization.
 #' @export
-bootLongIndices = function(x,
-                            time_var,
-                            b,
-                            L,
-                            blks.first.index){
+bootLongIndices <- function(x, time_var, b, L, blks.first.index) {
 
-        # if(!is.numeric(x[,time_var])){
-        #     x[,time_var] = as.numeric(x[,time_var])
-        #     }
+    if(!is.numeric(x[,time_var])) {
+        x[,time_var] <- as.numeric(x[,time_var])
+    }
 
-        if(!is.unsorted(x[, time_var])){
-            x = x
-        }else{
-            x = arrange_(x, time_var)
+    if (!is.unsorted(x[, time_var])) {
+        x <- x
+    } else {
+        x <- arrange_(x, time_var)
+    }
+
+    num_of_rep_obs_x <- dim(x)[1]
+
+    num_of_blks <- num_of_rep_obs_x - b + 1
+
+    if (L > num_of_blks) {
+        if ((L - num_of_blks)%%num_of_rep_obs_x == 0) {
+            howrep <- rep(1:num_of_rep_obs_x, times = (L - num_of_blks)/num_of_rep_obs_x)
+        } else {
+            howrep <- c(rep(1:num_of_rep_obs_x, times = (L - num_of_blks)/num_of_rep_obs_x),
+                1:((L - num_of_blks)%%num_of_rep_obs_x))
         }
+        expand_x <- bind_rows(x, x[howrep, ])
+        x <- expand_x
+    }
 
-        num_of_rep_obs_x = dim(x)[1]
+    subject_sample_indices <- numeric(0)
 
-        num_of_blks = num_of_rep_obs_x-b+1
+    if (num_of_blks <= 0) {
+        subject_sample_indices <- x$Index
+    } else {
+        subject_sample_indices <- x$Index[unlist(lapply(blks.first.index, FUN = function(y) {
+            y:(y + b - 1)
+        }))]
+        subject_sample_indices <- subject.sample.indices[1:num_of_rep_obs_x]
+    }
 
-        if(L > num_of_blks){
-            if((L-num_of_blks)%%num_of_rep_obs_x==0){
-                    howrep = rep(1:num_of_rep_obs_x, times=(L-num_of_blks)/num_of_rep_obs_x)
-            }else{
-                    howrep = c(rep(1:num_of_rep_obs_x, times=(L-num_of_blks)/num_of_rep_obs_x),1:((L-num_of_blks)%%num_of_rep_obs_x))
-            }
-            expand_x = bind_rows(x,x[howrep,])
-            x = expand_x
-        }
-
-        subject_sample_indices = numeric(0)
-
-        if(num_of_blks <= 0){
-            subject_sample_indices = x$Index
-        }else{
-            subject_sample_indices = x$Index[unlist(lapply(blks.first.index,FUN=function(y){y:(y+b-1)}))]
-            subject_sample_indices = subject.sample.indices[1:num_of_rep_obs_x]
-        }
-
-        return(subject.sample.indices)
+    return(subject.sample.indices)
 }

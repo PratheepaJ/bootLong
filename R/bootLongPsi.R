@@ -10,122 +10,112 @@
 #'         second element ``observed statistic``
 #'
 #' @export
-bootLongPsi = function(ps,
-                        main_factor,
-                        time_var,
-                        subjectID_var,
-                        b,
-                        R,
-                        RR,
-                        T.obs.full=NULL){
+bootLongPsi <- function(ps, main_factor, time_var, subjectID_var, b, R, RR,
+    T.obs.full = NULL) {
 
-        res.obs = computeStat(ps = ps,
-                               main_factor = main_factor,
-                               time_var = time_var,
-                               subjectID_var = subjectID_var,
-                               b = b)
+    res.obs <- computeStat(ps = ps, main_factor = main_factor, time_var = time_var,
+        subjectID_var = subjectID_var, b = b)
 
-        boot.results = list()
+    boot.results <- list()
 
-        boot.results = lapply(seq_len(R),FUN=function(i){
-            ps.boot = bootLongPhyloseq(ps = ps,
-                                       time_var = time_var,
-                                       subjectID_var = subjectID_var,
-                                       b = b)
-            ps.boot = ps.boot[[1]]
+    boot.results <- lapply(seq_len(R), FUN = function(i) {
+        ps.boot <- bootLongPhyloseq(ps = ps, time_var = time_var, subjectID_var = subjectID_var,
+            b = b)
+        ps.boot <- ps.boot[[1]]
 
-            df.boot = computeStat(ps = ps.boot,
-                                  main_factor = main_factor,
-                                  time_var = time_var,
-                                  subjectID_var = subjectID_var,
-                                  b=b)
+        df.boot <- computeStat(ps = ps.boot, main_factor = main_factor, time_var = time_var,
+            subjectID_var = subjectID_var, b = b)
 
-            boot.results.bb = lapply(seq_len(RR), FUN=function(j){
-                    ps.boot.bb = bootLongPhyloseq(ps.boot,
-                                                  time_var = time_var,
-                                                  subjectID_var = subjectID_var,
-                                                  b = b)
-                    ps.boot.bb = ps.boot.bb[[1]]
-                    df.boot.bb = computeStat(ps = ps.boot.bb,
-                                             main_factor = main_factor,
-                                             time_var = time_var,
-                                             subjectID_var = subjectID_var,
-                                             b=b)
-                    rm(ps.boot.bb)
-                    return(df.boot.bb)
-
-            })
-
-            rm(ps.boot)
-
-            return(list(df.boot, boot.results.bb))
-
+        boot.results.bb <- lapply(seq_len(RR), FUN = function(j) {
+            ps.boot.bb <- bootLongPhyloseq(ps.boot, time_var = time_var, subjectID_var = subjectID_var,
+                b = b)
+            ps.boot.bb <- ps.boot.bb[[1]]
+            df.boot.bb <- computeStat(ps = ps.boot.bb, main_factor = main_factor,
+                time_var = time_var, subjectID_var = subjectID_var, b = b)
+            rm(ps.boot.bb)
+            return(df.boot.bb)
 
         })
 
-        boot.results.all = lapply(boot.results,"[[",1)
+        rm(ps.boot)
 
-        boot.results.bb = lapply(boot.results,"[[",2)
+        return(list(df.boot, boot.results.bb))
 
-        rm(boot.results)
 
-        stat.star = do.call("cbind", lapply(boot.results.all, FUN=function(x){
-            x[,2]
-            }))
+    })
 
-        stat.star = as.data.frame(stat.star)
+    boot.results.all <- lapply(boot.results, "[[", 1)
 
-        sd.stat = apply(stat.star, 1, FUN=sd, na.rm=FALSE)
+    boot.results.bb <- lapply(boot.results, "[[", 2)
 
-        beta.obs = res.obs[,2]
-        shrink.beta.obs = suppressMessages(ash(beta.obs, sebetahat = sd.stat, mixcompdist = "normal"))
-        shrink.beta.est = shrink.beta.obs$result$PosteriorMean
+    rm(boot.results)
 
-        rm(boot.results.all)
+    stat.star <- do.call("cbind", lapply(boot.results.all, FUN = function(x) {
+        x[, 2]
+    }))
 
-        stat.obs = data.frame(stat.obs = shrink.beta.est)
+    stat.star <- as.data.frame(stat.star)
 
-        T.obs = data.frame(T.obs=stat.obs/sd.stat)
+    sd.stat <- apply(stat.star, 1, FUN = sd, na.rm = FALSE)
 
-        if(is.null(T.obs.full)){
-            T.obs = T.obs
-        }else{
-            T.obs = as.data.frame(T.obs.full)
-        }
+    beta.obs <- res.obs[, 2]
+    shrink.beta.obs <- suppressMessages(ash(beta.obs, sebetahat = sd.stat,
+        mixcompdist = "normal"))
+    shrink.beta.est <- shrink.beta.obs$result$PosteriorMean
 
-        stat.star.star =  lapply(boot.results.bb, function(x){
-            do.call("cbind",lapply(x,FUN=function(x){x[,2]}))
+    rm(boot.results.all)
 
-        })
+    stat.obs <- data.frame(stat.obs = shrink.beta.est)
 
-        sd.stat.star = do.call("cbind", lapply(stat.star.star,function(x){
-            data.frame(sd.stat.star=apply(x,1,FUN=sd,na.rm=TRUE))
-            }))
+    T.obs <- data.frame(T.obs = stat.obs/sd.stat)
 
-        shrink.beta.boot = lapply(seq_len(R),function(i){
-                suppressMessages(ash(stat.star[,i], sebetahat = sd.stat.star[,i], mixcompdist = "normal"))$result
-        })
+    if (is.null(T.obs.full)) {
+        T.obs <- T.obs
+    } else {
+        T.obs <- as.data.frame(T.obs.full)
+    }
 
-        shrink.beta.boot.est = lapply(shrink.beta.boot, function(ii){
-                ii$PosteriorMean
-        })
+    stat.star.star <- lapply(boot.results.bb, function(x) {
+        do.call("cbind", lapply(x, FUN = function(x) {
+            x[, 2]
+        }))
 
-        stat.star = do.call("cbind",shrink.beta.boot.est)
+    })
 
-        T.num.star = data.frame(apply(stat.star,2,function(x){x-stat.obs}))
+    sd.stat.star <- do.call("cbind", lapply(stat.star.star, function(x) {
+        data.frame(sd.stat.star = apply(x, 1, FUN = sd, na.rm = TRUE))
+    }))
 
-        T.star = T.num.star/sd.stat.star
+    shrink.beta.boot <- lapply(seq_len(R), function(i) {
+        suppressMessages(ash(stat.star[, i], sebetahat = sd.stat.star[, i],
+            mixcompdist = "normal"))$result
+    })
 
-        df.stat = bind_cols(T.star,T.obs=T.obs[,1])
+    shrink.beta.boot.est <- lapply(shrink.beta.boot, function(ii) {
+        ii$PosteriorMean
+    })
 
-        K.val = apply(df.stat,1,function(x){sum(abs(x[1:R])>=abs(x[(R+1)]))/R})
+    stat.star <- do.call("cbind", shrink.beta.boot.est)
 
-        rt = list(K.val, T.obs)
+    T.num.star <- data.frame(apply(stat.star, 2, function(x) {
+        x - stat.obs
+    }))
 
-        rm(list=c("stat.star","stat.obs","sd.stat","stat.star.star","sd.stat.star","T.num.star","df.stat"))
-        gc(reset = TRUE)
+    T.star <- T.num.star/sd.stat.star
 
-        return(rt)
+    df.stat <- bind_cols(T.star, T.obs = T.obs[, 1])
+
+    K.val <- apply(df.stat, 1, function(x) {
+        sum(abs(x[1:R]) >= abs(x[(R + 1)]))/R
+    })
+
+    rt <- list(K.val, T.obs)
+
+    rm(list = c("stat.star", "stat.obs", "sd.stat", "stat.star.star", "sd.stat.star",
+        "T.num.star", "df.stat"))
+    gc(reset = TRUE)
+
+    return(rt)
 
 }
 

@@ -1,8 +1,8 @@
-#' Simulated \code{"phyloseq"} object.
+#' Simulated \code{'phyloseq'} object.
 #'
-#' A \code{"phyloseq"} class object with 50 taxa from 300 biological samples.
+#' A \code{'phyloseq'} class object with 50 taxa from 300 biological samples.
 #'
-#' @format An object of class \code{"phyloseq"}.
+#' @format An object of class \code{'phyloseq'}.
 #' \describe{
 #'   \item{SubjectID}{IDs of individuals}
 #'   \item{Preterm}{A factor variable with two levels TRUE or FALSE}

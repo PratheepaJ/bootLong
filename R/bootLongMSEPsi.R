@@ -13,99 +13,82 @@
 #'
 #' @export
 #' @importFrom parallel mclapply
-bootLongMSEPsi = function(ps,
-                           main_factor,
-                           time_var,
-                           subjectID_var,
-                           sampleID_var,
-                           b,
-                           R,
-                           RR,
-                           qj,
-                           Wj,
-                           Khat.obs = NULL,
-                           T.obs.full = NULL,
-                           ncores){
+bootLongMSEPsi <- function(ps, main_factor, time_var, subjectID_var, sampleID_var,
+    b, R, RR, qj, Wj, Khat.obs = NULL, T.obs.full = NULL, ncores) {
 
 
-        if(is.null(Khat.obs)){
-            stop("User needs to run bootLongPsi() function with an initial block length ")
-            }
-        if(is.null(T.obs.full)){
-            stop("User needs to provide observed test statistic")
-            }
+    if (is.null(Khat.obs)) {
+        stop("User needs to run bootLongPsi() function with an initial block length ")
+    }
+    if (is.null(T.obs.full)) {
+        stop("User needs to provide observed test statistic")
+    }
 
 
-        sam_ps = sample_data(ps) %>% data.frame
+    sam_ps <- sample_data(ps) %>% data.frame
 
-        g = sam_ps[,subjectID_var]
+    g <- sam_ps[, subjectID_var]
 
-        sam_ps = split(sam_ps, g)
+    sam_ps <- split(sam_ps, g)
 
-        num.sub.sam = max(qj)-max(Wj)+1
+    num.sub.sam <- max(qj) - max(Wj) + 1
 
-        sam_ps.q.W = mapply(sam_ps, as.list(qj), as.list(Wj), FUN = list, SIMPLIFY = FALSE)
+    sam_ps.q.W <- mapply(sam_ps, as.list(qj), as.list(Wj), FUN = list, SIMPLIFY = FALSE)
 
-        sam_ps.q.W.or = lapply(sam_ps.q.W, function(x){
-            x[[1]] = dplyr::arrange_(x[[1]], time_var)
-            return(x)
+    sam_ps.q.W.or <- lapply(sam_ps.q.W, function(x) {
+        x[[1]] <- dplyr::arrange_(x[[1]], time_var)
+        return(x)
+    })
+
+
+    if (num.sub.sam < 5) {
+        stop("decrease omega")
+    }
+
+    ps.sub <- list()
+    for (i in 1:num.sub.sam) {
+        sub.sam.i <- lapply(sam_ps.q.W.or, function(x) {
+            xd <- x[[1]]
+            W <- x[[3]]
+            ss <- data.frame(dplyr::slice(x[[1]], i:(W + i - 1)))
+            return(ss)
         })
+        sub.sam.i <- do.call("rbind", sub.sam.i)
+        subsam.id <- sub.sam.i[, sampleID_var]
+        subsam.id <- as.character(subsam.id)
+        ps.sub[[i]] <- prune_samples(subsam.id, ps)
+
+    }
+
+    Khat <- lapply(ps.sub, function(x) {
+        k.hat <- bootLongPsi(x, main_factor = main_factor, time_var = time_var,
+            subjectID_var = subjectID_var, b = b, R = R, RR = RR, T.obs.full = T.obs.full)
+        k.hat <- k.hat[[1]]
+        return(k.hat)
+    })
 
 
-        if(num.sub.sam < 5){
-            stop("decrease omega")
-            }
+    rm(ps)
+    rm(sam_ps)
+    rm(sam_ps.q.W)
+    rm(sam_ps.q.W.or)
+    rm(ps.sub)
 
-        ps.sub = list()
-        for(i in 1:num.sub.sam){
-            sub.sam.i = lapply(sam_ps.q.W.or,function(x){
-                xd = x[[1]]
-                W = x[[3]]
-                ss = data.frame(dplyr::slice(x[[1]],i:(W+i-1)))
-                return(ss)
-            })
-            sub.sam.i = do.call("rbind",sub.sam.i)
-            subsam.id = sub.sam.i[,sampleID_var]
-            subsam.id = as.character(subsam.id)
-            ps.sub[[i]] = prune_samples(subsam.id,ps)
+    Khat.squared.diff <- lapply(Khat, FUN = function(w) {
+        (w - Khat.obs)^2
+    })
 
-        }
+    Khat.squared.diff.df <- do.call("cbind", Khat.squared.diff)
 
-        Khat = lapply(ps.sub, function(x){
-            k.hat = bootLongPsi(x,
-                                 main_factor = main_factor,
-                                 time_var = time_var,
-                                 subjectID_var = subjectID_var,
-                                 b = b,
-                                 R = R,
-                                 RR = RR,
-                                 T.obs.full = T.obs.full)
-            k.hat = k.hat[[1]]
-            return(k.hat)
-        })
+    MSE_i <- apply(Khat.squared.diff.df, 1, FUN = function(x) {
+        mean(x)
+    })
 
+    rm(Khat.squared.diff.df)
 
-        rm(ps)
-        rm(sam_ps)
-        rm(sam_ps.q.W)
-        rm(sam_ps.q.W.or)
-        rm(ps.sub)
+    rt <- list(MSE_i = MSE_i, Khat = Khat, Khat.obs = Khat.obs)
 
-        Khat.squared.diff = lapply(Khat, FUN=function(w){
-            (w-Khat.obs)^2
-            })
+    gc(reset = TRUE)
 
-        Khat.squared.diff.df = do.call("cbind", Khat.squared.diff)
-
-        MSE_i = apply(Khat.squared.diff.df, 1 , FUN=function(x){
-            mean(x)
-            })
-
-        rm(Khat.squared.diff.df)
-
-        rt = list(MSE_i = MSE_i, Khat = Khat, Khat.obs = Khat.obs)
-
-        gc(reset = TRUE)
-
-        return(rt)
+    return(rt)
 }
