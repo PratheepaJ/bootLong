@@ -22,7 +22,7 @@ bootLongMethod(ps, main_factor, time_var, subjectID_var, b, R, RR,
 
 \item{RR}{A numeric. The number of double block bootstrap realizations.}
 
-\item{FDR}{False discovery rate.}
+\item{FDR}{A numeric. False discovery rate.}
 }
 \value{
 list of dataframe with ASV, observed stat, pvalues, adjusted pvalues, lcl, ucl, observed pivotal quantity; stat.obs; stat.star; stat.star.star; T.star_obs.

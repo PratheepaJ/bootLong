@@ -111,7 +111,7 @@ computeStat <- function(ps, main_factor, time_var, subjectID_var, b) {
         fit <- tryCatch(geeM::geem(formula = desingGEE, id = idvarV, waves = wavesTime,
             data = dffT, family = arcsinhlstLink(), corstr = "fixed", weights = weightT,
             corr.mat = workCorr, init.beta = init.beta, nodummy = TRUE)$beta,
-            error <- function(e) {
+            error = function(e) {
                 t(glmft.tx$coefficients)
             })
 

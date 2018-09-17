@@ -5,7 +5,7 @@
 \title{bootLongSubsampling}
 \usage{
 bootLongSubsampling(ps, main_factor, time_var, subjectID_var, sampleID_var,
-  lI, R, RR, omega = 0.6, lC1 = 1, lC2 = NULL, ncores = 3)
+  lI, R, RR, omega = 0.6, lC1 = 1, lC2 = NULL, ncores)
 }
 \arguments{
 \item{ps}{phyloseq object}

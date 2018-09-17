@@ -11,7 +11,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 
-<meta name="date" content="2018-09-14" />
+<meta name="date" content="2018-09-17" />
 
 <title>Workflow : The Block Bootstrap Method for Longitudinal Microbiome Data</title>
 
@@ -72,34 +72,33 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <address class="author_afil">
 Department of Statistics, Stanford University<br><a class="author_email" href="mailto:#"><a href="mailto:jpratheepa31@gmail.com">jpratheepa31@gmail.com</a></a>
 </address>
-<h4 class="date"><em>2018-09-14</em></h4>
+<h4 class="date"><em>2018-09-17</em></h4>
 
 
 
 <p>Install <a href="https://www.r-project.org/">R</a> and <a href="https://www.rstudio.com/">RStudio</a>. Open this <code>Rmd</code> file in RStudio. Then run the following code to install all required packages.</p>
 <p>Install packages:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">pkgs &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;ggplot2&quot;</span>,<span class="st">&quot;dplyr&quot;</span>,<span class="st">&quot;tidyr&quot;</span>,
-          <span class="st">&quot;phyloseq&quot;</span>, <span class="st">&quot;limma&quot;</span>,<span class="st">&quot;ashr&quot;</span>,<span class="st">&quot;gridExtra&quot;</span>,
-          <span class="st">&quot;geepack&quot;</span>,<span class="st">&quot;MASS&quot;</span>,<span class="st">&quot;geeM&quot;</span>,
-          <span class="st">&quot;R.utils&quot;</span>, <span class="st">&quot;BiocParallel&quot;</span>,<span class="st">&quot;doParallel&quot;</span>,
-          <span class="st">&quot;parallel&quot;</span>,<span class="st">&quot;magrittr&quot;</span>)
+          <span class="st">&quot;phyloseq&quot;</span>, <span class="st">&quot;limma&quot;</span>,<span class="st">&quot;ashr&quot;</span>,
+          <span class="st">&quot;gridExtra&quot;</span>, <span class="st">&quot;geepack&quot;</span>,<span class="st">&quot;MASS&quot;</span>,
+          <span class="st">&quot;geeM&quot;</span>, <span class="st">&quot;R.utils&quot;</span>, <span class="st">&quot;BiocParallel&quot;</span>,
+          <span class="st">&quot;doParallel&quot;</span>, <span class="st">&quot;parallel&quot;</span>,<span class="st">&quot;magrittr&quot;</span>,
+          <span class="st">&quot;joineR&quot;</span>)
 
 <span class="co">#   installed packages that were not installed already</span>
 <span class="kw">source</span>(<span class="st">&quot;http://bioconductor.org/biocLite.R&quot;</span>)
 <span class="kw">biocLite</span>(<span class="kw">setdiff</span>(pkgs,<span class="kw">installed.packages</span>()), <span class="dt">suppressUpdates =</span> <span class="ot">TRUE</span>)
 
-<span class="co">#devtools::install_github(&quot;PratheepaJ/bootLong&quot;)</span></code></pre></div>
+devtools<span class="op">::</span><span class="kw">install_github</span>(<span class="st">&quot;PratheepaJ/bootLong&quot;</span>)</code></pre></div>
 <p>load packages:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(ggplot2)
 <span class="kw">library</span>(dplyr)
 <span class="kw">library</span>(tidyr)
 <span class="kw">library</span>(phyloseq)
-<span class="kw">library</span>(DESeq2)
-<span class="kw">library</span>(edgeR)
 <span class="kw">library</span>(limma)
 <span class="kw">library</span>(ashr)
 <span class="kw">library</span>(gridExtra)
-<span class="kw">library</span>(geepack)
+<span class="co">#library(geepack)</span>
 <span class="kw">library</span>(MASS)
 <span class="kw">library</span>(geeM)
 <span class="kw">library</span>(R.utils)
@@ -107,8 +106,8 @@ Department of Statistics, Stanford University<br><a class="author_email" href="m
 <span class="kw">library</span>(doParallel)
 <span class="kw">library</span>(parallel)
 <span class="kw">library</span>(magrittr)
-devtools<span class="op">::</span><span class="kw">load_all</span>(<span class="st">&quot;.&quot;</span>)
-<span class="co">#library(bootLong)</span></code></pre></div>
+<span class="kw">library</span>(joineR)
+<span class="kw">library</span>(bootLong)</code></pre></div>
 <p>Set the computational resources</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ncores =<span class="st"> </span><span class="kw">as.integer</span>(<span class="kw">Sys.getenv</span>(<span class="st">&quot;SLURM_NTASKS&quot;</span>))
 <span class="cf">if</span>(<span class="kw">is.na</span>(ncores)) ncores &lt;-<span class="st"> </span>parallel<span class="op">::</span><span class="kw">detectCores</span>()
@@ -154,7 +153,7 @@ set.theme &lt;-<span class="st"> </span><span class="kw">theme_update</span>(<sp
 
 
 <span class="kw">sample_data</span>(ps)<span class="op">$</span>Preterm &lt;-<span class="st"> </span><span class="kw">as.factor</span>(<span class="kw">sample_data</span>(ps)<span class="op">$</span>Preterm)
-p &lt;-<span class="st"> </span><span class="kw">plot_sampling_schedule</span>(ps, <span class="dt">time_var =</span> <span class="st">&quot;Time&quot;</span>, <span class="dt">subjectID_var =</span> <span class="st">&quot;SubjectID&quot;</span>, <span class="dt">main_factor =</span> <span class="st">&quot;Preterm&quot;</span>, <span class="dt">theme_manual =</span> set.theme)
+p &lt;-<span class="st"> </span><span class="kw">plotSamplingSchedule</span>(ps, <span class="dt">time_var =</span> <span class="st">&quot;Time&quot;</span>, <span class="dt">subjectID_var =</span> <span class="st">&quot;SubjectID&quot;</span>, <span class="dt">main_factor =</span> <span class="st">&quot;Preterm&quot;</span>, <span class="dt">theme_manual =</span> set.theme)
 p &lt;-<span class="st"> </span>p <span class="op">+</span><span class="st"> </span><span class="kw">scale_color_discrete</span>(<span class="dt">name  =</span><span class="st">&quot;Group&quot;</span>,<span class="dt">breaks=</span><span class="kw">c</span>(<span class="st">&quot;FALSE&quot;</span>, <span class="st">&quot;TRUE&quot;</span>),<span class="dt">labels=</span><span class="kw">c</span>(<span class="st">&quot;Term&quot;</span>, <span class="st">&quot;Preterm&quot;</span>))
 <span class="co">#ggsave(&quot;./sampling_schedule.pdf&quot;,plot=p,width = 8,height = 5.5)</span></code></pre></div>
 </div>
@@ -289,8 +288,8 @@ plist &lt;-<span class="st"> </span><span class="kw">lapply</span>(p.all,<span c
 <h1>The block bootstrap method</h1>
 <div id="subsampling" class="section level2">
 <h2>Subsampling</h2>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">R &lt;-<span class="st"> </span><span class="dv">3</span>
-RR &lt;-<span class="st"> </span><span class="dv">2</span>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">R &lt;-<span class="st"> </span><span class="dv">5</span>
+RR &lt;-<span class="st"> </span><span class="dv">5</span>
 main_factor &lt;-<span class="st"> &quot;Preterm&quot;</span>
 time_var &lt;-<span class="st"> &quot;Time&quot;</span>
 subjectID_var =<span class="st"> &quot;SubjectID&quot;</span>
@@ -310,9 +309,10 @@ omega &lt;-<span class="st"> </span>.<span class="dv">6</span>
                                        <span class="dt">lC1 =</span> <span class="dv">1</span>, 
                                        <span class="dt">lC2 =</span> <span class="ot">NULL</span>,
                                        <span class="dt">ncores =</span> ncores)
-    )
-
-<span class="co">#saveRDS(mse_results,&quot;./bboot_sim.rds&quot;)</span></code></pre></div>
+    )</code></pre></div>
+<pre><code>##     user   system  elapsed 
+## 1186.859   14.834  541.954</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#saveRDS(mse_results,&quot;./bboot_sim.rds&quot;)</span></code></pre></div>
 <div id="inspect-mse-plot" class="section level3">
 <h3>Inspect MSE plot</h3>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">omega &lt;-<span class="st"> </span>.<span class="dv">6</span>
@@ -345,8 +345,8 @@ l.opt</code></pre></div>
 </div>
 <div id="run-mbb-with-the-optimal-block-size" class="section level2">
 <h2>Run MBB with the optimal block size</h2>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">R &lt;-<span class="st"> </span><span class="dv">3</span>
-RR &lt;-<span class="st"> </span><span class="dv">2</span>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">R &lt;-<span class="st"> </span><span class="dv">10</span>
+RR &lt;-<span class="st"> </span><span class="dv">5</span>
 main_factor &lt;-<span class="st"> &quot;Preterm&quot;</span>
 time_var &lt;-<span class="st"> &quot;Time&quot;</span>
 subjectID_var =<span class="st"> &quot;SubjectID&quot;</span>

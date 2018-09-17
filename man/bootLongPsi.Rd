@@ -5,7 +5,7 @@
 \title{bootLongPsi}
 \usage{
 bootLongPsi(ps, main_factor, time_var, subjectID_var, b, R, RR,
-  T.obs.full = NULL, para = FALSE)
+  T.obs.full = NULL)
 }
 \arguments{
 \item{ps}{phyloseq object}

@@ -38,15 +38,15 @@ bootLongIndices <- function(x, time_var, b, L, blks.first.index) {
         x <- expand_x
     }
 
-    subject_sample_indices <- numeric(0)
+    subject.sample.indices <- numeric(0)
 
     if (num_of_blks <= 0) {
-        subject_sample_indices <- x$Index
+        subject.sample.indices <- x$Index
     } else {
-        subject_sample_indices <- x$Index[unlist(lapply(blks.first.index, FUN = function(y) {
+        subject.sample.indices <- x$Index[unlist(lapply(blks.first.index, FUN = function(y) {
             y:(y + b - 1)
         }))]
-        subject_sample_indices <- subject.sample.indices[1:num_of_rep_obs_x]
+        subject.sample.indices <- subject.sample.indices[1:num_of_rep_obs_x]
     }
 
     return(subject.sample.indices)

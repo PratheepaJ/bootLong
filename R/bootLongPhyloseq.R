@@ -42,7 +42,7 @@ bootLongPhyloseq <- function(ps, time_var, subjectID_var, b) {
 
     sampling.blks.within.subject.indices <- lapply(sam_ps.split.by.subjects,
         FUN = function(q) {
-            bootLongIndices(x = q, time_var = time_var, b = b, L = L, blks_first_index = blks.first.index)
+            bootLongIndices(x = q, time_var = time_var, b = b, L = L, blks.first.index = blks.first.index)
         })
 
     # sampling.blks.within.subject.indices <-

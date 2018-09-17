@@ -7,7 +7,7 @@
 arcsinhLink()
 }
 \value{
-An object of class "link-glm"
+An object of class 'link-glm'
 }
 \description{
 asinh link function for glm.nb

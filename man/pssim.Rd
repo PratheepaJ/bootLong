@@ -3,8 +3,8 @@
 \docType{data}
 \name{pssim}
 \alias{pssim}
-\title{Simulated \code{"phyloseq"} object.}
-\format{An object of class \code{"phyloseq"}.
+\title{Simulated \code{'phyloseq'} object.}
+\format{An object of class \code{'phyloseq'}.
 \describe{
   \item{SubjectID}{IDs of individuals}
   \item{Preterm}{A factor variable with two levels TRUE or FALSE}
@@ -18,7 +18,7 @@ Simulated based on the pregnancy data. Paper on \href{http://www.pnas.org/conten
 pssim
 }
 \description{
-A \code{"phyloseq"} class object with 50 taxa from 300 biological samples.
+A \code{'phyloseq'} class object with 50 taxa from 300 biological samples.
 }
 \examples{
 \dontrun{sample_data(pssim)

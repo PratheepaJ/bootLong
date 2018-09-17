@@ -4,7 +4,7 @@
 \alias{bootLongIndices}
 \title{bootLongIndices}
 \usage{
-bootLongIndices(x, time_var, b, L, blks_first_index)
+bootLongIndices(x, time_var, b, L, blks.first.index)
 }
 \arguments{
 \item{x}{a data frame. It must have \code{Index} column that will be added by \code{bootLongPhyloseq}.}
@@ -15,7 +15,7 @@ bootLongIndices(x, time_var, b, L, blks_first_index)
 
 \item{L}{a numeric. Number of overlapping blocks per subject that will be added by \code{bootLongPhyloseq}.}
 
-\item{blks_first_index}{a vector of positive integer. This will be added by \code{bootLongPhyloseq} (same for all subjects.)}
+\item{blks.first.index}{a vector of positive integer. This will be added by \code{bootLongPhyloseq} (same for all subjects.)}
 }
 \value{
 A list of indices to include in the block bootstrap realization.

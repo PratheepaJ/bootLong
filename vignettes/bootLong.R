@@ -1,30 +1,29 @@
 ## ----setup, include=FALSE------------------------------------------------
 knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 
-## ----install_packages----------------------------------------------------
-pkgs <- c("ggplot2","dplyr","tidyr",
-          "phyloseq", "limma","ashr","gridExtra",
-          "geepack","MASS","geeM",
-          "R.utils", "BiocParallel","doParallel",
-          "parallel","magrittr")
-
-#   installed packages that were not installed already
-source("http://bioconductor.org/biocLite.R")
-biocLite(setdiff(pkgs,installed.packages()), suppressUpdates = TRUE)
-
-#devtools::install_github("PratheepaJ/bootLong")
+## ----install_packages, eval=FALSE----------------------------------------
+#  pkgs <- c("ggplot2","dplyr","tidyr",
+#            "phyloseq", "limma","ashr",
+#            "gridExtra", "geepack","MASS",
+#            "geeM", "R.utils", "BiocParallel",
+#            "doParallel", "parallel","magrittr",
+#            "joineR")
+#  
+#  #   installed packages that were not installed already
+#  source("http://bioconductor.org/biocLite.R")
+#  biocLite(setdiff(pkgs,installed.packages()), suppressUpdates = TRUE)
+#  
+#  devtools::install_github("PratheepaJ/bootLong")
 
 ## ----load_packages-------------------------------------------------------
 library(ggplot2)
 library(dplyr)
 library(tidyr)
 library(phyloseq)
-library(DESeq2)
-library(edgeR)
 library(limma)
 library(ashr)
 library(gridExtra)
-library(geepack)
+#library(geepack)
 library(MASS)
 library(geeM)
 library(R.utils)
@@ -32,8 +31,8 @@ library(BiocParallel)
 library(doParallel)
 library(parallel)
 library(magrittr)
-devtools::load_all(".")
-#library(bootLong)
+library(joineR)
+library(bootLong)
 
 ## ------------------------------------------------------------------------
 ncores = as.integer(Sys.getenv("SLURM_NTASKS"))
@@ -72,7 +71,7 @@ set.theme <- theme_update(panel.border = element_blank(),
 
 
 sample_data(ps)$Preterm <- as.factor(sample_data(ps)$Preterm)
-p <- plot_sampling_schedule(ps, time_var = "Time", subjectID_var = "SubjectID", main_factor = "Preterm", theme_manual = set.theme)
+p <- plotSamplingSchedule(ps, time_var = "Time", subjectID_var = "SubjectID", main_factor = "Preterm", theme_manual = set.theme)
 p <- p + scale_color_discrete(name  ="Group",breaks=c("FALSE", "TRUE"),labels=c("Term", "Preterm"))
 #ggsave("./sampling_schedule.pdf",plot=p,width = 8,height = 5.5)
 
@@ -189,31 +188,31 @@ grid.arrange(arrangeGrob(grobs=plist, nrow=2, widths=c(3,3,3)),
              ncol=2,
              widths=c(10,2))
 
-## ----message=FALSE,warning=FALSE,eval=FALSE------------------------------
-#  R <- 3
-#  RR <- 2
-#  main_factor <- "Preterm"
-#  time_var <- "Time"
-#  subjectID_var = "SubjectID"
-#  sampleID_var = "SampleID"
-#  lI <- 5
-#  omega <- .6
-#  system.time(
-#      mse_results <- bootLongSubsampling(ps,
-#                                         main_factor = main_factor,
-#                                         time_var = time_var,
-#                                         subjectID_var = subjectID_var,
-#                                         sampleID_var = sampleID_var,
-#                                         lI = lI,
-#                                         R = R,
-#                                         RR = RR,
-#                                         omega = omega,
-#                                         lC1 = 1,
-#                                         lC2 = NULL,
-#                                         ncores = ncores)
-#      )
-#  
-#  #saveRDS(mse_results,"./bboot_sim.rds")
+## ----message=FALSE,warning=FALSE-----------------------------------------
+R <- 5
+RR <- 5
+main_factor <- "Preterm"
+time_var <- "Time"
+subjectID_var = "SubjectID"
+sampleID_var = "SampleID"
+lI <- 5
+omega <- .6
+system.time(
+    mse_results <- bootLongSubsampling(ps, 
+                                       main_factor = main_factor,
+                                       time_var = time_var, 
+                                       subjectID_var = subjectID_var,
+                                       sampleID_var = sampleID_var,
+                                       lI = lI,  
+                                       R = R, 
+                                       RR = RR,
+                                       omega = omega,
+                                       lC1 = 1, 
+                                       lC2 = NULL,
+                                       ncores = ncores)
+    )
+
+#saveRDS(mse_results,"./bboot_sim.rds")
 
 ## ----message=FALSE,warning=FALSE,eval=FALSE------------------------------
 #  omega <- .6
@@ -244,8 +243,8 @@ grid.arrange(arrangeGrob(grobs=plist, nrow=2, widths=c(3,3,3)),
 #  l.opt
 
 ## ----message=FALSE, warning=FALSE, eval=FALSE----------------------------
-#  R <- 3
-#  RR <- 2
+#  R <- 10
+#  RR <- 5
 #  main_factor <- "Preterm"
 #  time_var <- "Time"
 #  subjectID_var = "SubjectID"
