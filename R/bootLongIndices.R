@@ -17,7 +17,9 @@ bootLongIndices = function(x,
                             L,
                             blks_first_index){
 
-        if(!is.numeric(x[,time_var])){x[,time_var] = as.numeric(x[,time_var])}
+        # if(!is.numeric(x[,time_var])){
+        #     x[,time_var] = as.numeric(x[,time_var])
+        #     }
 
         if(!is.unsorted(x[,time_var])){
             x = x
