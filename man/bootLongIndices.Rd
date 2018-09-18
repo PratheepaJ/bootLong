@@ -7,15 +7,15 @@
 bootLongIndices(x, time_var, b, L, blks.first.index)
 }
 \arguments{
-\item{x}{a data frame. It must have \code{Index} column that will be added by \code{bootLongPhyloseq}.}
+\item{x}{A dataframe. It must have \code{Index} column that will be added by \code{bootLongPhyloseq}.}
 
 \item{time_var}{Character string. The name of the variable to map time in the plot (integer vector).}
 
 \item{b}{A numeric. The block size to account for the dependence within-subject.}
 
-\item{L}{a numeric. Number of overlapping blocks per subject that will be added by \code{bootLongPhyloseq}.}
+\item{L}{A numeric. Number of overlapping blocks per subject that will be added by \code{bootLongPhyloseq}.}
 
-\item{blks.first.index}{a vector of positive integer. This will be added by \code{bootLongPhyloseq} (same for all subjects.)}
+\item{blks.first.index}{A vector of positive integer. This will be added by \code{bootLongPhyloseq} (same for all subjects.)}
 }
 \value{
 A list of indices to include in the block bootstrap realization.

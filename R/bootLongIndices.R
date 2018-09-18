@@ -4,9 +4,9 @@
 #' each subject's data frame.
 #'
 #'
-#' @param x a data frame. It must have \code{Index} column that will be added by \code{bootLongPhyloseq}.
-#' @param L a numeric. Number of overlapping blocks per subject that will be added by \code{bootLongPhyloseq}.
-#' @param blks.first.index a vector of positive integer. This will be added by \code{bootLongPhyloseq} (same for all subjects.)
+#' @param x A dataframe. It must have \code{Index} column that will be added by \code{bootLongPhyloseq}.
+#' @param L A numeric. Number of overlapping blocks per subject that will be added by \code{bootLongPhyloseq}.
+#' @param blks.first.index A vector of positive integer. This will be added by \code{bootLongPhyloseq} (same for all subjects.)
 #' @inheritParams computeStat
 #'
 #' @return A list of indices to include in the block bootstrap realization.
