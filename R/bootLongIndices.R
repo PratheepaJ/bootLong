@@ -50,29 +50,5 @@ bootLongIndices <- function(x, time_var, b, L, blks.first.index) {
         subject.sample.indices <- subject.sample.indices[1:num_of_rep_obs_x]
     }
 
-
-    # if (L > num_of_blks) {
-    #     if ((L - num_of_blks)%%num_of_rep_obs_x == 0) {
-    #         howrep <- rep(1:num_of_rep_obs_x, times = (L - num_of_blks)/num_of_rep_obs_x)
-    #     } else {
-    #         howrep <- c(rep(1:num_of_rep_obs_x, times = (L - num_of_blks)/num_of_rep_obs_x),
-    #             1:((L - num_of_blks)%%num_of_rep_obs_x))
-    #     }
-    #     expand_x <- bind_rows(x, x[howrep, ])
-    #     x <- expand_x
-    # }
-    #
-    # subject.sample.indices <- numeric(0)
-    #
-    # if (num_of_blks <= 0) {
-    #     subject.sample.indices <- x$Index
-    #     subject.sample.indices <- subject.sample.indices[1:num_of_rep_obs_x]
-    # } else {
-    #     subject.sample.indices <- x$Index[unlist(lapply(blks.first.index, FUN = function(y) {
-    #         y:(y + b - 1)
-    #     }))]
-    #     subject.sample.indices <- subject.sample.indices[1:num_of_rep_obs_x]
-    # }
-
     return(subject.sample.indices)
 }
