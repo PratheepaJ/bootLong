@@ -53,7 +53,7 @@ bootLongSubsampling <- function(ps, main_factor, time_var, subjectID_var, sample
     lC <- seq(lC1, lC2, by = 1)
 
     psi.hat.lI <- bootLongPsi(ps = ps, main_factor = main_factor, time_var = time_var,
-        subjectID_var = subjectID_var, b = lI, R = R, RR = RR, T.obs.full = NULL)
+        subjectID_var = subjectID_var, b = lI, R = R, RR = RR, T.obs.full = NULL, ncores = ncores)
 
 
     Khat.obs <- psi.hat.lI[[1]]
