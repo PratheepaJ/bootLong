@@ -11,14 +11,14 @@
 #'
 #' @export
 bootLongPsi <- function(ps, main_factor, time_var, subjectID_var, b, R, RR,
-    T.obs.full = NULL) {
+    T.obs.full = NULL, ncores) {
 
     res.obs <- computeStat(ps = ps, main_factor = main_factor, time_var = time_var,
         subjectID_var = subjectID_var, b = b)
 
     boot.results <- list()
 
-    boot.results <- lapply(seq_len(R), FUN = function(i) {
+    boot.results <- mclapply(seq_len(R), FUN = function(i) {
         ps.boot <- bootLongPhyloseq(ps = ps, time_var = time_var, subjectID_var = subjectID_var,
             b = b)
         ps.boot <- ps.boot[[1]]
@@ -42,7 +42,7 @@ bootLongPsi <- function(ps, main_factor, time_var, subjectID_var, b, R, RR,
         return(list(df.boot, boot.results.bb))
 
 
-    })
+    }, mc.cores = ncores)
 
     boot.results.all <- lapply(boot.results, "[[", 1)
 

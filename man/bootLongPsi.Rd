@@ -5,7 +5,7 @@
 \title{bootLongPsi}
 \usage{
 bootLongPsi(ps, main_factor, time_var, subjectID_var, b, R, RR,
-  T.obs.full = NULL)
+  T.obs.full = NULL, ncores)
 }
 \arguments{
 \item{ps}{phyloseq object}
@@ -23,6 +23,8 @@ bootLongPsi(ps, main_factor, time_var, subjectID_var, b, R, RR,
 \item{RR}{A numeric. The number of double block bootstrap realizations.}
 
 \item{T.obs.full}{A numeric vector. The numeric vector of observed statistic.}
+
+\item{ncores}{A numeric. The number of cores to use in \code{\link[parallel]{mclapply}}.}
 }
 \value{
 a list with first element ``K.val`` - two-sided significance probability.

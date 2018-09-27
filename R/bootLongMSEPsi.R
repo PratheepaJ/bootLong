@@ -60,7 +60,7 @@ bootLongMSEPsi <- function(ps, main_factor, time_var, subjectID_var, sampleID_va
 
     }
 
-    Khat <- lapply(ps.sub, function(x) {
+    Khat <- mclapply(ps.sub, function(x) {
         k.hat <- bootLongPsi(x, main_factor = main_factor, time_var = time_var,
             subjectID_var = subjectID_var, b = b, R = R, RR = RR, T.obs.full = T.obs.full)
         k.hat <- k.hat[[1]]

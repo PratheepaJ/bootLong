@@ -61,12 +61,12 @@ bootLongSubsampling <- function(ps, main_factor, time_var, subjectID_var, sample
 
     blk_size_choice <- as.list(c(1:length(lC)))
 
-    mseKhatKobs <- mclapply(blk_size_choice, function(y) {
+    mseKhatKobs <- lapply(blk_size_choice, function(y) {
         bootLongMSEPsi(ps = ps, main_factor = main_factor, time_var = time_var,
             subjectID_var = subjectID_var, sampleID_var = sampleID_var, b = y,
             R = R, RR = RR, qj = qj, Wj = Wj, Khat.obs = Khat.obs, T.obs.full = T.obs,
             ncores = ncores)
-    }, mc.cores = ncores)
+    })
 
     return(mseKhatKobs)
 }
