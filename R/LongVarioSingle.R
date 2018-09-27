@@ -63,7 +63,7 @@ longVarioSingle <- function(ps, main_factor, time_var, subjectID_var, taxon,
             size = 8), axis.text.x = element_text(size = 8), axis.text.y = element_text(size = 8),
             axis.title.x = element_text(size = 8), axis.title.y = element_text(size = 8),
             legend.text = element_text(size = 8), legend.title = element_text(size = 8)) +
-            scale_y_continuous(breaks = time_brks)
+            scale_x_continuous(breaks = time_brks)
 
     }
 
