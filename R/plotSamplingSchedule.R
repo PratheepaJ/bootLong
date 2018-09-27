@@ -29,7 +29,7 @@ plotSamplingSchedule = function(ps, time_var, subjectID_var, main_factor,
     p <- ggplot(samdf) + geom_point(aes_string(x = time_var, y = subjectID_var,
         color = main_factor), position = position_jitter(width = 0.01, height = 0.1),
         size = 1) + theme_set(theme_manual) + facet_wrap(as.formula(paste("~",
-        main_factor))) + scale_y_continuous(breaks = time_brks)
+        main_factor))) + scale_x_continuous(breaks = time_brks)
 
     return(p)
 }
