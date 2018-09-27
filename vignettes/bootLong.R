@@ -88,6 +88,41 @@ plot_common_legend <- function(p){
     return(l)
 }
 
+## ----pacf, message=FALSE, warning=FALSE----------------------------------
+ps.tr <- psTransform(ps, 
+                     main_factor = "Preterm") 
+
+p.all <- longPACFMultiple(ps.tr[[1]],
+                             ps.tr[[2]], 
+                             main_factor = "Preterm", 
+                             time_var = "Time", 
+                             starttaxa = 1, 
+                             endtaxa = 6,
+                             taxlevel = "Genus")
+
+#   Change the legend labels
+p.all <- lapply(p.all, function(x){
+    x+scale_fill_discrete(name  ="Group", breaks=c("FALSE", "TRUE"), labels = c("Term", "Preterm"))
+    })
+
+#   extract the common legend for all taxa
+leg <- plot_common_legend(p.all[[1]])
+
+plist <- lapply(p.all,function(x){
+    x+theme(legend.position="none")
+    })
+
+# p <- grid.arrange(arrangeGrob(grobs=plist,nrow=2,widths=c(3,3,3)),
+#                   leg,
+#                   ncol=2,
+#                   widths=c(10,2))
+# ggsave("./core_Sim.eps",plot=p,width = 8,height = 5.5)
+
+grid.arrange(arrangeGrob(grobs=plist,nrow=2,widths=c(3,3,3)),
+             leg,
+             ncol=2,
+             widths=c(10,2))
+
 ## ----corr, message=FALSE, warning=FALSE----------------------------------
 ps.tr <- psTransform(ps, 
                      main_factor = "Preterm") 
@@ -188,31 +223,31 @@ grid.arrange(arrangeGrob(grobs=plist, nrow=2, widths=c(3,3,3)),
              ncol=2,
              widths=c(10,2))
 
-## ----message=FALSE,warning=FALSE-----------------------------------------
-R <- 5
-RR <- 5
-main_factor <- "Preterm"
-time_var <- "Time"
-subjectID_var = "SubjectID"
-sampleID_var = "SampleID"
-lI <- 5
-omega <- .6
-system.time(
-    mse_results <- bootLongSubsampling(ps, 
-                                       main_factor = main_factor,
-                                       time_var = time_var, 
-                                       subjectID_var = subjectID_var,
-                                       sampleID_var = sampleID_var,
-                                       lI = lI,  
-                                       R = R, 
-                                       RR = RR,
-                                       omega = omega,
-                                       lC1 = 1, 
-                                       lC2 = NULL,
-                                       ncores = ncores)
-    )
-
-#saveRDS(mse_results,"./bboot_sim.rds")
+## ----message=FALSE,warning=FALSE, eval=FALSE-----------------------------
+#  R <- 5
+#  RR <- 5
+#  main_factor <- "Preterm"
+#  time_var <- "Time"
+#  subjectID_var = "SubjectID"
+#  sampleID_var = "SampleID"
+#  lI <- 5
+#  omega <- .6
+#  system.time(
+#      mse_results <- bootLongSubsampling(ps,
+#                                         main_factor = main_factor,
+#                                         time_var = time_var,
+#                                         subjectID_var = subjectID_var,
+#                                         sampleID_var = sampleID_var,
+#                                         lI = lI,
+#                                         R = R,
+#                                         RR = RR,
+#                                         omega = omega,
+#                                         lC1 = 1,
+#                                         lC2 = NULL,
+#                                         ncores = ncores)
+#      )
+#  
+#  #saveRDS(mse_results,"./bboot_sim.rds")
 
 ## ----message=FALSE,warning=FALSE,eval=FALSE------------------------------
 #  omega <- .6
