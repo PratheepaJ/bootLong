@@ -119,8 +119,8 @@ p <- p + scale_color_discrete(name  ="Group",breaks=c("FALSE", "TRUE"),labels=c(
 ##   Preprocessing
 
 -   Filter ASVs
-```{r }
-threshold <- .01
+```{r eval=FALSE}
+threshold <- .1
 keep_asv <- apply(otu_table(ps),1,function(x){sum(x>0)}) > threshold*nsamples(ps)
 ps <- prune_taxa(keep_asv,ps)
 ```
