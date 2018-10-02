@@ -47,7 +47,6 @@ library(phyloseq)
 library(limma)
 library(ashr)
 library(gridExtra)
-#library(geepack)
 library(MASS)
 library(geeM)
 library(R.utils)
@@ -175,6 +174,9 @@ grid.arrange(arrangeGrob(grobs=plist,nrow=2,widths=c(3,3,3)),
              widths=c(10,2))
 ```
 
+Only the largest spike is observed at lag 1 for both term and preterm. However, almost all the ASVs show that the PACF is less than .25 (sufficiently zero) after lag 4. Therefore, the initial block size is 5. 
+
+
 ###  Correlogram
 ```{r corr, message=FALSE, warning=FALSE}
 ps.tr <- psTransform(ps, 
@@ -212,6 +214,8 @@ grid.arrange(arrangeGrob(grobs=plist,nrow=2,widths=c(3,3,3)),
              widths=c(10,2))
 ```
 
+We observe that the correlogram tends to be sufficiently zero (first time) at lag 4 for almost all the ASVs. Therefore, the initial block size is 5.
+
 
 ### longitudinal data lag-plots
 ```{r lag-plots, message=FALSE,warning=FALSE}
@@ -245,6 +249,7 @@ grid.arrange(arrangeGrob(grobs=plist,nrow=2,widths=c(3,3,3,3)),
              widths=c(10,2))
 
 ```
+
 
 ### Variogram for longitudinal data
 
@@ -315,6 +320,7 @@ system.time(
 ```
 
 ###   Inspect MSE plot
+
 ```{r message=FALSE,warning=FALSE,eval=FALSE}
 omega <- .6
 mse_results <- readRDS("./bboot_sim.rds")

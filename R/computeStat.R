@@ -32,7 +32,7 @@ computeStat <- function(ps, main_factor, time_var, subjectID_var, b) {
 
     median_ratios <- function(x, geom_mean_row) {
         rat <- x/geom_mean_row
-        median_rat <- median(rat)
+        median_rat <- median(rat[rat > 0])
         return(median_rat)
     }
 
