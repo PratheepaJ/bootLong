@@ -50,19 +50,35 @@ psTransform <- function(ps, main_factor) {
     v <- asinhVoom(counts = ot, design = mm, sj = sj)
     weights.cal <- v$weights
 
-    response_residulas_fitted <- function(ind, samdf, ot, sj, des, weights.cal) {
+    rt <- list()
+    for(ind in 1:ntaxa(ps)){
         otu <- as.numeric(ot[ind, ])
         sj <- as.numeric(sj)
         weightT <- as.numeric(weights.cal[ind, ])
         dff <- mutate(samdf, otu = otu, sj = sj, weightT = weightT)
-        dff <- mutate(dff, weightT = ifelse(otu==0, 0, weightT))
+        # dff <- mutate(dff, weightT = ifelse(otu == 0, 0, weightT))
+        # glmft_lg <- MASS::glm.nb(des, data = dff, weights = weightT, method = "glm.fit")
+        # init.beta <- as.numeric(glmft_lg$coefficients)
+
         glmft <- MASS::glm.nb(des, data = dff, weights = weightT, method = "glm.fit",
             link = arcsinhLink())
         res_residuals <- resid(glmft, "response")
-        rt <- list(res_residuals)
-        names(rt) <- c("response_residuals")
-        return(rt)
+        rt[[ind]] <- res_residuals
+
     }
+    # response_residulas_fitted <- function(ind, samdf, ot, sj, des, weights.cal) {
+    #     otu <- as.numeric(ot[ind, ])
+    #     sj <- as.numeric(sj)
+    #     weightT <- as.numeric(weights.cal[ind, ])
+    #     dff <- mutate(samdf, otu = otu, sj = sj, weightT = weightT)
+    #     dff <- mutate(dff, weightT = ifelse(otu==0, 0, weightT))
+    #     glmft <- MASS::glm.nb(des, data = dff, weights = weightT, method = "glm.fit",
+    #         link = arcsinhLink())
+    #     res_residuals <- resid(glmft, "response")
+    #     rt <- list(res_residuals)
+    #     names(rt) <- c("response_residuals")
+    #     return(rt)
+    # }
 
 
     resi_fitted <- lapply(seq_len(ntaxa(ps)), function(x) {
