@@ -56,7 +56,7 @@ psTransform <- function(ps, main_factor) {
         sj <- as.numeric(sj)
         weightT <- as.numeric(weights.cal[ind, ])
         dff <- mutate(samdf, otu = otu, sj = sj, weightT = weightT)
-        # dff <- mutate(dff, weightT = ifelse(otu == 0, 0, weightT))
+        dff <- mutate(dff, weightT = ifelse(otu == 0, 0, weightT))
         # glmft_lg <- MASS::glm.nb(des, data = dff, weights = weightT, method = "glm.fit")
         # init.beta <- as.numeric(glmft_lg$coefficients)
 
