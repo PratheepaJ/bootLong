@@ -55,6 +55,7 @@ psTransform <- function(ps, main_factor) {
         sj <- as.numeric(sj)
         weightT <- as.numeric(weights.cal[ind, ])
         dff <- mutate(samdf, otu = otu, sj = sj, weightT = weightT)
+        dff <- mutate(dff, weightT = ifelse(otu==0, 0, weightT))
         glmft <- MASS::glm.nb(des, data = dff, weights = weightT, method = "glm.fit",
             link = arcsinhLink())
         res_residuals <- resid(glmft, "response")
@@ -63,8 +64,9 @@ psTransform <- function(ps, main_factor) {
         return(rt)
     }
 
+
     resi_fitted <- lapply(seq_len(ntaxa(ps)), function(x) {
-        response_residulas_fitted(x, samdf = samdf, ot = (ot + 1), sj = sj,
+        response_residulas_fitted(x, samdf = samdf, ot = ot, sj = sj,
             des = des, weights.cal = weights.cal)
     })
 
