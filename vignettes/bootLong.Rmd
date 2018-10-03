@@ -56,7 +56,7 @@ library(parallel)
 library(magrittr)
 library(joineR)
 library(DESeq2)
-library(bootLong)
+#library(bootLong)
 ```
 
 Set the computational resources

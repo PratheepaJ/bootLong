@@ -17,7 +17,7 @@ asinhVoom <- function(counts, design = NULL, sj, span = 0.5,
     plot = FALSE){
 
     inv_asinh <- function(x) {
-        y <- 0.5 * exp(-x) * (exp(2 * x) - 1)
+        y <- 0.5*exp(-x)*(exp(2*x)-1)
         return(y)
     }
 
@@ -38,7 +38,7 @@ asinhVoom <- function(counts, design = NULL, sj, span = 0.5,
         colnames(design) <- "GrandMean"
     }
 
-    y <- t(asinh(t(counts) / sj))
+    y <- t(asinh(t(counts)/sj))
 
     fit <- lmFit(y, design)
 
@@ -76,7 +76,7 @@ asinhVoom <- function(counts, design = NULL, sj, span = 0.5,
     }
 
     fitted.adj.library <- inv_asinh(fitted.values)
-    fitted.count <- t(t(fitted.adj.library) * (sj))
+    fitted.count <- t(t(fitted.adj.library)*(sj))
     fitted.logcount <- asinh(fitted.count)
     w <- 1/f(fitted.logcount)^4
     dim(w) <- dim(fitted.logcount)

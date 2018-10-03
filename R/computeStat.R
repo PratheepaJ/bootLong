@@ -38,7 +38,7 @@ computeStat <- function(ps, main_factor, time_var, subjectID_var, b) {
     sj <- estimateSizeFactorsForMatrix(ot, median, geoMeans = geom_mean_row)
 
     des <- as.formula(paste("otuT", "~", paste(main_factor, collapse = "+"),
-        "+", "offset(arcsinhLink()$linkfun(sj))"))
+        "+", "asinh(sj)"))
 
     ## compute weights
     samdf <- sample_data(ps) %>% data.frame
@@ -103,19 +103,20 @@ computeStat <- function(ps, main_factor, time_var, subjectID_var, b) {
 
         wavesTime <- dffT[, time_var]
         idvarV <- dffT[, "idvar"]
-        #theta <- glmft.tx$theta
+        theta <- glmft.tx$theta
 
         init.beta <- as.numeric(glmft.tx$coefficients)
 
-        # fit <- tryCatch(geeM::geem(formula = desingGEE, id = idvarV, waves = wavesTime,
-        #     data = dffT, family = arcsinhlstLink(), corstr = "fixed", weights = weightT,
-        #     corr.mat = workCorr, init.beta = init.beta, nodummy = TRUE)$beta,
-        #     error = function(e) {
-        #         t(glmft.tx$coefficients)
-        #     })
-        fit <- geeM::geem(formula = desingGEE, id = idvarV, waves = wavesTime,
-            data = dffT, corstr = "fixed", weights = weightT,
-            corr.mat = workCorr, init.beta = init.beta, nodummy = TRUE)$beta
+        fit <- tryCatch(geeM::geem(formula = desingGEE, id = idvarV, waves = wavesTime,
+            data = dffT, family = arcsinhlstLink(), corstr = "fixed", weights = weightT,
+            corr.mat = workCorr, init.beta = init.beta, nodummy = TRUE)$beta,
+            error = function(e) {
+                t(glmft.tx$coefficients)
+            })
+
+        # fit <- geeM::geem(formula = desingGEE, id = idvarV, waves = wavesTime,
+        #     data = dffT, corstr = "fixed", weights = weightT,
+        #     corr.mat = workCorr, init.beta = init.beta, nodummy = TRUE)$beta
 
         return((fit))
 

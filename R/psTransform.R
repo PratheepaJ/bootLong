@@ -35,13 +35,11 @@ psTransform <- function(ps, main_factor) {
 
     sj <- estimateSizeFactorsForMatrix(ot, median, geoMeans = geom_mean_row)
 
-    # matrix/vector or matrix*vector - row wise division or row wise
-    # multiplication
     ot_trans <- t(asinh(t(ot)/sj))
 
     ## compute residuals and weights
     samdf <- sample_data(ps) %>% data.frame
-    des <- as.formula(paste("otu", "~", paste(main_factor, collapse = "+"), "+", "offset(arcsinhLink()$linkfun(sj))"))
+    des <- as.formula(paste("otu", "~", paste(main_factor, collapse = "+"), "+", "offset(asinh(sj))"))
 
     ## compute weights
     des_v <- as.formula(paste("~", paste(main_factor, collapse = "+")))
@@ -55,13 +53,35 @@ psTransform <- function(ps, main_factor) {
         sj <- as.numeric(sj)
         weightT <- as.numeric(weights.cal[ind, ])
         dff <- mutate(samdf, otu = otu, sj = sj, weightT = weightT)
-        glmft <- MASS::glm.nb(des, data = dff, weights = weightT, method = "glm.fit", link = arcsinhLink())
+        dff <- mutate(dff, weightT = ifelse(otu == 0, 0, weightT))
+        glmft <- MASS::glm.nb(des, data = dff, weights = weightT, method = "glm.fit", link = arcsinhLink(), start = rep(0.01, length(main_factor)+1))
         res_residuals <- resid(glmft, "response")
         rt <- list(res_residuals)
         names(rt) <- c("response_residuals")
         return(rt)
     }
 
+    rt <- list()
+
+    for(ind in 28:ntaxa(ps)){
+        otu <- as.numeric(ot[ind, ])
+        sj <- as.numeric(sj)
+        weightT <- as.numeric(weights.cal[ind, ])
+        dff <- mutate(samdf, otu = otu, sj = sj, weightT = weightT)
+        dff <- mutate(dff, weightT = ifelse(otu == 0, 0, weightT))
+        tryCatch(glmft <- MASS::glm.nb(des, data = dff, weights = weightT, method = "glm.fit", link = arcsinhLink()),
+            error = function(e){
+                glmft <- glm(des, data = dff, weights = weightT, family = "poisson")
+            })
+
+        if(is.null(resid(glmft))){
+            res_residuals <- glmft$otu
+        }else{
+            res_residuals <- resid(glmft)
+        }
+        rt[[ind]] <- res_residuals
+
+    }
 
     resi_fitted <- lapply(seq_len(ntaxa(ps)), function(x) {
         response_residulas_fitted(x, samdf = samdf, ot = ot, sj = sj,
