@@ -23,7 +23,7 @@ Install [R](https://www.r-project.org/) and [RStudio](https://www.rstudio.com/).
 
 
 Install packages: 
-```{r install_packages, eval=FALSE}
+```{r install_packages}
 pkgs <- c("ggplot2","dplyr","tidyr",
           "phyloseq", "limma","ashr",
           "gridExtra", "geepack","MASS",

@@ -56,15 +56,9 @@ psTransform <- function(ps, main_factor) {
         weightT <- as.numeric(weights.cal[ind, ])
         dff <- mutate(samdf, otu = otu, sj = sj, weightT = weightT)
         dff <- mutate(dff, weightT = ifelse(otu == 0, 0, weightT))
-        glmft <- tryCatch(MASS::glm.nb(des, data = dff, weights = weightT, method = "glm.fit", link = arcsinhLink()),
-            error = function(e){
-                glm(des, data = dff, weights = weightT, family = "poisson")
-            })
-        if(is.null(resid(glmft))){
-            res_residuals <- resid(glmft)
-        }else{
-            res_residuals <- resid(glmft)
-        }
+        glmft <- MASS::glm.nb(des, data = dff, weights = weightT, method = "glm.fit", link = arcsinhLink())
+
+        res_residuals <- resid(glmft)
         rt <- list(res_residuals)
         names(rt) <- c("response_residuals")
         return(rt)
