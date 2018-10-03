@@ -38,7 +38,7 @@ computeStat <- function(ps, main_factor, time_var, subjectID_var, b) {
     sj <- estimateSizeFactorsForMatrix(ot, median, geoMeans = geom_mean_row)
 
     des <- as.formula(paste("otuT", "~", paste(main_factor, collapse = "+"),
-        "+", "asinh(sj)"))
+        "+", "offset(asinh(sj))"))
 
     ## compute weights
     samdf <- sample_data(ps) %>% data.frame
@@ -113,10 +113,6 @@ computeStat <- function(ps, main_factor, time_var, subjectID_var, b) {
             error = function(e) {
                 t(glmft.tx$coefficients)
             })
-
-        # fit <- geeM::geem(formula = desingGEE, id = idvarV, waves = wavesTime,
-        #     data = dffT, corstr = "fixed", weights = weightT,
-        #     corr.mat = workCorr, init.beta = init.beta, nodummy = TRUE)$beta
 
         return((fit))
 

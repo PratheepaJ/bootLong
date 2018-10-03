@@ -74,22 +74,7 @@ ncores
 ps <- pssim
 ```
 
-##  Summaries
-
-###   Merge by subject    
-```{r eval=FALSE}
-psm <- merge_samples(ps, "SubjectID")  
-sample_data(psm)$SubjectID <- rownames(sample_data(psm))
-sample_data(psm)$Preterm <- factor(sample_data(psm)$Preterm)
-omat <- as(otu_table(psm), "matrix")
-nsam <- table(sample_data(ps)$SubjectID)
-omn <- omat/as.vector(nsam)
-otu_table(psm) <- otu_table(omn, taxa_are_rows=FALSE)
-if(dim(otu_table(psm))[2]!=nsamples(psm)){otu_table(psm)=t(otu_table(psm))}
-    
-```
-
-###   Summary
+##  Summary
 
 ```{r eval=FALSE}
 table(sample_data(ps)$SubjectID,sample_data(ps)$Time)
@@ -267,7 +252,7 @@ We can choose either points (residuals) to be ploted by `point = TRUE`.
 p.all <- longVarioMultiple(ps.tr[[1]],
                            ps.tr[[2]],
                            main_factor = "Preterm",
-                           time_var="GWColl",
+                           time_var="Time",
                            subjectID_var = "SubjectID",
                            starttaxa = 1,
                            endtaxa = 6,
