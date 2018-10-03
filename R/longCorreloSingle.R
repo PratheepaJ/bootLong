@@ -41,7 +41,7 @@ longCorreloSingle <- function(ps, main_factor, time_var, taxon, taxlevel = "Spec
         ylab(expression(paste(rho, "(h)"))) + ggtitle(taxon_name) + theme(plot.title = element_text(hjust = 0.5,
         size = 8), axis.text.x = element_text(size = 8), axis.text.y = element_text(size = 8),
         axis.title.x = element_text(size = 8), axis.title.y = element_text(size = 8),
-        legend.text = element_text(size = 8), legend.title = element_text(size = 8))
+        legend.text = element_text(size = 8), legend.title = element_text(size = 8)) + ylim(c(-1,1))
 
     return(p)
 }

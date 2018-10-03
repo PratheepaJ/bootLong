@@ -114,9 +114,9 @@ set.theme <- theme_update(panel.border = element_blank(),
 sample_data(ps)$Preterm <- as.factor(sample_data(ps)$Preterm)
 #sample_data(ps)$GWColl <- as.integer(sample_data(ps)$GWColl)
 #sample_data(ps)$SubjectID <- as.character(sample_data(ps)$SubjectID)
-p <- plotSamplingSchedule(ps, time_var = "GWColl", subjectID_var = "SubjectID", main_factor = "Preterm", theme_manual = set.theme)
+p <- plotSamplingSchedule(ps, time_var = "Time", subjectID_var = "SubjectID", main_factor = "Preterm", theme_manual = set.theme)
 p <- p + scale_color_discrete(name  ="Group",breaks=c("FALSE", "TRUE"),labels=c("Term", "Preterm"))
-#ggsave("./sampling_schedule.pdf",plot=p,width = 8,height = 5.5)
+#ggsave("./sampling_schedule.eps", plot=p, width = 8, height = 5.5)
 ```
 
 ##   Preprocessing
@@ -155,7 +155,7 @@ p.all <- longPACFMultiple(ps.tr[[1]],
 
 #   Change the legend labels
 p.all <- lapply(p.all, function(x){
-    x+scale_fill_discrete(name  ="Group", breaks=c("FALSE", "TRUE"), labels = c("Term", "Preterm"))
+    x + scale_fill_discrete(name  ="Group", breaks=c("FALSE", "TRUE"), labels = c("Term", "Preterm"))
     })
 
 #   extract the common legend for all taxa
@@ -195,7 +195,7 @@ p.all <- longCorreloMultiple(ps.tr[[1]],
 
 #   Change the legend labels
 p.all <- lapply(p.all, function(x){
-    x+scale_fill_discrete(name  ="Group", breaks=c("FALSE", "TRUE"), labels = c("Term", "Preterm"))
+    x + scale_fill_discrete(name  ="Group", breaks=c("FALSE", "TRUE"), labels = c("Term", "Preterm"))
     })
 
 #   extract the common legend for all taxa
@@ -225,7 +225,12 @@ We observe that the correlogram tends to be sufficiently zero (first time) at la
 lags <- as.list(seq(1,8))
 
 p.lags <- lapply(lags,function(x){
-    longLagPlot(ps.tr[[2]], main_factor="Preterm", time_var = "Time", taxon = 1, x, taxlevel="Genus")})
+    longLagPlot(ps.tr[[2]], 
+        main_factor="Preterm", 
+        time_var = "Time", 
+        taxon = 1, 
+        x, 
+        taxlevel="Genus")})
 
 #   Change the legend labels
 p.lags <- lapply(p.lags, function(x){
