@@ -36,6 +36,8 @@ psTransform <- function(ps, main_factor) {
     sj <- estimateSizeFactorsForMatrix(ot, median, geoMeans = geom_mean_row)
 
     ot_trans <- t(asinh(t(ot)/sj))
+    colnames(ot_trans) <- sample_names(ps)
+    rownames(ot_trans) <- taxa_names(ps)
 
     ## compute residuals and weights
     samdf <- sample_data(ps) %>% data.frame
@@ -54,34 +56,21 @@ psTransform <- function(ps, main_factor) {
         weightT <- as.numeric(weights.cal[ind, ])
         dff <- mutate(samdf, otu = otu, sj = sj, weightT = weightT)
         dff <- mutate(dff, weightT = ifelse(otu == 0, 0, weightT))
-        glmft <- MASS::glm.nb(des, data = dff, weights = weightT, method = "glm.fit", link = arcsinhLink(), start = rep(0.01, length(main_factor)+1))
-        res_residuals <- resid(glmft, "response")
-        rt <- list(res_residuals)
-        names(rt) <- c("response_residuals")
-        return(rt)
-    }
-
-    rt <- list()
-
-    for(ind in 28:ntaxa(ps)){
-        otu <- as.numeric(ot[ind, ])
-        sj <- as.numeric(sj)
-        weightT <- as.numeric(weights.cal[ind, ])
-        dff <- mutate(samdf, otu = otu, sj = sj, weightT = weightT)
-        dff <- mutate(dff, weightT = ifelse(otu == 0, 0, weightT))
         tryCatch(glmft <- MASS::glm.nb(des, data = dff, weights = weightT, method = "glm.fit", link = arcsinhLink()),
             error = function(e){
                 glmft <- glm(des, data = dff, weights = weightT, family = "poisson")
             })
-
         if(is.null(resid(glmft))){
             res_residuals <- glmft$otu
         }else{
             res_residuals <- resid(glmft)
         }
-        rt[[ind]] <- res_residuals
-
+        rt <- list(res_residuals)
+        names(rt) <- c("response_residuals")
+        return(rt)
     }
+
+
 
     resi_fitted <- lapply(seq_len(ntaxa(ps)), function(x) {
         response_residulas_fitted(x, samdf = samdf, ot = ot, sj = sj,
@@ -93,9 +82,9 @@ psTransform <- function(ps, main_factor) {
     colnames(resi) <- sample_names(ps)
     rownames(resi) <- taxa_names(ps)
 
-    resi_trans <- t(asinh(t(resi) / sj))
+    #resi_trans <- t(asinh(t(resi) / sj))
 
-    ps_resid_asinh <- phyloseq(otu_table(resi_trans, taxa_are_rows = T), sample_data(ps),
+    ps_resid_asinh <- phyloseq(otu_table(resi, taxa_are_rows = T), sample_data(ps),
         tax_table(ps))
 
     ps_ot_asinh <- phyloseq(otu_table(ot_trans, taxa_are_rows = TRUE), sample_data(ps),
