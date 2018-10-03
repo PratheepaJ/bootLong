@@ -7,6 +7,7 @@
 #' @return A list of phyloseq objects. The first element is the asinh transfomed of the otu_table and the second element is the asinh transformed of the response residuals of the \code{\link[MASS]{glm.nb}} fit.
 #' @export
 #' @importFrom MASS glm.nb
+#' @importFrom DESeq2 estimateSizeFactorsForMatrix
 psTransform <- function(ps, main_factor) {
 
     if (dim(otu_table(ps))[2] != nsamples(ps)) {
@@ -22,27 +23,25 @@ psTransform <- function(ps, main_factor) {
     # variance stabilization for negative binomial distribution accounting for
     # library sizes.
     geo_mean <- function(x) {
-        val <- exp(mean(log(x[x > 0])))
+        if(all(x == 0)){
+            val <- 0
+        }else{
+            val <- exp(sum(log(x[x > 0]))/length(x))
+        }
+        return(val)
     }
 
     geom_mean_row <- apply(ot, 1, FUN = geo_mean)
 
-    median_ratios <- function(x, geom_mean_row) {
-        rat <- x/geom_mean_row
-        median_rat <- median(rat [rat >0])
-        return(median_rat)
-    }
+    sj <- estimateSizeFactorsForMatrix(ot, median, geoMeans = geom_mean_row)
 
-    # library size normalization factor
-    sj <- apply(ot, 2, FUN = median_ratios, geom_mean_row = geom_mean_row)
-    # matrix/vector or matrix*vector - rowwise division or rowwise
+    # matrix/vector or matrix*vector - row wise division or row wise
     # multiplication
-    ot_trans <- t(asinh(t(ot) * sj))
+    ot_trans <- t(asinh(t(ot)/sj))
 
     ## compute residuals and weights
     samdf <- sample_data(ps) %>% data.frame
-    des <- as.formula(paste("otu", "~", paste(main_factor, collapse = "+"),
-        "+", "offset(arcsinhLink()$linkfun(sj))"))
+    des <- as.formula(paste("otu", "~", paste(main_factor, collapse = "+"), "+", "offset(arcsinhLink()$linkfun(sj))"))
 
     ## compute weights
     des_v <- as.formula(paste("~", paste(main_factor, collapse = "+")))
@@ -50,35 +49,18 @@ psTransform <- function(ps, main_factor) {
     v <- asinhVoom(counts = ot, design = mm, sj = sj)
     weights.cal <- v$weights
 
-    rt <- list()
-    for(ind in 1:ntaxa(ps)){
+
+    response_residulas_fitted <- function(ind, samdf, ot, sj, des, weights.cal) {
         otu <- as.numeric(ot[ind, ])
         sj <- as.numeric(sj)
         weightT <- as.numeric(weights.cal[ind, ])
         dff <- mutate(samdf, otu = otu, sj = sj, weightT = weightT)
-        dff <- mutate(dff, weightT = ifelse(otu == 0, 0, weightT))
-        # glmft_lg <- MASS::glm.nb(des, data = dff, weights = weightT, method = "glm.fit")
-        # init.beta <- as.numeric(glmft_lg$coefficients)
-
-        glmft <- MASS::glm.nb(des, data = dff, weights = weightT, method = "glm.fit",
-            link = arcsinhLink())
+        glmft <- MASS::glm.nb(des, data = dff, weights = weightT, method = "glm.fit", link = arcsinhLink())
         res_residuals <- resid(glmft, "response")
-        rt[[ind]] <- res_residuals
-
+        rt <- list(res_residuals)
+        names(rt) <- c("response_residuals")
+        return(rt)
     }
-    # response_residulas_fitted <- function(ind, samdf, ot, sj, des, weights.cal) {
-    #     otu <- as.numeric(ot[ind, ])
-    #     sj <- as.numeric(sj)
-    #     weightT <- as.numeric(weights.cal[ind, ])
-    #     dff <- mutate(samdf, otu = otu, sj = sj, weightT = weightT)
-    #     dff <- mutate(dff, weightT = ifelse(otu==0, 0, weightT))
-    #     glmft <- MASS::glm.nb(des, data = dff, weights = weightT, method = "glm.fit",
-    #         link = arcsinhLink())
-    #     res_residuals <- resid(glmft, "response")
-    #     rt <- list(res_residuals)
-    #     names(rt) <- c("response_residuals")
-    #     return(rt)
-    # }
 
 
     resi_fitted <- lapply(seq_len(ntaxa(ps)), function(x) {
@@ -91,7 +73,7 @@ psTransform <- function(ps, main_factor) {
     colnames(resi) <- sample_names(ps)
     rownames(resi) <- taxa_names(ps)
 
-    resi_trans <- t(asinh(t(resi) * sj))
+    resi_trans <- t(asinh(t(resi) / sj))
 
     ps_resid_asinh <- phyloseq(otu_table(resi_trans, taxa_are_rows = T), sample_data(ps),
         tax_table(ps))

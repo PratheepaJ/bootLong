@@ -27,8 +27,10 @@ asinhVoom <- function(counts, design = NULL, sj, span = 0.5,
 
     n <- nrow(counts)
 
-    if (n < 2L)
+    if (n < 2L){
         stop("Need at least two genes to fit a mean-variance trend")
+    }
+
 
     if (is.null(design)) {
         design <- matrix(1, ncol(counts), 1)
@@ -36,20 +38,24 @@ asinhVoom <- function(counts, design = NULL, sj, span = 0.5,
         colnames(design) <- "GrandMean"
     }
 
-    y <- t(asinh(t(counts) * sj))
+    y <- t(asinh(t(counts) / sj))
 
     fit <- lmFit(y, design)
 
-    if (is.null(fit$Amean))
+    if (is.null(fit$Amean)){
         fit$Amean <- rowMeans(y, na.rm = TRUE)
+    }
 
-    sx <- fit$Amean - mean(asinh(sj))
+
+    # sx <- fit$Amean + mean(asinh(sj))
+    sx <- fit$Amean
     sy <- sqrt(fit$sigma)
     allzero <- rowSums(counts) == 0
     if (any(allzero)) {
         sx <- sx[!allzero]
         sy <- sy[!allzero]
     }
+
     l <- lowess(sx, sy, f = span)
 
     if (plot) {
@@ -70,7 +76,7 @@ asinhVoom <- function(counts, design = NULL, sj, span = 0.5,
     }
 
     fitted.adj.library <- inv_asinh(fitted.values)
-    fitted.count <- t(t(fitted.adj.library) / (sj))
+    fitted.count <- t(t(fitted.adj.library) * (sj))
     fitted.logcount <- asinh(fitted.count)
     w <- 1/f(fitted.logcount)^4
     dim(w) <- dim(fitted.logcount)

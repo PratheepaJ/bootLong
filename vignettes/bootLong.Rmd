@@ -29,7 +29,7 @@ pkgs <- c("ggplot2","dplyr","tidyr",
           "gridExtra", "geepack","MASS",
           "geeM", "R.utils", "BiocParallel",
           "doParallel", "parallel","magrittr",
-          "joineR")
+          "joineR", "DESeq2")
 
 #   installed packages that were not installed already
 source("http://bioconductor.org/biocLite.R")
@@ -55,6 +55,7 @@ library(doParallel)
 library(parallel)
 library(magrittr)
 library(joineR)
+library(DESeq2)
 library(bootLong)
 ```
 

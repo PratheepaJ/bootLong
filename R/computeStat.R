@@ -25,18 +25,17 @@ computeStat <- function(ps, main_factor, time_var, subjectID_var, b) {
 
     # library size normalization factor.
     geo_mean <- function(x) {
-        val <- exp(mean(log(x[x > 0])))
+        if(all(x == 0)){
+            val <- 0
+        }else{
+            val <- exp(sum(log(x[x > 0]))/length(x))
+        }
+        return(val)
     }
 
     geom_mean_row <- apply(ot, 1, FUN = geo_mean)
 
-    median_ratios <- function(x, geom_mean_row) {
-        rat <- x/geom_mean_row
-        median_rat <- median(rat[rat > 0])
-        return(median_rat)
-    }
-
-    sj <- apply(ot, 2, FUN = median_ratios, geom_mean_row = geom_mean_row)
+    sj <- estimateSizeFactorsForMatrix(ot, median, geoMeans = geom_mean_row)
 
     des <- as.formula(paste("otuT", "~", paste(main_factor, collapse = "+"),
         "+", "offset(arcsinhLink()$linkfun(sj))"))
@@ -63,7 +62,7 @@ computeStat <- function(ps, main_factor, time_var, subjectID_var, b) {
         dffT <- arrange_(dffT, idvar, time_var)
 
         glmft.tx <- MASS::glm.nb(formula = desingGEE, data = dffT, weights = weightT,
-            method = "glm.fit", link = arcsinhLink())
+            method = "glm.fit")
 
         # rese <- as.vector(residuals(glmft.tx))
         rese <- resid(glmft.tx, "response")
@@ -104,25 +103,28 @@ computeStat <- function(ps, main_factor, time_var, subjectID_var, b) {
 
         wavesTime <- dffT[, time_var]
         idvarV <- dffT[, "idvar"]
-        theta <- glmft.tx$theta
+        #theta <- glmft.tx$theta
 
         init.beta <- as.numeric(glmft.tx$coefficients)
 
-        fit <- tryCatch(geeM::geem(formula = desingGEE, id = idvarV, waves = wavesTime,
-            data = dffT, family = arcsinhlstLink(), corstr = "fixed", weights = weightT,
-            corr.mat = workCorr, init.beta = init.beta, nodummy = TRUE)$beta,
-            error = function(e) {
-                t(glmft.tx$coefficients)
-            })
+        # fit <- tryCatch(geeM::geem(formula = desingGEE, id = idvarV, waves = wavesTime,
+        #     data = dffT, family = arcsinhlstLink(), corstr = "fixed", weights = weightT,
+        #     corr.mat = workCorr, init.beta = init.beta, nodummy = TRUE)$beta,
+        #     error = function(e) {
+        #         t(glmft.tx$coefficients)
+        #     })
+        fit <- geeM::geem(formula = desingGEE, id = idvarV, waves = wavesTime,
+            data = dffT, corstr = "fixed", weights = weightT,
+            corr.mat = workCorr, init.beta = init.beta, nodummy = TRUE)$beta
 
-        return(fit)
+        return((fit))
 
     }
 
     ind <- as.list(c(1:ntaxa(ps)))
 
     df.beta.hat <- lapply(ind, function(x) {
-        com_beta(x, sampleDf = samdf, otuDf = (ot + 1), allSj = sj, weightDf = weights.cal,
+        com_beta(x, sampleDf = samdf, otuDf = ot, allSj = sj, weightDf = weights.cal,
             desingGEE = des, b = b, subjectID_var = subjectID_var, time_var = time_var)
     })
 

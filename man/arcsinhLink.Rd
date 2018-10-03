@@ -2,13 +2,15 @@
 % Please edit documentation in R/arcsinhLink.R
 \name{arcsinhLink}
 \alias{arcsinhLink}
-\title{asinh link function for glm.nb}
+\title{arcsinhLink
+arcsinh link function for GLM}
 \usage{
 arcsinhLink()
 }
 \value{
-An object of class 'link-glm'
+An object of class "link-glm"
 }
 \description{
-asinh link function for glm.nb
+arcsinhLink
+arcsinh link function for GLM
 }
