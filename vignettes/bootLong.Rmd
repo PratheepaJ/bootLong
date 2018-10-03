@@ -261,16 +261,18 @@ grid.arrange(arrangeGrob(grobs=plist,nrow=2,widths=c(3,3,3,3)),
 
 ### Variogram for longitudinal data
 
+We can choose either points (residuals) to be ploted by `point = TRUE`.
+
 ```{r message=FALSE, warning=FALSE, fig.width=7.5, fig.height=5.5}
 p.all <- longVarioMultiple(ps.tr[[1]],
                            ps.tr[[2]],
                            main_factor = "Preterm",
-                           time_var="Time",
+                           time_var="GWColl",
                            subjectID_var = "SubjectID",
                            starttaxa = 1,
                            endtaxa = 6,
-                           point = FALSE,
-                           taxlevel = "Genus")
+                           point = TRUE,
+                           taxlevel = "Species")
 
 #   Change the legend labels
 p.all <- lapply(p.all, function(x){
