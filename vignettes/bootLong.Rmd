@@ -24,7 +24,7 @@ Our bootLong package requires (phyloseq)[https://joey711.github.io/phyloseq/] ob
 
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, fig.width=7.5, fig.height=5.5)
 ```
 
 Install [R](https://www.r-project.org/) and [RStudio](https://www.rstudio.com/). Open this `Rmd` file in RStudio. Then run the following code to install all required packages.
@@ -65,7 +65,6 @@ library(magrittr)
 library(joineR)
 library(DESeq2)
 library(bootLong)
-#devtools::load_all(".")
 ```
 
 Set the computational resources: we need to specify the number of cores for subsampling method. 
@@ -115,6 +114,7 @@ sample_data(ps)$Preterm <- as.factor(sample_data(ps)$Preterm)
 p <- plotSamplingSchedule(ps, time_var = "Time", subjectID_var = "SubjectID", main_factor = "Preterm", theme_manual = set.theme)
 
 p <- p + scale_color_discrete(name  ="Group",breaks=c("FALSE", "TRUE"),labels=c("Term", "Preterm"))
+p
 #ggsave("./sampling_schedule.eps", plot=p, width = 8, height = 5.5)
 ```
 
@@ -195,14 +195,11 @@ grid.arrange(arrangeGrob(grobs=plist,nrow=2,widths=c(3,3,3)),
              widths=c(10,2))
 ```
 
-Only the largest spike is observed at lag 1 for both term and preterm. However, almost all the ASVs show that the PACF is less than .25 (sufficiently zero) after lag 4. Therefore, the initial block size is 5. 
+Only the largest spike is observed at lag 1 for both term and preterm. However, almost all the ASVs show that the PACF is less than .25 (sufficiently zero) after lag 4. Therefore, the initial block size is 5 (lag 4 corresponds to block size 5). 
 
 
 ###  Correlogram
 ```{r corr, message=FALSE, warning=FALSE}
-ps.tr <- psTransform(ps, 
-                     main_factor = "Preterm") 
-
 p.all <- longCorreloMultiple(ps.tr[[1]],
                              ps.tr[[2]], 
                              main_factor = "Preterm", 
@@ -277,11 +274,13 @@ grid.arrange(arrangeGrob(grobs=plist,nrow=2,widths=c(3,3,3,3)),
 ```
 
 
+We observe that for the top abundance ASV, the lag-plot at lag 4 deviates from a linear line. Thus, we choose an initial block size of 5.
+
 ### Variogram for longitudinal data
 
-We can choose either points (residuals) to be ploted by `point = TRUE`.
+We can plot points (residuals) by choosing argument `point = TRUE` in `longVarioMultiple()`.
 
-```{r message=FALSE, warning=FALSE, fig.width=7.5, fig.height=5.5}
+```{r message=FALSE, warning=FALSE}
 p.all <- longVarioMultiple(ps.tr[[1]],
                            ps.tr[[2]],
                            main_factor = "Preterm",
@@ -317,16 +316,28 @@ grid.arrange(arrangeGrob(grobs=plist, nrow=2, widths=c(3,3,3)),
 ```
 
 
+We observe that variogram reaches the residual variance at lag 4 for almost all of the top six ASVs. Thus, we choose an initial block size of 5.
+
+All the exploratory tools suggest an inital block size of 5.
+
+We will choose 60\% of repeated observations for the subsampling because we can compute mean squared error of two-sided probability over FIVE subsamples (because there are 10 repeated observations from each subject). 
+
+Note: there is a trade-off between choosing the percentage and creating a number of subsamples. We need to create as larger as possible number of bootstrap samples with initial block size 5 (prefer to have a larger percentage and should be at least 6 repeated observations), and we need to create as many subsamples as possible (smaller percentage and should be at least 6 repeated observations.)
+
+
 #   The block bootstrap method
 
-## Subsampling   
-```{r message=FALSE,warning=FALSE, eval=FALSE}
+First, we identify the opitmal block size for the subsample. We use the initial block size 5 ($l_{I} =5$) and subsample percentage 60\% ($\omega = .6$) to identify the opitmal block size. 
+
+## Subsampling
+
+```{r message=FALSE,warning=FALSE}
 R <- 5
 RR <- 5
-main_factor <- "Seroconversion"
+main_factor <- "Preterm"
 time_var <- "Time"
 subjectID_var = "SubjectID"
-sampleID_var = "X.SampleID"
+sampleID_var = "SampleID"
 lI <- 5
 omega <- .6
 system.time(
@@ -344,16 +355,25 @@ system.time(
                                        ncores = ncores)
     )
 
-#saveRDS(mse_results,"./bboot_sim.rds")
+#saveRDS(mse_results,"./MSE.rds")
 ```
 
 ###   Inspect MSE plot
 
-```{r message=FALSE,warning=FALSE,eval=FALSE}
+Second, we identify the optimal block size for the original data using the formula.
+
+$$l_{o} = \left(\frac{1}{\omega}\right)^{1/5}l_{\omega}$$.
+
+
+```{r message=FALSE,warning=FALSE}
 omega <- .6
-mse_results <- readRDS("./bboot_sim.rds")
+#mse_results <- readRDS("./MSE.rds")
 blks <- length(mse_results)
-mse <- list();for(i in 1:blks){mse[[i]] <- mse_results[[i]]$MSE_i}
+mse <- list()
+
+for(i in 1:blks){
+    mse[[i]] <- mse_results[[i]]$MSE_i
+    }
 
 mse.avg <- lapply(mse,function(x){mean(x,na.rm=T)})
 mse.sum <- lapply(mse,function(x){sum(x,na.rm=T)})
@@ -370,15 +390,20 @@ p.mse <- ggplot(dfp,aes(x=lblk,y=mse,group=1))+
     ylab("Mean squared error")+
     ggtitle(paste("MSE for Simulation",omega*100,"%","subsample"))+theme(plot.title = element_text(hjust = 0.5))
 
-ggsave("./mse_sim.eps",plot=p.mse,width = 8,height = 5.5)
+ggsave("./mse_sim.eps", plot=p.mse, width = 8, height = 5.5)
 
-l.M <- lblk[mse==min(mse)]
-l.M
-l.opt <- ceiling((100/(omega*100))^(1/5)*l.M) 
+l.omega <- lblk[mse==min(mse)]
+l.omega
+l.opt <- ceiling((100/(omega*100))^(1/5)*l.omega) 
 l.opt
 ```
 
+
 ##   Run MBB with the optimal block size
+
+Finally, we run the block bootstrap method with the optimal block size for differential abundance analysis.
+
+
 ```{r message=FALSE, warning=FALSE, eval=FALSE}
 R <- 10
 RR <- 5
@@ -386,7 +411,6 @@ main_factor <- "Preterm"
 time_var <- "Time"
 subjectID_var = "SubjectID"
 sampleID_var = "SampleID"
-l.opt = 3
 
 system.time(
     boot_res <- bootLongMethod(ps, 
@@ -398,13 +422,15 @@ system.time(
                                RR = RR)
     )
 
-#saveRDS(boot_res,"./boot_sim.rds")
+#saveRDS(boot_res,"./MBB.rds")
 ```
 
 ###   Inspect the MBB results
 
+We can make a summary of differential abundance ASV.
+
 ```{r message=FALSE,warning=FALSE,eval=FALSE}
-boot_res <- readRDS("./bboot_sim.rds")
+boot_res <- readRDS("./MBB.rds")
 FDR <- .05
 taxalevel <- "Genus"
 out <- boot_res[[1]] 
