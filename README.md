@@ -1,6 +1,6 @@
 # bootLong
 
-bootLong implements the block bootstrap method inference for longitudinal microbiome data. In addition, bootLong provides  tools to explore the sampleing schedule and within-subject dependence.
+bootLong implements the block bootstrap method inference for longitudinal microbiome data. In addition, bootLong provides  tools to explore the sampling schedule and within-subject dependence.
 
 bootLong strats with a `phyloseq` object and returns the confidence intervals and adjusted p-values for the differential abundance analysis. 
 
