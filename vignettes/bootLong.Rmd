@@ -108,6 +108,9 @@ p <- p + scale_color_discrete(name  ="Group",breaks=c("FALSE", "TRUE"),labels=c(
 
 -   Filter ASVs
 ```{r eval=FALSE}
+if (dim(otu_table(ps))[2] != nsamples(ps)) {
+        otu_table(ps) <- t(otu_table(ps))
+    }
 threshold <- .1
 keep_asv <- apply(otu_table(ps),1,function(x){sum(x>0)}) > threshold*nsamples(ps)
 ps <- prune_taxa(keep_asv,ps)
@@ -251,7 +254,7 @@ We can choose either points (residuals) to be ploted by `point = TRUE`.
 ```{r message=FALSE, warning=FALSE, fig.width=7.5, fig.height=5.5}
 p.all <- longVarioMultiple(ps.tr[[1]],
                            ps.tr[[2]],
-                           main_factor = "Preterm",
+                           main_factor = "Seroconversion",
                            time_var="Time",
                            subjectID_var = "SubjectID",
                            starttaxa = 1,
@@ -290,10 +293,10 @@ grid.arrange(arrangeGrob(grobs=plist, nrow=2, widths=c(3,3,3)),
 ```{r message=FALSE,warning=FALSE, eval=FALSE}
 R <- 5
 RR <- 5
-main_factor <- "Preterm"
+main_factor <- "Seroconversion"
 time_var <- "Time"
 subjectID_var = "SubjectID"
-sampleID_var = "SampleID"
+sampleID_var = "X.SampleID"
 lI <- 5
 omega <- .6
 system.time(

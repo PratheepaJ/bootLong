@@ -57,7 +57,6 @@ psTransform <- function(ps, main_factor) {
         dff <- mutate(samdf, otu = otu, sj = sj, weightT = weightT)
         dff <- mutate(dff, weightT = ifelse(otu == 0, 0, weightT))
         glmft <- MASS::glm.nb(des, data = dff, weights = weightT, method = "glm.fit", link = arcsinhLink())
-
         res_residuals <- resid(glmft)
         rt <- list(res_residuals)
         names(rt) <- c("response_residuals")
