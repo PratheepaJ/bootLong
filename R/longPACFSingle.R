@@ -1,7 +1,7 @@
 #' Plots the PACF (Partial Autocorrelation Function) given the taxon index.
 #'
-#' @param taxon Numeric, index of taxon to get the correlogram
-#' @param taxlevel Character string. The taxonomy level for the plot title
+#' @param taxon Numeric. The index of taxon to get the correlogram.
+#' @param taxlevel Character string. The taxonomy level for the plot title.
 #' @inheritParams plotSamplingSchedule
 #'
 #' @return \code{ggplot2} object of PACF for one taxon according to the taxon index.
