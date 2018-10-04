@@ -1,10 +1,10 @@
 #'psTransform
 #'
-#' Variance-stablized values of otu table and residuals.
+#' Variance-stablized values of otu table and residuals of glm.nb fit.
 #'
 #' @inheritParams plotSamplingSchedule
 #'
-#' @return A list of phyloseq objects. The first element is the asinh transfomed of the otu_table and the second element is the asinh transformed of the response residuals of the \code{\link[MASS]{glm.nb}} fit.
+#' @return A list of phyloseq objects. The first element is the asinh transformed of otu_table and the second element is the residuals of \code{\link[MASS]{glm.nb}} fit.
 #' @export
 #' @importFrom MASS glm.nb
 #' @importFrom DESeq2 estimateSizeFactorsForMatrix
@@ -39,17 +39,17 @@ psTransform <- function(ps, main_factor) {
     colnames(ot_trans) <- sample_names(ps)
     rownames(ot_trans) <- taxa_names(ps)
 
-    ## compute residuals and weights
+    # computing weights and residuals
     samdf <- sample_data(ps) %>% data.frame
     des <- as.formula(paste("otu", "~", paste(main_factor, collapse = "+"), "+", "offset(asinh(sj))"))
 
-    ## compute weights
+    ## computing weights
     des_v <- as.formula(paste("~", paste(main_factor, collapse = "+")))
     mm <- model.matrix(des_v, data = samdf)
     v <- asinhVoom(counts = ot, design = mm, sj = sj)
     weights.cal <- v$weights
 
-
+    ## computing residuals
     response_residulas_fitted <- function(ind, samdf, ot, sj, des, weights.cal) {
         otu <- as.numeric(ot[ind, ])
         sj <- as.numeric(sj)
@@ -74,8 +74,6 @@ psTransform <- function(ps, main_factor) {
     resi <- data.frame(do.call("rbind", resi))
     colnames(resi) <- sample_names(ps)
     rownames(resi) <- taxa_names(ps)
-
-    #resi_trans <- t(asinh(t(resi) / sj))
 
     ps_resid_asinh <- phyloseq(otu_table(resi, taxa_are_rows = T), sample_data(ps),
         tax_table(ps))

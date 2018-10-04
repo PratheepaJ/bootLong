@@ -5,9 +5,8 @@
 #' @format An object of class \code{'phyloseq'}.
 #' \describe{
 #'   \item{SubjectID}{IDs of individuals}
-#'   \item{SampleID}{IDs of repeated observations}
 #'   \item{Preterm}{A factor variable with two levels TRUE or FALSE}
-#'   \item{SampleID}{Sample ID for each repeated biological samples}
+#'   \item{SampleID}{Sample ID for each repeated biological sample}
 #'   \item{GWColl}{Gestational week at sampling}
 #' }
 #' @source The data use in the paper: \href{https://www.ncbi.nlm.nih.gov/pubmed/26283357}{where}
