@@ -55,29 +55,15 @@ psTransform <- function(ps, main_factor) {
         sj <- as.numeric(sj)
         weightT <- as.numeric(weights.cal[ind, ])
         dff <- mutate(samdf, otu = otu, sj = sj, weightT = weightT)
-        #dff <- mutate(dff, weightT = ifelse(otu == 0, 0, weightT))
-        glmft <- MASS::glm.nb(des, data = dff, weights = weightT, method = "glm.fit", link = arcsinhLink())
-        res_residuals <- resid(glmft)
-        rt <- list(res_residuals)
-        names(rt) <- c("response_residuals")
-        return(rt)
-    }
-
-    rt <- list()
-    for(ind in 1:ntaxa(ps)){
-        otu <- as.numeric(ot[ind, ])
-        sj <- as.numeric(sj)
-        weightT <- as.numeric(weights.cal[ind, ])
-        dff <- mutate(samdf, otu = otu, sj = sj, weightT = weightT)
         dff <- mutate(dff, weightT = ifelse(otu == 0, 0, weightT))
         glmft <- tryCatch(MASS::glm.nb(des, data = dff, weights = weightT, method = "glm.fit", link = arcsinhLink()),
             error = function(e){
                 dff$otu <- dff$otu + 1;MASS::glm.nb(des, data = dff, weights = weightT, method = "glm.fit", link = arcsinhLink())
             })
-        #glmft <- MASS::glm.nb(des, data = dff, weights = weightT, method = "glm.fit", link = arcsinhLink())
-        res_residuals <- as.numeric(glmft$coefficients)
-        rt[[ind]] <- list(res_residuals)
-
+        res_residuals <- resid(glmft)
+        rt <- list(res_residuals)
+        names(rt) <- c("response_residuals")
+        return(rt)
     }
 
     resi_fitted <- lapply(seq_len(ntaxa(ps)), function(x) {
