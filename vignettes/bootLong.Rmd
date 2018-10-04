@@ -15,6 +15,14 @@ vignette: >
 bibliography: bootLong.bib
 ---
 
+
+In this workflow we provide differential abundance analysis for longitudinal microbiome data. In addition, we provide statistical tools to explore the sampling schedule and within-subject dependence for each ASV. 
+
+The manuscript is under revision and it's available in (stat arXiv) [https://arxiv.org/abs/1809.01832]. If you are intersted in learning the method, we suggest to look at our manuscript.
+
+Our bootLong package requires (phyloseq)[https://joey711.github.io/phyloseq/] object to do the analysis. 
+
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 ```
@@ -56,10 +64,11 @@ library(parallel)
 library(magrittr)
 library(joineR)
 library(DESeq2)
-library(bootLong)
+#library(bootLong)
+devtools::load_all(".")
 ```
 
-Set the computational resources
+Set the computational resources: we need to specify the number of cores for subsampling method. 
 ```{r}
 ncores = as.integer(Sys.getenv("SLURM_NTASKS"))
 if(is.na(ncores)) ncores <- parallel::detectCores()
@@ -76,11 +85,16 @@ ps <- pssim
 
 ##  Summary
 
+After loading the phyloseq, we recommend to check the variable names and some summary for each variable in the sample table. In the example data, we have SubjectID, SampleID, Time, Covariates (Preterm).
+
 ```{r eval=FALSE}
-table(sample_data(ps)$SubjectID,sample_data(ps)$Time)
+names(sample_data(ps))
+table(sample_data(ps)$SubjectID, sample_data(ps)$Time)
 ```
 
 ###   Sampling schedule
+
+We can visualize the sampling schedule for each subject and facet by different conditions. This plot can be modified using your preferred theme, legends, etc. For example, `set.theme` can be changed to have point size 10, legend title can be changed from `Preterm` to `Group`, levels of `Preterm` can be changed to `Term` and `Preterm`, etc.
 
 ```{r }
 theme_set(theme_bw())
@@ -97,16 +111,21 @@ set.theme <- theme_update(panel.border = element_blank(),
 
 
 sample_data(ps)$Preterm <- as.factor(sample_data(ps)$Preterm)
-#sample_data(ps)$GWColl <- as.integer(sample_data(ps)$GWColl)
-#sample_data(ps)$SubjectID <- as.character(sample_data(ps)$SubjectID)
+
 p <- plotSamplingSchedule(ps, time_var = "Time", subjectID_var = "SubjectID", main_factor = "Preterm", theme_manual = set.theme)
+
 p <- p + scale_color_discrete(name  ="Group",breaks=c("FALSE", "TRUE"),labels=c("Term", "Preterm"))
 #ggsave("./sampling_schedule.eps", plot=p, width = 8, height = 5.5)
 ```
 
 ##   Preprocessing
 
--   Filter ASVs
+Preprocessing will help to reduce unwanted noise. 
+
+[Tools](https://joey711.github.io/phyloseq/preprocess.html)
+
+Filter ASVs: for example, we remove ASVs with less than 10% prevalence in all samples.  
+
 ```{r eval=FALSE}
 if (dim(otu_table(ps))[2] != nsamples(ps)) {
         otu_table(ps) <- t(otu_table(ps))
@@ -118,7 +137,10 @@ ps <- prune_taxa(keep_asv,ps)
 
 ##  Exploratory analysis
 
+Here we provide tools to explore the within-subject dependence. 
+
 - Extract the common legend [https://github.com/hadley/ggplot2/wiki/Share-a-legend-between-two-ggplot2-graphs]
+
 ```{r common-legend}
 plot_common_legend <- function(p){
     ggplot_feature = ggplot_gtable(ggplot_build(p))
@@ -128,7 +150,14 @@ plot_common_legend <- function(p){
 }
 ```
 
+
 ###  PACF
+
+Partial autocorrelataion (PACF) at lag $h$ measures the correlation between repeated observations that are seperated by $h$ time units after adjusting for the correlation at shorter lags.  
+
+1) We use `psTransform` to get phyloseq objects with transformed count table and residuals after fitting a negative-binomial regression (residuals show the dependence in repeated observations).
+2) We choose top six abundance ASVs (based on the transformed count) to visualize the dependence within-subject. 
+
 ```{r pacf, message=FALSE, warning=FALSE}
 ps.tr <- psTransform(ps, 
                      main_factor = "Preterm") 
@@ -254,7 +283,7 @@ We can choose either points (residuals) to be ploted by `point = TRUE`.
 ```{r message=FALSE, warning=FALSE, fig.width=7.5, fig.height=5.5}
 p.all <- longVarioMultiple(ps.tr[[1]],
                            ps.tr[[2]],
-                           main_factor = "Seroconversion",
+                           main_factor = "Preterm",
                            time_var="Time",
                            subjectID_var = "SubjectID",
                            starttaxa = 1,
