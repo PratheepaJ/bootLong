@@ -221,3 +221,134 @@ grid.arrange(arrangeGrob(grobs=plist, nrow=2, widths=c(3,3,3)),
              ncol=2,
              widths=c(10,2))
 
+## ----message=FALSE,warning=FALSE-----------------------------------------
+R <- 5
+RR <- 5
+main_factor <- "Preterm"
+time_var <- "Time"
+subjectID_var = "SubjectID"
+sampleID_var = "SampleID"
+lI <- 5
+omega <- .6
+system.time(
+    mse_results <- bootLongSubsampling(ps, 
+                                       main_factor = main_factor,
+                                       time_var = time_var, 
+                                       subjectID_var = subjectID_var,
+                                       sampleID_var = sampleID_var,
+                                       lI = lI,  
+                                       R = R, 
+                                       RR = RR,
+                                       omega = omega,
+                                       lC1 = 1, 
+                                       lC2 = NULL,
+                                       ncores = ncores)
+    )
+
+#saveRDS(mse_results,"./MSE.rds")
+
+## ----message=FALSE,warning=FALSE-----------------------------------------
+omega <- .6
+#mse_results <- readRDS("./MSE.rds")
+blks <- length(mse_results)
+mse <- list()
+
+for(i in 1:blks){
+    mse[[i]] <- mse_results[[i]]$MSE_i
+    }
+
+mse.avg <- lapply(mse,function(x){mean(x,na.rm=T)})
+mse.sum <- lapply(mse,function(x){sum(x,na.rm=T)})
+
+mse <- unlist(mse.sum)
+lblk <- seq(1,length(mse),by=1)
+lblk.f <- as.factor(lblk)
+dfp <- data.frame(mse=mse,lblk=lblk.f)
+
+p.mse <- ggplot(dfp,aes(x=lblk,y=mse,group=1))+
+    geom_point()+
+    geom_line()+
+    xlab("block size")+
+    ylab("Mean squared error")+
+    ggtitle(paste("MSE for Simulation",omega*100,"%","subsample"))+theme(plot.title = element_text(hjust = 0.5))
+
+ggsave("./mse_sim.eps", plot=p.mse, width = 8, height = 5.5)
+
+l.omega <- lblk[mse==min(mse)]
+l.omega
+l.opt <- ceiling((100/(omega*100))^(1/5)*l.omega) 
+l.opt
+
+## ----message=FALSE, warning=FALSE, eval=FALSE----------------------------
+#  R <- 10
+#  RR <- 5
+#  main_factor <- "Preterm"
+#  time_var <- "Time"
+#  subjectID_var = "SubjectID"
+#  sampleID_var = "SampleID"
+#  
+#  system.time(
+#      boot_res <- bootLongMethod(ps,
+#                                 main_factor = main_factor,
+#                                 time_var = time_var,
+#                                 subjectID_var = subjectID_var,
+#                                 b = l.opt,
+#                                 R = R,
+#                                 RR = RR)
+#      )
+#  
+#  #saveRDS(boot_res,"./MBB.rds")
+
+## ----message=FALSE,warning=FALSE,eval=FALSE------------------------------
+#  boot_res <- readRDS("./MBB.rds")
+#  FDR <- .05
+#  taxalevel <- "Genus"
+#  out <- boot_res[[1]]
+#  
+#  #   bootstrap values
+#  T.star_obs <- boot_res[[5]]
+#  
+#  #  filter by FDR
+#  out <- dplyr::filter(out,pvalue.adj <= FDR)
+#  
+#  #   replace ASV by taxalevel
+#  taxaName <- as.character(tax_table(ps)[as.character(out$ASV),taxalevel])
+#  
+#  #   if you want to append Species names to Genus taxalevel
+#  specName <- as.character(tax_table(ps)[as.character(out$ASV),"Species"])
+#  tog <- character()
+#  
+#  for(i in 1:length(taxaName)){
+#      if(!is.na(specName[i])){
+#      tog[i] <- paste(taxaName[i],specName[i])
+#      }else{
+#          tog[i] <- taxaName[i]
+#      }
+#  }
+#  
+#  
+#  #   to remove taxa with no taxalevel name
+#  ind.na <- which(is.na(tog))
+#  
+#  #   to add sequence variants
+#  taxaN <- paste("SV",seq(1,length(out$ASV)),sep="")
+#  tn <- paste(tog,taxaN,sep=".")
+#  
+#  out$ASV <- tn #taxalevel name and variant number
+#  #out$ASV <- taxaName    #   only taxalevel names
+#  #out$ASV <- tog #   taxalevel and Species name
+#  #out <- out[-ind.na,]
+#  
+#  #   arrange by observed lfc
+#  out <- dplyr::arrange(out,desc(stat))
+#  #   dropped observed values of T
+#  out <- out[,-6]
+#  
+#  out <- dplyr::filter(out,!is.na(pvalue.adj))
+#  
+#  #out <- filter(out,abs(stat)>1)
+#  
+#  #   write the results table in latex
+#  library(xtable)
+#  print(xtable(out, type = "latex",digits = 3), file = "./boot_sim.tex")
+
