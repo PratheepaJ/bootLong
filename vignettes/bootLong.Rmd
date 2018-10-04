@@ -94,7 +94,7 @@ table(sample_data(ps)$SubjectID, sample_data(ps)$Time)
 
 ###   Sampling schedule
 
-We can visualize the sampling schedule for each subject and facet by different conditions. This plot can be modified using your preferred theme, legends, etc. For example, `set.theme` can be changed to have point size 10, legend title can be changed from `Preterm` to `Group`, levels of `Preterm` can be changed to `Term` and `Preterm`, etc.
+We can visualize the sampling schedule for each subject and facet by different conditions. This plot can be modified using your preferred theme, legends, etc. For example, `set.theme` can be changed to have point size 10, legend title can be changed from `Preterm` to `Group`, levels of `Preterm` can be changed to `Term` and `Preterm`, etc. 
 
 ```{r }
 theme_set(theme_bw())
@@ -155,8 +155,9 @@ plot_common_legend <- function(p){
 
 Partial autocorrelataion (PACF) at lag $h$ measures the correlation between repeated observations that are seperated by $h$ time units after adjusting for the correlation at shorter lags.  
 
-1) We use `psTransform` to get phyloseq objects with transformed count table and residuals after fitting a negative-binomial regression (residuals show the dependence in repeated observations).
-2) We choose top six abundance ASVs (based on the transformed count) to visualize the dependence within-subject. 
+1) We use `psTransform()` to get phyloseq objects with transformed count table and residuals after fitting a negative-binomial regression (residuals show the dependence in repeated observations).
+
+2) We choose top six abundance ASVs (based on the transformed count) to visualize the dependence within-subject. We can choose different ASVs by changing `starttaxa` and `endtaxa`  arguments in `longPACFMultiple()`.
 
 ```{r pacf, message=FALSE, warning=FALSE}
 ps.tr <- psTransform(ps, 
