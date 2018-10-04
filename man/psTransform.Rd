@@ -12,8 +12,8 @@ psTransform(ps, main_factor)
 \item{main_factor}{Character string. The name of the variable to map main factor in the plot (factor vector).}
 }
 \value{
-A list of phyloseq objects. The first element is the asinh transfomed of the otu_table and the second element is the asinh transformed of the response residuals of the \code{\link[MASS]{glm.nb}} fit.
+A list of phyloseq objects. The first element is the asinh transformed of otu_table and the second element is the residuals of \code{\link[MASS]{glm.nb}} fit.
 }
 \description{
-Variance-stablized values of otu table and residuals.
+Variance-stablized values of otu table and residuals of glm.nb fit.
 }

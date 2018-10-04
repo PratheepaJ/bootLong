@@ -56,17 +56,20 @@ computeStat <- function(ps, main_factor, time_var, subjectID_var, b) {
         allSj <- as.numeric(allSj)
         weightT <- as.numeric(weightDf[taxIndex, ])
         dffT <- cbind(sampleDf, otuT = otuT, allSj = allSj, weightT = weightT)
-        #dffT <- mutate(dffT, weightT = ifelse(otuT == 0, 0, weightT))
+        dffT <- mutate(dffT, weightT = ifelse(otuT == 0, 0, weightT))
         dffT$idvar <- as.numeric(as.factor(dffT[, subjectID_var]))
         idvar <- "idvar"
         dffT <- arrange_(dffT, idvar, time_var)
 
-        glmft.tx <- MASS::glm.nb(formula = desingGEE, data = dffT, weights = weightT,
-            method = "glm.fit", link = arcsinhLink())
+        glmft.tx <- tryCatch(MASS::glm.nb(formula = desingGEE, data = dffT, weights = weightT,
+            method = "glm.fit", link = arcsinhLink()),
+            error = function(e){
+                dffT$otuT <- dffT$otuT +1; MASS::glm.nb(formula = desingGEE, data = dffT, weights = weightT,
+                    method = "glm.fit", link = arcsinhLink())
+            }
+            )
 
         rese <- as.vector(residuals(glmft.tx))
-        # rese <- resid(glmft.tx, "response")
-        # rese <- as.vector(t(asinh(t(rese) / sj)))
 
         dffT$res <- rese
         dfsub <- dffT

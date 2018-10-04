@@ -13,9 +13,9 @@ longPACFSingle(ps, main_factor, time_var, taxon, taxlevel = "Species")
 
 \item{time_var}{Character string. The name of the variable to map time in the plot (integer vector).}
 
-\item{taxon}{Numeric, index of taxon to get the correlogram}
+\item{taxon}{Numeric. The index of taxon to get the correlogram.}
 
-\item{taxlevel}{Character string. The taxonomy level for the plot title}
+\item{taxlevel}{Character string. The taxonomy level for the plot title.}
 }
 \value{
 \code{ggplot2} object of PACF for one taxon according to the taxon index.
