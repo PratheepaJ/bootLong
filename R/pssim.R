@@ -6,8 +6,8 @@
 #' \describe{
 #'   \item{SubjectID}{IDs of individuals}
 #'   \item{Preterm}{A factor variable with two levels TRUE or FALSE}
-#'   \item{SampleID}{Sample ID for each repeated biological samples}
-#'   \item{Time}{Time at repeated measures}
+#'   \item{SampleID}{Sample ID for each repeated biological sample}
+#'   \item{Time}{Time at repeated biological sample}
 #' }
 #' @source Simulated based on the pregnancy data. Paper on \href{http://www.pnas.org/content/112/35/11060.short}{where}
 #' @references Pratheepa Jeganathan (Simulated dataset)
