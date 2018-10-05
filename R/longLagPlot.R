@@ -8,15 +8,15 @@
 #' @export
 #'
 longLagPlot <- function(ps, main_factor, time_var, taxon, lags, taxlevel = "Species") {
-    
+
     taxon_name <- tax_table(ps)[taxon, taxlevel]
-    df.taxa <- data.frame(sample_data(ps), otu = as.numeric(t(otu_table(ps)[taxon, 
+    df.taxa <- data.frame(sample_data(ps), otu = as.numeric(t(otu_table(ps)[taxon,
         ])))
     names(df.taxa)[names(df.taxa) == main_factor] <- "Group"
     names(df.taxa)[names(df.taxa) == time_var] <- "Time"
-    
+
     df.taxa.sep <- split(df.taxa, df.taxa$Group)
-    
+
     res.sep <- lapply(df.taxa.sep, function(m) {
         m$Time <- as.factor(m$Time)
         m <- m %>% group_by(Time) %>% summarise(meant = mean(otu))
@@ -25,25 +25,31 @@ longLagPlot <- function(ps, main_factor, time_var, taxon, lags, taxlevel = "Spec
         df.res <- data.frame(xax = xax, yax = yax)
         return(df.res)
     })
-    
+
     df.sep <- res.sep
-    
+
     Group <- names(df.sep)
     for (i in 1:length(df.sep)) {
         df.sep[[i]]$Group <- Group[i]
     }
-    
+
     df.sep <- do.call("rbind", df.sep)
     df.sep$Group <- as.factor(df.sep$Group)
-    
-    
-    p <- ggplot(df.sep, aes(x = xax, y = yax, col = Group, group = Group)) + 
-        geom_point() + ggtitle(paste("lag", lags)) + xlab("t") + ylab(paste("t+", 
-        lags)) + theme(plot.title = element_text(hjust = 0.5, size = 8), axis.text.x = element_text(size = 8), 
-        axis.text.y = element_text(size = 8), axis.title.x = element_text(size = 8), 
-        axis.title.y = element_text(size = 8), legend.text = element_text(size = 8), 
-        legend.title = element_text(size = 8))
-    
+
+    x_max <- max(df.sep$xax)
+    x_min <- min(df.sep$xax)
+    y_max <- max(df.sep$yax)
+    y_min <- min(df.sep$yax)
+    lmin <- min(x_min, y_min)
+    lmax <- max(x_max, y_max)
+
+    p <- ggplot(df.sep, aes(x = xax, y = yax, col = Group, group = Group)) +
+        geom_point() + ggtitle(paste("lag", lags)) + xlab("t") + ylab(paste("t+",
+        lags)) + theme(plot.title = element_text(hjust = 0.5, size = 8), axis.text.x = element_text(size = 8),
+        axis.text.y = element_text(size = 8), axis.title.x = element_text(size = 8),
+        axis.title.y = element_text(size = 8), legend.text = element_text(size = 8),
+        legend.title = element_text(size = 8)) + ylim(c(lmin, lmax)) + xlim(c(lmin, lmax))
+
     return(p)
 }
 
