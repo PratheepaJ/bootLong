@@ -56,14 +56,14 @@ computeStat <- function(ps, main_factor, time_var, subjectID_var, b) {
         allSj <- as.numeric(allSj)
         weightT <- as.numeric(weightDf[taxIndex, ])
         dffT <- cbind(sampleDf, otuT = otuT, allSj = allSj, weightT = weightT)
-        dffT <- mutate(dffT, weightT = ifelse(otuT == 0, 0, weightT))
+        #dffT <- mutate(dffT, weightT = ifelse(otuT == 0, 0, weightT))
         dffT$idvar <- as.numeric(as.factor(dffT[, subjectID_var]))
         idvar <- "idvar"
         dffT <- arrange_(dffT, idvar, time_var)
 
         glmft.tx <- tryCatch(MASS::glm.nb(formula = desingGEE, data = dffT, weights = weightT,
             method = "glm.fit", link = arcsinhLink()),
-            error = function(e){
+            error = function(e){# if all zeros in one level
                 dffT$otuT <- dffT$otuT +1; MASS::glm.nb(formula = desingGEE, data = dffT, weights = weightT,
                     method = "glm.fit", link = arcsinhLink())
             }
@@ -89,8 +89,6 @@ computeStat <- function(ps, main_factor, time_var, subjectID_var, b) {
             time_var]), frequency = 1)
 
         acf.res <- as.numeric(acf(meanr, plot = F, lag.max = length(meanr))$acf)
-        acf.res[(b + 1):length(acf.res)] <- 0
-
 
         workCorr <- matrix(nrow = length(acf.res), ncol = length(acf.res))
         for (rw in 1:length(acf.res)) {
@@ -106,18 +104,16 @@ computeStat <- function(ps, main_factor, time_var, subjectID_var, b) {
 
         wavesTime <- dffT[, time_var]
         idvarV <- dffT[, "idvar"]
+
         theta <- glmft.tx$theta
 
         init.beta <- as.numeric(glmft.tx$coefficients)
 
-        fit <- tryCatch(geeM::geem(formula = desingGEE, id = idvarV, waves = wavesTime,
+        fit <- geeM::geem(formula = desingGEE, id = idvarV, waves = wavesTime,
             data = dffT, family = arcsinhlstLink(), corstr = "fixed", weights = weightT,
-            corr.mat = workCorr, init.beta = init.beta, nodummy = TRUE)$beta,
-            error = function(e) {
-                t(glmft.tx$coefficients)
-            })
+            corr.mat = workCorr, init.beta = init.beta, nodummy = TRUE)$beta
 
-        return((fit))
+        return(fit)
 
     }
 

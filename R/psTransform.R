@@ -58,7 +58,7 @@ psTransform <- function(ps, main_factor) {
         dff <- mutate(dff, weightT = ifelse(otu == 0, 0, weightT))
         glmft <- tryCatch(MASS::glm.nb(des, data = dff, weights = weightT, method = "glm.fit", link = arcsinhLink()),
             error = function(e){
-                dff$otu <- dff$otu + 1;MASS::glm.nb(des, data = dff, weights = weightT, method = "glm.fit", link = arcsinhLink())
+                dff$otu <- dff$otu + 1; MASS::glm.nb(des, data = dff, weights = weightT, method = "glm.fit", link = arcsinhLink())
             })
         res_residuals <- resid(glmft)
         rt <- list(res_residuals)
