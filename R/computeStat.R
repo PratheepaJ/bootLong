@@ -110,10 +110,28 @@ computeStat <- function(ps, main_factor, time_var, subjectID_var, b) {
         init.beta <- as.numeric(glmft.tx$coefficients)
 
         theta <- glmft.tx$theta
-        arcsinhlstLink.theta <- arcsinhlstLink(theta)
+        #arcsinhlstLink.theta <- arcsinhlstLink(theta)
+        LinkFun <- function(y){
+            log(y + sqrt(y^2 + 1))
+        }
+
+        VarFun <- function(y){
+            y * (1 + y/theta)
+        }
+
+
+        InvLink <- function(eta){
+            0.5 * exp(-eta) * (exp(2 * eta) - 1)
+        }
+
+        InvLinkDeriv <- function(eta){
+            0.5 * (exp(eta) + exp(-eta))
+        }
+
+        FunList <- list(LinkFun, VarFun, InvLink, InvLinkDeriv)
 
         fit <- geeM::geem(formula = desingGEE, id = idvarV, waves = wavesTime,
-            data = dffT, family = arcsinhlstLink.theta, corstr = "fixed", weights = weightT,
+            data = dffT, family = FunList, corstr = "fixed", weights = weightT,
             corr.mat = workCorr, init.beta = init.beta, nodummy = TRUE)$beta
 
         return(fit)
