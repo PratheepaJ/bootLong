@@ -121,11 +121,7 @@ computeStat <- function(ps, main_factor, time_var, subjectID_var, b) {
     }
 
     ind <- as.list(c(1:ntaxa(ps)))
-    # df.beta.hat <- list()
-    # for(x in 1:ntaxa(ps)){
-    #     df.beta.hat[[x]] <- com_beta(x, sampleDf = samdf, otuDf = ot, allSj = sj, weightDf = weights.cal,
-    #         desingGEE = des, b = b, subjectID_var = subjectID_var, time_var = time_var)
-    # }
+
     df.beta.hat <- lapply(ind, function(x) {
         com_beta(x, sampleDf = samdf, otuDf = ot, allSj = sj, weightDf = weights.cal,
             desingGEE = des, b = b, subjectID_var = subjectID_var, time_var = time_var)
