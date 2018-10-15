@@ -4,19 +4,24 @@
 #' InvLink (inverse of link function), and InvLinkDeriv (derivative of inverse of the link function)
 #' @export
 
-arcsinhlstLink <- function() {
-    LinkFun <- function(y) {
+arcsinhlstLink <- function(theta) {
+    LinkFun <- function(y){
         log(y + sqrt(y^2 + 1))
     }
-    VarFun <- function(y) {
+
+    VarFun <- function(y){
         y * (1 + y/theta)
     }
-    InvLink <- function(eta) {
+
+
+    InvLink <- function(eta){
         0.5 * exp(-eta) * (exp(2 * eta) - 1)
     }
-    InvLinkDeriv <- function(eta) {
+
+    InvLinkDeriv <- function(eta){
         0.5 * (exp(eta) + exp(-eta))
     }
+
     FunList <- list(LinkFun, VarFun, InvLink, InvLinkDeriv)
     return(FunList)
 }

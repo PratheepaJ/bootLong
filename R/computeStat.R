@@ -62,7 +62,7 @@ computeStat <- function(ps, main_factor, time_var, subjectID_var, b) {
         dffT <- arrange_(dffT, idvar, time_var)
 
         glmft.tx <- tryCatch(MASS::glm.nb(formula = desingGEE, data = dffT, weights = weightT,
-            method = "glm.fit", link = arcsinhLink()),
+            method = "glm.fit", link = arcsinhLink(theta)),
             error = function(e){# if all zeros in one level
                 dffT$otuT <- dffT$otuT +1; MASS::glm.nb(formula = desingGEE, data = dffT, weights = weightT,
                     method = "glm.fit", link = arcsinhLink())
@@ -109,8 +109,11 @@ computeStat <- function(ps, main_factor, time_var, subjectID_var, b) {
 
         init.beta <- as.numeric(glmft.tx$coefficients)
 
+        theta <- glmft.tx$theta
+        arcsinhlstLink.theta <- arcsinhlstLink(theta)
+
         fit <- geeM::geem(formula = desingGEE, id = idvarV, waves = wavesTime,
-            data = dffT, family = arcsinhlstLink(), corstr = "fixed", weights = weightT,
+            data = dffT, family = arcsinhlstLink.theta, corstr = "fixed", weights = weightT,
             corr.mat = workCorr, init.beta = init.beta, nodummy = TRUE)$beta
 
         return(fit)
@@ -118,7 +121,11 @@ computeStat <- function(ps, main_factor, time_var, subjectID_var, b) {
     }
 
     ind <- as.list(c(1:ntaxa(ps)))
-
+    # df.beta.hat <- list()
+    # for(x in 1:ntaxa(ps)){
+    #     df.beta.hat[[x]] <- com_beta(x, sampleDf = samdf, otuDf = ot, allSj = sj, weightDf = weights.cal,
+    #         desingGEE = des, b = b, subjectID_var = subjectID_var, time_var = time_var)
+    # }
     df.beta.hat <- lapply(ind, function(x) {
         com_beta(x, sampleDf = samdf, otuDf = ot, allSj = sj, weightDf = weights.cal,
             desingGEE = des, b = b, subjectID_var = subjectID_var, time_var = time_var)
