@@ -13,15 +13,15 @@ bootLongPhyloseq <- function(ps, time_var, subjectID_var, b) {
 
     sam_ps <- sample_data(ps) %>% data.frame
     sam_ps %<>% mutate(Index = seq(1, nsamples(ps), by = 1))
-    # sam_ps$Index <- seq(1,nsamples(ps),by=1)
 
     if (!is.factor(sam_ps[, subjectID_var])) {
-        sam_ps[, subjectID_var] <- as.factor(sam_ps[, subjectID_var])
-    }
+        sam_ps[, subjectID_var] <- factor(sam_ps[, subjectID_var], levels = unique(sam_ps[, subjectID_var] ))
+    }#comment this later
+
 
     if (!is.numeric(sam_ps[, time_var])) {
         sam_ps[, time_var] <- as.numeric(sam_ps[, time_var])
-    }
+    }#comment this later
 
     ot <- otu_table(ps) %>% data.frame
 
@@ -44,26 +44,23 @@ bootLongPhyloseq <- function(ps, time_var, subjectID_var, b) {
             bootLongIndices(x = q, time_var = time_var, b = b, L = L, blks.first.index = blks.first.index)
         })
 
-    # sampling.blks.within.subject.indices <-
-    # lapply(sampling.blks.within.subject.indices,'[[',1)
 
     boot.sample.indices <- as.numeric(unlist(sampling.blks.within.subject.indices))
 
-    #boot.sample.indices <- sam_ps$SampleID[sam_ps$SampleID %in% sam_ps$Index]
 
     blk.boot.ot <- ot[, boot.sample.indices]
     blk.boot.sam_ps <- sam_ps[boot.sample.indices, ]
 
-    g2 <- blk.boot.sam_ps[, subjectID_var]
-    boot.sam_ps <- split(blk.boot.sam_ps, g2)
-
-    boot.sam_ps <- lapply(boot.sam_ps, function(x) {
-        tim <- seq(1, dim(x)[1])
-        x[, time_var] <- tim
-        return(x)
-    })
-
-    blk.boot.sam_ps <- do.call("rbind", boot.sam_ps)
+    # g2 <- blk.boot.sam_ps[, subjectID_var]
+    # boot.sam_ps <- split(blk.boot.sam_ps, g2)
+    #
+    # boot.sam_ps <- lapply(boot.sam_ps, function(x) {# don't order time in the boot sample
+    #     tim <- seq(1, dim(x)[1])
+    #     x[, time_var] <- tim
+    #     return(x)
+    # })
+    #
+    # blk.boot.sam_ps <- do.call("rbind", boot.sam_ps)
     blk.boot.sam_ps <- dplyr::select(blk.boot.sam_ps, -Index)
     colnames(blk.boot.ot) <- rownames(blk.boot.sam_ps)
     rownames(blk.boot.ot) <- taxa_names(ps)

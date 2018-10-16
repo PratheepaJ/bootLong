@@ -37,7 +37,7 @@ bootLongSubsampling <- function(ps, main_factor, time_var, subjectID_var, sample
     }
 
     g <- sam_ps[, subjectID_var]
-    sam.ps.by.sub <- split(sam_ps, g)#changes the order of subject names according to the alphabet
+    sam.ps.by.sub <- split(sam_ps, g)# if we don't set the order of levels, this split changes the order of subject names according to the alphabet.
 
     sam.ps.by.sub.mod <- lapply(sam.ps.by.sub, function(x){
         if (!is.unsorted(x[, time_var])) {
@@ -51,7 +51,7 @@ bootLongSubsampling <- function(ps, main_factor, time_var, subjectID_var, sample
     rownames(sam.ps.by.sub.mod) <- sam.ps.by.sub.mod[,sampleID_var]
 
     sample_data(ps) <- sam.ps.by.sub.mod
-    #sample_data(ps) <- sam_ps
+
 
     qj <- table(sam_ps[, subjectID_var])
 
