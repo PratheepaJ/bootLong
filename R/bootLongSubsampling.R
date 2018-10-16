@@ -28,6 +28,22 @@ bootLongSubsampling <- function(ps, main_factor, time_var, subjectID_var, sample
         sam_ps[, time_var] <- as.numeric(sam_ps[, time_var])
     }
 
+    g <- sam_ps[, subjectID_var]
+    sam.ps.by.sub <- split(sam_ps, g)
+
+    sam.ps.by.sub.mod <- lapply(sam.ps.by.sub, function(x){
+        if (!is.unsorted(x[, time_var])) {
+            x <- x
+        } else {
+            x <- arrange_(x, time_var)
+        }
+    })
+
+    sam.ps.by.sub.mod <- do.call("rbind", sam.ps.by.sub.mod)
+    rownames(sam.ps.by.sub.mod) <- sam.ps.by.sub.mod[,sampleID_var]
+
+    sample_data(ps) <- sam.ps.by.sub.mod
+
     if (!is.factor(sam_ps[, subjectID_var])) {
         sam_ps[, subjectID_var] <- as.factor(sam_ps[, subjectID_var])
     }
