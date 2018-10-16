@@ -28,8 +28,16 @@ bootLongSubsampling <- function(ps, main_factor, time_var, subjectID_var, sample
         sam_ps[, time_var] <- as.numeric(sam_ps[, time_var])
     }
 
+    if (!is.factor(sam_ps[, subjectID_var])) {
+        sam_ps[, subjectID_var] <- factor(sam_ps[, subjectID_var], levels = unique(sam_ps[, subjectID_var] ))
+    }
+
+    if (!is.factor(sam_ps[, sampleID_var])) {
+        sam_ps[, sampleID_var] <- as.factor(sam_ps[, sampleID_var])
+    }
+
     g <- sam_ps[, subjectID_var]
-    sam.ps.by.sub <- split(sam_ps, g)
+    sam.ps.by.sub <- split(sam_ps, g)#changes the order of subject names according to the alphabet
 
     sam.ps.by.sub.mod <- lapply(sam.ps.by.sub, function(x){
         if (!is.unsorted(x[, time_var])) {
@@ -43,16 +51,7 @@ bootLongSubsampling <- function(ps, main_factor, time_var, subjectID_var, sample
     rownames(sam.ps.by.sub.mod) <- sam.ps.by.sub.mod[,sampleID_var]
 
     sample_data(ps) <- sam.ps.by.sub.mod
-
-    if (!is.factor(sam_ps[, subjectID_var])) {
-        sam_ps[, subjectID_var] <- as.factor(sam_ps[, subjectID_var])
-    }
-
-    if (!is.factor(sam_ps[, sampleID_var])) {
-        sam_ps[, sampleID_var] <- as.factor(sam_ps[, sampleID_var])
-    }
-
-    sample_data(ps) <- sam_ps
+    #sample_data(ps) <- sam_ps
 
     qj <- table(sam_ps[, subjectID_var])
 

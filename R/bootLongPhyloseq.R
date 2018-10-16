@@ -11,7 +11,6 @@ bootLongPhyloseq <- function(ps, time_var, subjectID_var, b) {
     # if(dim(otu_table(ps))[1]==nsamples(ps)){ otu_table(ps) =
     # t(otu_table(ps,taxa_are_rows = T)) }
 
-
     sam_ps <- sample_data(ps) %>% data.frame
     sam_ps %<>% mutate(Index = seq(1, nsamples(ps), by = 1))
     # sam_ps$Index <- seq(1,nsamples(ps),by=1)
