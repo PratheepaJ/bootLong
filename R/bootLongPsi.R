@@ -23,23 +23,25 @@ bootLongPsi <- function(ps, main_factor, time_var, subjectID_var, b, R, RR,
             b = b)
         ps.boot <- ps.boot[[1]]
 
-        df.boot <- computeStat(ps = ps.boot, main_factor = main_factor, time_var = time_var,
-            subjectID_var = subjectID_var, b = b)
+        # df.boot <- computeStat(ps = ps.boot, main_factor = main_factor, time_var = time_var,
+        #     subjectID_var = subjectID_var, b = b)
 
         boot.results.bb <- lapply(seq_len(RR), FUN = function(j) {
             ps.boot.bb <- bootLongPhyloseq(ps.boot, time_var = time_var, subjectID_var = subjectID_var,
                 b = b)
             ps.boot.bb <- ps.boot.bb[[1]]
-            df.boot.bb <- computeStat(ps = ps.boot.bb, main_factor = main_factor,
-                time_var = time_var, subjectID_var = subjectID_var, b = b)
-            rm(ps.boot.bb)
-            return(df.boot.bb)
+            # df.boot.bb <- computeStat(ps = ps.boot.bb, main_factor = main_factor,
+            #     time_var = time_var, subjectID_var = subjectID_var, b = b)
+            # rm(ps.boot.bb)
+            # return(df.boot.bb)
+            return(ps.boot.bb)
 
         })
 
         #rm(ps.boot)
 
-        return(list(df.boot, boot.results.bb, ps.boot))
+        #return(list(df.boot, boot.results.bb))
+        return(list(ps.boot, ps.boot.bb))
 
 
     }, mc.cores = ncores)

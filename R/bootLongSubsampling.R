@@ -50,7 +50,8 @@ bootLongSubsampling <- function(ps, main_factor, time_var, subjectID_var, sample
     sam.ps.by.sub.mod <- do.call("rbind", sam.ps.by.sub.mod)
     rownames(sam.ps.by.sub.mod) <- sam.ps.by.sub.mod[,sampleID_var]
 
-    sample_data(ps) <- sam.ps.by.sub.mod
+    ps <- merge_phyloseq(otu_table(ps, taxa_are_rows = TRUE), sample_data(sam.ps.by.sub.mod), tax_table(ps))
+    #sample_data(ps) <- sam.ps.by.sub.mod
 
 
     qj <- table(sam_ps[, subjectID_var])

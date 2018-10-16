@@ -12,6 +12,7 @@ bootLongPhyloseq <- function(ps, time_var, subjectID_var, b) {
     # t(otu_table(ps,taxa_are_rows = T)) }
 
     sam_ps <- sample_data(ps) %>% data.frame
+    rownames(sam_ps) <- sample_names(ps)
     sam_ps %<>% mutate(Index = seq(1, nsamples(ps), by = 1))
 
     if (!is.factor(sam_ps[, subjectID_var])) {
@@ -61,9 +62,11 @@ bootLongPhyloseq <- function(ps, time_var, subjectID_var, b) {
     # })
     #
     # blk.boot.sam_ps <- do.call("rbind", boot.sam_ps)
+
     blk.boot.sam_ps <- dplyr::select(blk.boot.sam_ps, -Index)
-    colnames(blk.boot.ot) <- rownames(blk.boot.sam_ps)
-    rownames(blk.boot.ot) <- taxa_names(ps)
+    #colnames(blk.boot.ot) <- rownames(blk.boot.sam_ps)
+    #rownames(blk.boot.ot) <- taxa_names(ps)
+    #rownames(blk.boot.sam_ps) <- colnames(blk.boot.ot)
     ps.boot <- phyloseq::merge_phyloseq(X = otu_table(blk.boot.ot, taxa_are_rows = T),
         sample_data(blk.boot.sam_ps), tax_table(ps))
     return(list(ps.boot))
