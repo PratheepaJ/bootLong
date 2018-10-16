@@ -50,6 +50,8 @@ bootLongPhyloseq <- function(ps, time_var, subjectID_var, b) {
 
     boot.sample.indices <- as.numeric(unlist(sampling.blks.within.subject.indices))
 
+    #boot.sample.indices <- sam_ps$SampleID[sam_ps$SampleID %in% sam_ps$Index]
+
     blk.boot.ot <- ot[, boot.sample.indices]
     blk.boot.sam_ps <- sam_ps[boot.sample.indices, ]
 

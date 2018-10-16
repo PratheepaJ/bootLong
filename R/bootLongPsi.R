@@ -37,9 +37,9 @@ bootLongPsi <- function(ps, main_factor, time_var, subjectID_var, b, R, RR,
 
         })
 
-        rm(ps.boot)
+        #rm(ps.boot)
 
-        return(list(df.boot, boot.results.bb))
+        return(list(df.boot, boot.results.bb, ps.boot))
 
 
     }, mc.cores = ncores)
@@ -59,6 +59,7 @@ bootLongPsi <- function(ps, main_factor, time_var, subjectID_var, b, R, RR,
     sd.stat <- apply(stat.star, 1, FUN = sd, na.rm = FALSE)
 
     beta.obs <- res.obs[, 2]
+
     shrink.beta.obs <- suppressMessages(ash(beta.obs, sebetahat = sd.stat,
         mixcompdist = "normal"))
     shrink.beta.est <- shrink.beta.obs$result$PosteriorMean
