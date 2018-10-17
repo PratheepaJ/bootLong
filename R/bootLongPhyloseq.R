@@ -58,7 +58,7 @@ bootLongPhyloseq <- function(ps, time_var, subjectID_var, sampleID_var, b) {
         return(x)
     })
 
-    blk.boot.sam_ps <- do.call("rbind", boot.sam_ps)
+    blk.boot.sam_ps <- do.call(rbind, boot.sam_ps)
 
 
     blk.boot.sam_ps <- dplyr::select(blk.boot.sam_ps, -Index)
