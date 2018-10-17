@@ -46,9 +46,9 @@ bootLongPsi <- function(ps,main_factor,time_var,subjectID_var,sampleID_var,b,R,R
 
     stat.star <- do.call("cbind", lapply(boot.results.all, FUN = function(x) {
         x[, 2]
-    }))
+    })) %>% as.data.frame
 
-    stat.star <- as.data.frame(stat.star)
+    #stat.star <- as.data.frame(stat.star)
 
     sd.stat <- apply(stat.star, 1, FUN = sd, na.rm = FALSE)
 
@@ -74,12 +74,14 @@ bootLongPsi <- function(ps,main_factor,time_var,subjectID_var,sampleID_var,b,R,R
         do.call("cbind", lapply(x, FUN = function(x) {
             x[, 2]
         }))
-
     })
 
-    sd.stat.star <- do.call("cbind", lapply(stat.star.star, function(x) {
+    # sd.stat.star <- do.call("cbind", lapply(stat.star.star, function(x) {
+    #     data.frame(sd.stat.star = apply(x, 1, FUN = sd, na.rm = TRUE))
+    # })) %>% as.data.frame
+    sd.stat.star <- lapply(stat.star.star, function(x) {
         data.frame(sd.stat.star = apply(x, 1, FUN = sd, na.rm = TRUE))
-    }))
+    }) %>% data.frame
 
     shrink.beta.boot <- lapply(seq_len(R), function(i) {
         suppressMessages(ash(stat.star[, i], sebetahat = sd.stat.star[, i], mixcompdist = "normal"))$result
@@ -89,7 +91,8 @@ bootLongPsi <- function(ps,main_factor,time_var,subjectID_var,sampleID_var,b,R,R
         ii$PosteriorMean
     })
 
-    stat.star <- do.call("cbind", shrink.beta.boot.est)
+    #stat.star <- do.call("cbind", shrink.beta.boot.est)
+    stat.star <- shrink.beta.boot.est %>% data.frame
 
     T.num.star <- data.frame(apply(stat.star, 2, function(x) {
         x - stat.obs

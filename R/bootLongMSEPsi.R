@@ -48,11 +48,13 @@ bootLongMSEPsi <- function(ps, main_factor, time_var, subjectID_var, sampleID_va
         sub.sam.i <- lapply(sam.ps.q.W.or, function(x) {
             xd <- x[[1]]
             W <- x[[3]]
-            ss <- dplyr::slice(x[[1]], i:(W + i - 1)) %>% data.frame
+            # ss <- dplyr::slice(x[[1]], i:(W + i - 1)) %>% data.frame
+            #ss <- dplyr::filter(xd, between(row_number(), i, (W + i - 1)))
+            ss <- xd[i:(W + i - 1), ]
             return(ss)
         })
-        sub.sam.i <- do.call("rbind", sub.sam.i) %>% data.frame
-        rownames(sub.sam.i) <- sub.sam.i[, sampleID_var] %>% as.character
+        sub.sam.i <- do.call(rbind, sub.sam.i)
+        #rownames(sub.sam.i) <- sub.sam.i[, sampleID_var] %>% as.character
         subsam.id <- sub.sam.i[, sampleID_var] %>% as.character
         #subsam.id <- as.character(subsam.id)
         ps.sub[[i]] <- prune_samples(subsam.id, ps)
@@ -70,8 +72,6 @@ bootLongMSEPsi <- function(ps, main_factor, time_var, subjectID_var, sampleID_va
     #     Khat[[i]] <- k.hat[[1]]
     # }
 
-
-
     rm(ps)
     rm(sam.ps)
     rm(sam.ps.q.W)
@@ -82,7 +82,8 @@ bootLongMSEPsi <- function(ps, main_factor, time_var, subjectID_var, sampleID_va
         (w - Khat.obs)^2
     })
 
-    Khat.squared.diff.df <- do.call("cbind", Khat.squared.diff)
+    Khat.squared.diff.df <- Khat.squared.diff %>% data.frame
+    #Khat.squared.diff.df <- do.call("cbind", Khat.squared.diff) %>% data.frame
 
     MSE_i <- apply(Khat.squared.diff.df, 1, FUN = function(x) {
         mean(x)
