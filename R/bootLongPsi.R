@@ -10,38 +10,35 @@
 #'         second element ``observed statistic``
 #'
 #' @export
-bootLongPsi <- function(ps, main_factor, time_var, subjectID_var, b, R, RR,
+bootLongPsi <- function(ps, main_factor, time_var, subjectID_var, sampleID_var, b, R, RR,
     T.obs.full = NULL, ncores) {
 
-    res.obs <- computeStat(ps = ps, main_factor = main_factor, time_var = time_var,
-        subjectID_var = subjectID_var, b = b)
+    res.obs <- computeStat(ps = ps, main_factor = main_factor, time_var = time_var, subjectID_var = subjectID_var, b = b)
 
     boot.results <- list()
 
     boot.results <- mclapply(seq_len(R), FUN = function(i) {
-        ps.boot <- bootLongPhyloseq(ps = ps, time_var = time_var, subjectID_var = subjectID_var,
-            b = b)
+        ps.boot <- bootLongPhyloseq(ps = ps, time_var = time_var, subjectID_var = subjectID_var, sampleID_var = sampleID_var, b = b)
+
         ps.boot <- ps.boot[[1]]
 
-        # df.boot <- computeStat(ps = ps.boot, main_factor = main_factor, time_var = time_var,
-        #     subjectID_var = subjectID_var, b = b)
+        df.boot <- computeStat(ps = ps.boot, main_factor = main_factor, time_var = time_var, subjectID_var = subjectID_var, b = b)
 
         boot.results.bb <- lapply(seq_len(RR), FUN = function(j) {
-            ps.boot.bb <- bootLongPhyloseq(ps.boot, time_var = time_var, subjectID_var = subjectID_var,
-                b = b)
+            ps.boot.bb <- bootLongPhyloseq(ps.boot, time_var = time_var, subjectID_var = subjectID_var, sampleID_var = sampleID_var, b = b)
+
             ps.boot.bb <- ps.boot.bb[[1]]
-            # df.boot.bb <- computeStat(ps = ps.boot.bb, main_factor = main_factor,
-            #     time_var = time_var, subjectID_var = subjectID_var, b = b)
+            df.boot.bb <- computeStat(ps = ps.boot.bb, main_factor = main_factor, time_var = time_var, subjectID_var = subjectID_var, b = b)
             # rm(ps.boot.bb)
-            # return(df.boot.bb)
-            return(ps.boot.bb)
+            return(df.boot.bb)
+            #return(ps.boot.bb)
 
         })
 
         #rm(ps.boot)
 
-        #return(list(df.boot, boot.results.bb))
-        return(list(ps.boot, ps.boot.bb))
+        return(list(df.boot, boot.results.bb))
+        #return(list(ps.boot, boot.results.bb))
 
 
     }, mc.cores = ncores)

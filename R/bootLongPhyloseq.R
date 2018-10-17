@@ -6,27 +6,27 @@
 #'
 #' @return a \code{phyloseq} object. A block bootstrap realization of \code{ps}.
 #' @export
-bootLongPhyloseq <- function(ps, time_var, subjectID_var, b) {
+bootLongPhyloseq <- function(ps, time_var, subjectID_var, sampleID_var, b) {
 
     # if(dim(otu_table(ps))[1]==nsamples(ps)){ otu_table(ps) =
     # t(otu_table(ps,taxa_are_rows = T)) }
 
-    sam_ps <- sample_data(ps) %>% data.frame
-    sam_ps %<>% mutate(Index = seq(1, nsamples(ps), by = 1))
+    sam_pss <- sample_data(ps) %>% data.frame
+    sam_pss %<>% mutate(Index = seq(1, nsamples(ps), by = 1))
 
-    if (!is.factor(sam_ps[, subjectID_var])) {
-        sam_ps[, subjectID_var] <- factor(sam_ps[, subjectID_var], levels = unique(sam_ps[, subjectID_var] ))
+    if (!is.factor(sam_pss[, subjectID_var])) {
+        sam_pss[, subjectID_var] <- factor(sam_pss[, subjectID_var], levels = unique(sam_pss[, subjectID_var] ))
     }#comment this later
 
 
-    if (!is.numeric(sam_ps[, time_var])) {
-        sam_ps[, time_var] <- as.numeric(sam_ps[, time_var])
+    if (!is.numeric(sam_pss[, time_var])) {
+        sam_pss[, time_var] <- as.numeric(sam_pss[, time_var])
     }#comment this later
 
     ot <- otu_table(ps) %>% data.frame
 
-    g <- sam_ps[, subjectID_var]
-    sam_ps.split.by.subjects <- split(sam_ps, g)
+    g <- sam_pss[, subjectID_var]
+    sam_ps.split.by.subjects <- split(sam_pss, g)
 
     num.of.rep.obs <- lapply(sam_ps.split.by.subjects, function(x) {
         dim(x)[1]
@@ -47,25 +47,29 @@ bootLongPhyloseq <- function(ps, time_var, subjectID_var, b) {
 
     boot.sample.indices <- as.numeric(unlist(sampling.blks.within.subject.indices))
 
-
+    rownames(sam_pss) <- sam_pss[, sampleID_var] %>% as.character()
     blk.boot.ot <- ot[, boot.sample.indices]
-    blk.boot.sam_ps <- sam_ps[boot.sample.indices, ]
+    blk.boot.sam_ps <- sam_pss[boot.sample.indices, ]
+    blk.boot.sam_ps[, sampleID_var] <- colnames(blk.boot.ot) %>% as.factor
 
-    # g2 <- blk.boot.sam_ps[, subjectID_var]
-    # boot.sam_ps <- split(blk.boot.sam_ps, g2)
-    #
-    # boot.sam_ps <- lapply(boot.sam_ps, function(x) {# don't order time in the boot sample
-    #     tim <- seq(1, dim(x)[1])
-    #     x[, time_var] <- tim
-    #     return(x)
-    # })
-    #
-    # blk.boot.sam_ps <- do.call("rbind", boot.sam_ps)
+    blk.boot.sam_ps[, subjectID_var] <- factor(blk.boot.sam_ps[, subjectID_var], levels = unique(blk.boot.sam_ps[, subjectID_var] ))
+
+    g2 <- blk.boot.sam_ps[, subjectID_var]
+    boot.sam_ps <- split(blk.boot.sam_ps, g2)
+
+    boot.sam_ps <- lapply(boot.sam_ps, function(x) {
+        tim <- seq(1, dim(x)[1])
+        x[, time_var] <- tim
+        return(x)
+    })
+
+    blk.boot.sam_ps <- do.call("rbind", boot.sam_ps)
+
 
     blk.boot.sam_ps <- dplyr::select(blk.boot.sam_ps, -Index)
-    #colnames(blk.boot.ot) <- rownames(blk.boot.sam_ps)
-    #rownames(blk.boot.ot) <- taxa_names(ps)
-    rownames(blk.boot.sam_ps) <- colnames(blk.boot.ot)
+    colnames(blk.boot.ot) <- blk.boot.sam_ps[, sampleID_var] %>% as.character
+    rownames(blk.boot.ot) <- taxa_names(ps)
+    rownames(blk.boot.sam_ps) <- blk.boot.sam_ps[, sampleID_var] %>% as.character
     ps.boot <- phyloseq::merge_phyloseq(X = otu_table(blk.boot.ot, taxa_are_rows = T),
         sample_data(blk.boot.sam_ps), tax_table(ps))
     return(list(ps.boot))
