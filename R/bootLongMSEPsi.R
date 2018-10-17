@@ -1,19 +1,18 @@
 #' bootLongMSEPsi
 #'
-#' Compute MSE in computing K = two-sided probability with different block sizes
+#' Compute MSE in computing \eqn{\psi} = two-sided probability with different block sizes.
 #'
-#' @param Wj subset of repeated observations for j-th subject
-#' @param qj number of repeated observations for j-th subject
-#' @param Khat.obs second element of the output of \code{bootLongPsi} evaluated using the initial block length and full data
-#' @param ncores A numeric. The number of cores to use in \code{\link[parallel]{mclapply}}.
+#' @param qj A numeric vector. The number of repeated observations for j-th subject.
+#' @param Wj A numeric vector. The number of repeated observations in the subset for j-th subject
+#' @param Khat.obs A numeric vector. The second element of the output of \code{bootLongPsi} evaluated using the initial block size and full data.
 #' @inheritParams bootLongPsi
 #'
-#' @return list of MSE computed with block length b, Khat is all subsamples, Khat with initial block length
+#' @return A list of MSE computed with given block size b, Khat with all subsamples, Khat with initial block size.
 #'
 #'
 #' @export
 #' @importFrom parallel mclapply
-bootLongMSEPsi <- function(ps,main_factor,time_var,subjectID_var,sampleID_var,b,R,RR,qj,Wj,Khat.obs = NULL,T.obs.full = NULL,ncores) {
+bootLongMSEPsi <- function(ps, main_factor, time_var, subjectID_var, sampleID_var, b, R, RR, qj, Wj, Khat.obs = NULL, T.obs.full =NULL, ncores) {
 
     if (is.null(Khat.obs)) {
         stop("User needs to run bootLongPsi() function with an initial block length ")

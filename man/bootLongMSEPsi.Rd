@@ -24,19 +24,19 @@ bootLongMSEPsi(ps, main_factor, time_var, subjectID_var, sampleID_var, b,
 
 \item{RR}{A numeric. The number of double block bootstrap realizations.}
 
-\item{qj}{number of repeated observations for j-th subject}
+\item{qj}{A numeric vector. The number of repeated observations for j-th subject.}
 
-\item{Wj}{subset of repeated observations for j-th subject}
+\item{Wj}{A numeric vector. The number of repeated observations in the subset for j-th subject}
 
-\item{Khat.obs}{second element of the output of \code{bootLongPsi} evaluated using the initial block length and full data}
+\item{Khat.obs}{A numeric vector. The second element of the output of \code{bootLongPsi} evaluated using the initial block size and full data.}
 
 \item{T.obs.full}{A numeric vector. The numeric vector of observed statistic.}
 
 \item{ncores}{A numeric. The number of cores to use in \code{\link[parallel]{mclapply}}.}
 }
 \value{
-list of MSE computed with block length b, Khat is all subsamples, Khat with initial block length
+A list of MSE computed with given block size b, Khat with all subsamples, Khat with initial block size.
 }
 \description{
-Compute MSE in computing K = two-sided probability with different block sizes
+Compute MSE in computing \eqn{\psi} = two-sided probability with different block sizes.
 }
