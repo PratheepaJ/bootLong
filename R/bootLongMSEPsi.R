@@ -13,9 +13,7 @@
 #'
 #' @export
 #' @importFrom parallel mclapply
-bootLongMSEPsi <- function(ps, main_factor, time_var, subjectID_var,
-    sampleID_var, b, R, RR, qj, Wj, Khat.obs = NULL, T.obs.full = NULL, ncores) {
-
+bootLongMSEPsi <- function(ps,main_factor,time_var,subjectID_var,sampleID_var,b,R,RR,qj,Wj,Khat.obs = NULL,T.obs.full = NULL,ncores) {
 
     if (is.null(Khat.obs)) {
         stop("User needs to run bootLongPsi() function with an initial block length ")
@@ -24,8 +22,11 @@ bootLongMSEPsi <- function(ps, main_factor, time_var, subjectID_var,
         stop("User needs to provide observed test statistic")
     }
 
-
     sam_ps <- sample_data(ps) %>% data.frame
+
+    if (!is.factor(sam_ps[, subjectID_var])) {
+        sam_ps[, subjectID_var] <- factor(sam_ps[, subjectID_var], levels = unique(sam_ps[, subjectID_var] ))
+    }
 
     g <- sam_ps[, subjectID_var]
 
@@ -61,7 +62,7 @@ bootLongMSEPsi <- function(ps, main_factor, time_var, subjectID_var,
     }
 
     Khat <- lapply(ps.sub, function(x) {
-        k.hat <- bootLongPsi(x, main_factor = main_factor, time_var = time_var, subjectID_var = subjectID_var, sampleID_var = sampleID_var, b = b, R = R, RR = RR, T.obs.full = T.obs.full, ncores = ncores)
+        k.hat <- bootLongPsi(x,main_factor = main_factor,time_var=time_var,subjectID_var = subjectID_var,sampleID_var = sampleID_var,b=b,R = R,RR =RR,T.obs.full = T.obs.full,ncores = ncores)
         k.hat <- k.hat[[1]]
         return(k.hat)
     })
