@@ -23,7 +23,7 @@ bootLongSubsampling <- function(ps, main_factor, time_var, subjectID_var, sample
     #     sam.ps[, time_var] <- as.numeric(sam.ps[, time_var])
     # }
 
-    sam.ps[, subjectID_var] <- factor(sam.ps[, subjectID_var], levels = unique(sam.ps[, subjectID_var] ))
+    sam.ps[, subjectID_var] <- factor(sam.ps[, subjectID_var], levels = unique(sam.ps[, subjectID_var]))
 
     # if (!is.factor(sam.ps[, sampleID_var])) {
     #     sam.ps[, sampleID_var] <- as.factor(sam.ps[, sampleID_var])

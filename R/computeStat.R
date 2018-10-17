@@ -64,11 +64,9 @@ computeStat <- function(ps, main_factor, time_var, subjectID_var, b) {
         idvar <- "idvar"
         dffT <- arrange_(dffT, idvar, time_var)
 
-        glmft.tx <- tryCatch(MASS::glm.nb(formula = desingGEE, data = dffT, weights = weightT,
-            method = "glm.fit", link = arcsinhLink(theta)),
+        glmft.tx <- tryCatch(MASS::glm.nb(formula = desingGEE, data = dffT, weights = weightT, method = "glm.fit", link = arcsinhLink(theta)),
             error = function(e){# if all zeros in one level
-                dffT$otuT <- dffT$otuT +1; MASS::glm.nb(formula = desingGEE, data = dffT, weights = weightT,
-                    method = "glm.fit", link = arcsinhLink())
+                dffT$otuT <- dffT$otuT +1; MASS::glm.nb(formula = desingGEE, data = dffT, weights = weightT, method = "glm.fit", link = arcsinhLink())
             }
             )
 

@@ -32,8 +32,8 @@ library(parallel)
 library(magrittr)
 library(joineR)
 library(DESeq2)
-library(bootLong)
-#devtools::load_all(".")
+#library(bootLong)
+devtools::load_all(".")
 
 ## ------------------------------------------------------------------------
 ncores = as.integer(Sys.getenv("SLURM_NTASKS"))
@@ -224,29 +224,20 @@ grid.arrange(arrangeGrob(grobs=plist, nrow=2, widths=c(3,3,3)),
 
 ## ----message=FALSE,warning=FALSE, eval=FALSE-----------------------------
 #  R <- 5
-#  RR <- 5
+#  RR <- 4
 #  main_factor <- "Preterm"
 #  time_var <- "Time"
 #  subjectID_var = "SubjectID"
 #  sampleID_var = "SampleID"
 #  lI <- 4
 #  omega <- .6
-#  system.time(
-#      mse_results <- bootLongSubsampling(ps,
-#          main_factor = main_factor,
-#          time_var = time_var,
-#          subjectID_var = subjectID_var,
-#          sampleID_var = sampleID_var,
-#          lI = lI,
-#          R = R,
-#          RR = RR,
-#          omega = omega,
-#          lC1 = 1,
-#          lC2 = NULL,
-#          ncores = ncores)
-#      )
 #  
-#  #saveRDS(mse_results,"./MSE.rds")
+#  system.time(
+#      mse.results <- bootLongSubsampling(ps = ps, main_factor = main_factor, time_var = time_var, subjectID_var = subjectID_var, sampleID_var = sampleID_var, lI = lI, R = R, RR = RR, omega = omega, lC1 = 1, lC2 = NULL, ncores = ncores)
+#  )
+#  
+#  
+#  #saveRDS(mse.results,"./MSE.rds")
 
 ## ----message=FALSE,warning=FALSE, eval=FALSE-----------------------------
 #  omega <- .6
@@ -282,7 +273,7 @@ grid.arrange(arrangeGrob(grobs=plist, nrow=2, widths=c(3,3,3)),
 
 ## ----message=FALSE, warning=FALSE, eval=FALSE----------------------------
 #  R <- 5
-#  RR <- 5
+#  RR <- 4
 #  main_factor <- "Preterm"
 #  time_var <- "Time"
 #  subjectID_var = "SubjectID"
