@@ -11,7 +11,7 @@
 #' @return A list of ``MSE`` in calculating K with block sizes lC=1:(lI-1), ``Khat`` values with block sizes lC=1:(lI-1) and ``Khat.obs`` with lI
 #' @export
 #' @importFrom parallel mclapply
-bootLongSubsampling <- function(ps, main_factor, time_var, subjectID_var, sampleID_var, lI, R, RR, omega = .6, lC1 = 1, lC2 = NULL, ncroes){
+bootLongSubsampling <- function(ps, main_factor, time_var, subjectID_var, sampleID_var, lI, R, RR, omega = .6, lC1 = 1, lC2 = NULL, ncores){
 
     if (dim(otu_table(ps))[1] == nsamples(ps)) {
         otu_table(ps) <- t(otu_table(ps, taxa_are_rows = T))
