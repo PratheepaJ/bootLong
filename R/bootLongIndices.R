@@ -13,15 +13,13 @@
 #' @export
 bootLongIndices <- function(x, time_var, b, L, blks.first.index) {
 
-    # if(!is.numeric(x[,time_var])) {
-    #     x[,time_var] <- as.numeric(x[,time_var])
-    # }
+    x[,time_var] <- as.numeric(x[,time_var])
 
-    # if (!is.unsorted(x[, time_var])) {
-    #     x <- x
-    # } else {
-    #     x <- arrange_(x, time_var)
-    # }
+    if (!is.unsorted(x[, time_var])) {
+        x <- x
+    } else {
+        x <- arrange_(x, time_var)
+    }
 
     num_of_rep_obs_x <- dim(x)[1]
 

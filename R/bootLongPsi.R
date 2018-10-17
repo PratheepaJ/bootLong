@@ -31,11 +31,10 @@ bootLongPsi <- function(ps,main_factor,time_var,subjectID_var,sampleID_var,b,R,R
 
             ps.boot.bb <- ps.boot.bb[[1]]
             df.boot.bb <- computeStat(ps = ps.boot.bb, main_factor = main_factor, time_var = time_var, subjectID_var = subjectID_var, b = b)
-            # rm(ps.boot.bb)
+
             return(df.boot.bb)
         })
 
-        #rm(ps.boot)
         return(list(df.boot, boot.results.bb))
     }, mc.cores = ncores)
 
@@ -83,8 +82,7 @@ bootLongPsi <- function(ps,main_factor,time_var,subjectID_var,sampleID_var,b,R,R
     }))
 
     shrink.beta.boot <- lapply(seq_len(R), function(i) {
-        suppressMessages(ash(stat.star[, i], sebetahat = sd.stat.star[, i],
-            mixcompdist = "normal"))$result
+        suppressMessages(ash(stat.star[, i], sebetahat = sd.stat.star[, i], mixcompdist = "normal"))$result
     })
 
     shrink.beta.boot.est <- lapply(shrink.beta.boot, function(ii) {
@@ -107,9 +105,8 @@ bootLongPsi <- function(ps,main_factor,time_var,subjectID_var,sampleID_var,b,R,R
 
     rt <- list(K.val, T.obs)
 
-    rm(list = c("stat.star", "stat.obs", "sd.stat", "stat.star.star", "sd.stat.star",
-        "T.num.star", "df.stat"))
-    #gc(reset = TRUE)
+    rm(list = c("stat.star", "stat.obs", "sd.stat", "stat.star.star", "sd.stat.star", "T.num.star", "df.stat"))
+    gc(reset = TRUE)
 
     return(rt)
 

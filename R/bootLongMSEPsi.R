@@ -12,8 +12,7 @@
 #'
 #' @export
 #' @importFrom parallel mclapply
-bootLongMSEPsi <- function(ps, main_factor, time_var, subjectID_var, sampleID_var, b, R, RR, qj, Wj, Khat.obs = NULL, T.obs.full =NULL, ncores) {
-
+bootLongMSEPsi <- function(ps, main_factor, time_var, subjectID_var, sampleID_var, b, R, RR, qj, Wj, Khat.obs = NULL, T.obs.full = NULL, ncores){
     if (is.null(Khat.obs)) {
         stop("User needs to run bootLongPsi() function with an initial block length ")
     }
@@ -21,25 +20,24 @@ bootLongMSEPsi <- function(ps, main_factor, time_var, subjectID_var, sampleID_va
         stop("User needs to provide observed test statistic")
     }
 
-    sam_ps <- sample_data(ps) %>% data.frame
+    sam.ps <- sample_data(ps) %>% data.frame
 
-    if (!is.factor(sam_ps[, subjectID_var])) {
-        sam_ps[, subjectID_var] <- factor(sam_ps[, subjectID_var], levels = unique(sam_ps[, subjectID_var] ))
-    }
+    sam.ps[, time_var] <- as.numeric(sam.ps[, time_var])
 
-    g <- sam_ps[, subjectID_var]
+    sam.ps[, subjectID_var] <- factor(sam.ps[, subjectID_var], levels = unique(sam.ps[, subjectID_var]))
 
-    sam_ps.lst <- split(sam_ps, g)
+    g <- sam.ps[, subjectID_var]
+
+    sam.ps.lst <- split(sam.ps, g)
 
     num.sub.sam <- max(qj) - max(Wj) + 1
 
-    sam_ps.q.W <- mapply(sam_ps.lst, as.list(qj), as.list(Wj), FUN = list, SIMPLIFY = FALSE)
+    sam.ps.q.W <- mapply(sam.ps.lst, as.list(qj), as.list(Wj), FUN = list, SIMPLIFY = FALSE)
 
-    sam_ps.q.W.or <- lapply(sam_ps.q.W, function(x) {
+    sam.ps.q.W.or <- lapply(sam.ps.q.W, function(x) {
         x[[1]] <- dplyr::arrange_(x[[1]], time_var)
         return(x)
     })
-
 
     if (num.sub.sam < 5) {
         stop("decrease omega")
@@ -47,35 +45,28 @@ bootLongMSEPsi <- function(ps, main_factor, time_var, subjectID_var, sampleID_va
 
     ps.sub <- list()
     for (i in 1:num.sub.sam) {
-        sub.sam.i <- lapply(sam_ps.q.W.or, function(x) {
+        sub.sam.i <- lapply(sam.ps.q.W.or, function(x) {
             xd <- x[[1]]
             W <- x[[3]]
             ss <- data.frame(dplyr::slice(x[[1]], i:(W + i - 1)))
             return(ss)
         })
         sub.sam.i <- do.call("rbind", sub.sam.i)
-        subsam.id <- sub.sam.i[, sampleID_var]
-        subsam.id <- as.character(subsam.id)
+        subsam.id <- sub.sam.i[, sampleID_var] %>% as.character
+        #subsam.id <- as.character(subsam.id)
         ps.sub[[i]] <- prune_samples(subsam.id, ps)
-
     }
-
-    # Khat <- lapply(ps.sub, function(x) {
-    #     k.hat <- bootLongPsi(ps = x,main_factor=main_factor,time_var=time_var,subjectID_var=subjectID_var,sampleID_var=sampleID_var,b=b,R=R,RR=RR,T.obs.full=T.obs.full,ncores = ncores)
-    #     k.hat.v <- k.hat[[1]]
-    #     return(k.hat.v)
-    # })
 
     Khat <- lapply(ps.sub, function(y){
         k.hat <- bootLongPsi(ps = y, main_factor = main_factor, time_var = time_var, subjectID_var = subjectID_var, sampleID_var = sampleID_var, b = b, R = R, RR = RR, T.obs.full = T.obs.full, ncores = ncores)
         k.hat.v <- k.hat[[1]]
         return(k.hat.v)
-        })
+    })
 
     rm(ps)
-    rm(sam_ps)
-    rm(sam_ps.q.W)
-    rm(sam_ps.q.W.or)
+    rm(sam.ps)
+    rm(sam.ps.q.W)
+    rm(sam.ps.q.W.or)
     rm(ps.sub)
 
     Khat.squared.diff <- lapply(Khat, FUN = function(w) {
@@ -92,8 +83,8 @@ bootLongMSEPsi <- function(ps, main_factor, time_var, subjectID_var, sampleID_va
 
     rt <- list(MSE_i = MSE_i, Khat = Khat, Khat.obs = Khat.obs)
 
-    #gc(reset = TRUE)
+    gc(reset = TRUE)
 
     return(rt)
-    return(ps.sub)
 }
+

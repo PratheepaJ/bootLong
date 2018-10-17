@@ -65,7 +65,7 @@ bootLongPhyloseq <- function(ps, time_var, subjectID_var, sampleID_var, b) {
     colnames(blk.boot.ot) <- blk.boot.sam_ps[, sampleID_var] %>% as.character
     rownames(blk.boot.ot) <- taxa_names(ps)
     rownames(blk.boot.sam_ps) <- blk.boot.sam_ps[, sampleID_var] %>% as.character
-    ps.boot <- phyloseq::merge_phyloseq(X = otu_table(blk.boot.ot, taxa_are_rows = T),
-        sample_data(blk.boot.sam_ps), tax_table(ps))
+    ps.boot <- phyloseq::merge_phyloseq(X = otu_table(blk.boot.ot, taxa_are_rows = T), sample_data(blk.boot.sam_ps), tax_table(ps))
+
     return(list(ps.boot))
 }

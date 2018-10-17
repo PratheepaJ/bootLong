@@ -17,20 +17,20 @@ bootLongSubsampling <- function(ps, main_factor, time_var, subjectID_var, sample
         otu_table(ps) <- t(otu_table(ps, taxa_are_rows = T))
     }
 
-    sam_ps <- sample_data(ps) %>% data.frame
+    sam.ps <- sample_data(ps) %>% data.frame
 
-    # if (!is.numeric(sam_ps[, time_var])) {
-    #     sam_ps[, time_var] <- as.numeric(sam_ps[, time_var])
+    # if (!is.numeric(sam.ps[, time_var])) {
+    #     sam.ps[, time_var] <- as.numeric(sam.ps[, time_var])
     # }
 
-    sam_ps[, subjectID_var] <- factor(sam_ps[, subjectID_var], levels = unique(sam_ps[, subjectID_var] ))
+    sam.ps[, subjectID_var] <- factor(sam.ps[, subjectID_var], levels = unique(sam.ps[, subjectID_var] ))
 
-    # if (!is.factor(sam_ps[, sampleID_var])) {
-    #     sam_ps[, sampleID_var] <- as.factor(sam_ps[, sampleID_var])
+    # if (!is.factor(sam.ps[, sampleID_var])) {
+    #     sam.ps[, sampleID_var] <- as.factor(sam.ps[, sampleID_var])
     # }
     #
-    # g <- sam_ps[, subjectID_var]
-    # sam.ps.by.sub <- split(sam_ps, g)
+    # g <- sam.ps[, subjectID_var]
+    # sam.ps.by.sub <- split(sam.ps, g)
     #
     # sam.ps.by.sub.mod <- lapply(sam.ps.by.sub, function(x){
     #     if (!is.unsorted(x[, time_var])) {
@@ -44,9 +44,9 @@ bootLongSubsampling <- function(ps, main_factor, time_var, subjectID_var, sample
     # rownames(sam.ps.by.sub.mod) <- sam.ps.by.sub.mod[,sampleID_var] %>% as.character
     #
     # ps <- merge_phyloseq(otu_table(ps, taxa_are_rows = TRUE), sample_data(sam.ps.by.sub.mod), tax_table(ps))
-    qj <- table(sam_ps[, subjectID_var])
+    qj <- table(sam.ps[, subjectID_var])
 
-    Wj <- trunc(table(sam_ps[, subjectID_var]) * omega)
+    Wj <- trunc(table(sam.ps[, subjectID_var]) * omega)
 
     if (lI > max(Wj)) {
         stop(paste("choose lI at most", max(Wj)))
