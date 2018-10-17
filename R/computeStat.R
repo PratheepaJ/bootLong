@@ -6,7 +6,7 @@
 #'
 #' @param ps phyloseq object.
 #' @param main_factor Character string. The name of the covariate variable.
-#' @param time_var time_var Character string. The name of the time variable.
+#' @param time_var Character string. The name of the time variable.
 #' @param subjectID_var Character string. The name of the subject ID variable.
 #' @param b A numeric. The block size to account for the dependence within-subject.
 #'

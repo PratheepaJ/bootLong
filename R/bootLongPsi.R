@@ -2,9 +2,12 @@
 #'
 #' Compute \eqn{\psi} = two-sided probability with a given block size.
 #'
-#' @inheritParams computeStat
-#' @inheritParams bootLongSubsampling
+#' @param R A numeric. The number of block bootstrap realizations.
+#' @param RR A numeric. The number of double block bootstrap realizations.
 #' @param T.obs.full A numeric vector. The numeric vector of observed statistic.
+#' @param ncores A numeric. The number of cores to use in \code{\link[parallel]{mclapply}}.
+#' @inheritParams computeStat
+#' @inheritParams bootLongPhyloseq
 #'
 #' @return a list with first element ``K.val`` - two-sided significance probability.
 #'         second element ``observed statistic``

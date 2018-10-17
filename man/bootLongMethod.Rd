@@ -12,9 +12,11 @@ bootLongMethod(ps, main_factor, time_var, subjectID_var, sampleID_var, b,
 
 \item{main_factor}{Character string. The name of the covariate variable.}
 
-\item{time_var}{time_var Character string. The name of the time variable.}
+\item{time_var}{Character string. The name of the time variable.}
 
-\item{subjectID_var}{Character string. The name of the Subject Id variable.}
+\item{subjectID_var}{Character string. The name of the subject ID variable.}
+
+\item{sampleID_var}{Character string. The name of the sample ID variable.}
 
 \item{b}{A numeric. The block size to account for the dependence within-subject.}
 
