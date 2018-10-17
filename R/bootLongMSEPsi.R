@@ -64,6 +64,14 @@ bootLongMSEPsi <- function(ps, main_factor, time_var, subjectID_var, sampleID_va
         return(k.hat.v)
     })
 
+    # Khat <- list()
+    # for(i in 1:length(ps.sub)){
+    #     k.hat <- bootLongPsi(ps = ps.sub[[i]], main_factor = main_factor, time_var = time_var, subjectID_var = subjectID_var, sampleID_var = sampleID_var, b = b, R = R, RR = RR, T.obs.full = T.obs.full, ncores = ncores)
+    #     Khat[[i]] <- k.hat[[1]]
+    # }
+
+
+
     rm(ps)
     rm(sam.ps)
     rm(sam.ps.q.W)
