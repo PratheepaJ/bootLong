@@ -93,7 +93,7 @@ bootLongMSEPsi <- function(ps, main_factor, time_var, subjectID_var, sampleID_va
 
     rt <- list(MSE_i = MSE_i, Khat = Khat, Khat.obs = Khat.obs)
 
-    gc(reset = TRUE)
+    #gc(reset = TRUE)
 
     return(rt)
 }

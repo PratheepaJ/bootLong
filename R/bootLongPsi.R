@@ -9,8 +9,7 @@
 #' @inheritParams computeStat
 #' @inheritParams bootLongPhyloseq
 #'
-#' @return a list with first element ``K.val`` - two-sided significance probability.
-#'         second element ``observed statistic``
+#' @return A list with the first element K.val - two-sided significance probability and the second element observed test statistic.
 #'
 #' @export
 bootLongPsi <- function(ps, main_factor = main_factor, time_var = time_var, subjectID_var = subjectID_var, sampleID_var = sampleID_var, b, R, RR, T.obs.full = NULL, ncores){

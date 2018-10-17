@@ -30,8 +30,7 @@ bootLongPsi(ps, main_factor = main_factor, time_var = time_var,
 \item{ncores}{A numeric. The number of cores to use in \code{\link[parallel]{mclapply}}.}
 }
 \value{
-a list with first element ``K.val`` - two-sided significance probability.
-        second element ``observed statistic``
+A list with the first element K.val - two-sided significance probability and the second element observed test statistic.
 }
 \description{
 Compute \eqn{\psi} = two-sided probability with a given block size.
