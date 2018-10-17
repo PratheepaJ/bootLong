@@ -13,7 +13,8 @@
 #'
 #' @export
 #' @importFrom parallel mclapply
-bootLongMSEPsi <- function(ps, main_factor, time_var, subjectID_var, sampleID_var, b, R, RR, qj, Wj, Khat.obs = NULL, T.obs.full = NULL, ncores) {
+bootLongMSEPsi <- function(ps, main_factor, time_var, subjectID_var,
+    sampleID_var, b, R, RR, qj, Wj, Khat.obs = NULL, T.obs.full = NULL, ncores) {
 
 
     if (is.null(Khat.obs)) {
