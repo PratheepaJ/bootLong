@@ -15,8 +15,7 @@
 #' @export
 #' @importFrom parallel mclapply
 
-bootLongSubsampling <- function(ps, main_factor, time_var, subjectID_var, sampleID_var,
-    lI, R, RR, omega = 0.6, lC1 = 1, lC2 = NULL, ncores) {
+bootLongSubsampling <- function(ps, main_factor, time_var, subjectID_var, sampleID_var, lI, R, RR, omega = 0.6, lC1 = 1, lC2 = NULL, ncores) {
 
     if (dim(otu_table(ps))[1] == nsamples(ps)) {
         otu_table(ps) <- t(otu_table(ps, taxa_are_rows = T))
@@ -51,8 +50,6 @@ bootLongSubsampling <- function(ps, main_factor, time_var, subjectID_var, sample
     rownames(sam.ps.by.sub.mod) <- sam.ps.by.sub.mod[,sampleID_var]
 
     ps <- merge_phyloseq(otu_table(ps, taxa_are_rows = TRUE), sample_data(sam.ps.by.sub.mod), tax_table(ps))
-    #sample_data(ps) <- sam.ps.by.sub.mod
-
 
     qj <- table(sam_ps[, subjectID_var])
 
@@ -68,8 +65,7 @@ bootLongSubsampling <- function(ps, main_factor, time_var, subjectID_var, sample
 
     lC <- seq(lC1, lC2, by = 1)
 
-    psi.hat.lI <- bootLongPsi(ps = ps, main_factor = main_factor, time_var = time_var,
-        subjectID_var = subjectID_var, sampleID_var = sampleID_var, b = lI, R = R, RR = RR, T.obs.full = NULL, ncores = ncores)
+    psi.hat.lI <- bootLongPsi(ps = ps, main_factor = main_factor, time_var = time_var, subjectID_var = subjectID_var, sampleID_var = sampleID_var, b = lI, R = R, RR = RR, T.obs.full = NULL, ncores = ncores)
 
 
     Khat.obs <- psi.hat.lI[[1]]
@@ -78,10 +74,7 @@ bootLongSubsampling <- function(ps, main_factor, time_var, subjectID_var, sample
     blk_size_choice <- as.list(c(1:length(lC)))
 
     mseKhatKobs <- lapply(blk_size_choice, function(y) {
-        bootLongMSEPsi(ps = ps, main_factor = main_factor, time_var = time_var,
-            subjectID_var = subjectID_var, sampleID_var = sampleID_var, b = y,
-            R = R, RR = RR, qj = qj, Wj = Wj, Khat.obs = Khat.obs, T.obs.full = T.obs,
-            ncores = ncores)
+        bootLongMSEPsi(ps = ps, main_factor = main_factor, time_var = time_var, subjectID_var = subjectID_var, sampleID_var = sampleID_var, b = y,R = R, RR = RR, qj = qj, Wj = Wj, Khat.obs = Khat.obs, T.obs.full = T.obs, ncores = ncores)
     })
 
     return(mseKhatKobs)

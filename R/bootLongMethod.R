@@ -6,16 +6,42 @@
 #'
 #' @return list of dataframe with ASV, observed stat, pvalues, adjusted pvalues, lcl, ucl, observed pivotal quantity; stat.obs; stat.star; stat.star.star; T.star_obs.
 #' @export
-bootLongMethod <- function(ps, main_factor, time_var, subjectID_var, b, R,
-    RR, FDR = 0.1) {
-
+bootLongMethod <- function(ps, main_factor, time_var, subjectID_var, sampleID_var, b, R, RR, FDR = 0.1) {
 
     if (dim(otu_table(ps))[1] == nsamples(ps)) {
         otu_table(ps) <- t(otu_table(ps, taxa_are_rows = T))
     }
+    sam_ps <- sample_data(ps) %>% data.frame
 
-    res.obs <- computeStat(ps = ps, main_factor = main_factor, time_var = time_var,
-        subjectID_var = subjectID_var, b = b)
+    if (!is.numeric(sam_ps[, time_var])) {
+        sam_ps[, time_var] <- as.numeric(sam_ps[, time_var])
+    }
+
+    if (!is.factor(sam_ps[, subjectID_var])) {
+        sam_ps[, subjectID_var] <- factor(sam_ps[, subjectID_var], levels = unique(sam_ps[, subjectID_var] ))
+    }
+
+    if (!is.factor(sam_ps[, sampleID_var])) {
+        sam_ps[, sampleID_var] <- as.factor(sam_ps[, sampleID_var])
+    }
+
+    g <- sam_ps[, subjectID_var]
+    sam.ps.by.sub <- split(sam_ps, g)# if we don't set the order of levels, this split changes the order of subject names according to the alphabet.
+
+    sam.ps.by.sub.mod <- lapply(sam.ps.by.sub, function(x){
+        if (!is.unsorted(x[, time_var])) {
+            x <- x
+        } else {
+            x <- arrange_(x, time_var)
+        }
+    })
+
+    sam.ps.by.sub.mod <- do.call("rbind", sam.ps.by.sub.mod)
+    rownames(sam.ps.by.sub.mod) <- sam.ps.by.sub.mod[,sampleID_var]
+
+    ps <- merge_phyloseq(otu_table(ps, taxa_are_rows = TRUE), sample_data(sam.ps.by.sub.mod), tax_table(ps))
+
+    res.obs <- computeStat(ps = ps, main_factor = main_factor, time_var = time_var, subjectID_var = subjectID_var, b = b)
 
     stat.name <- colnames(res.obs)[2]
 
@@ -23,24 +49,20 @@ bootLongMethod <- function(ps, main_factor, time_var, subjectID_var, b, R,
 
     boot.results <- bplapply(seq_len(R), FUN = function(i) {
 
-        ps.boot <- bootLongPhyloseq(ps, time_var = time_var, subjectID_var = subjectID_var,
-            b = b)
+        ps.boot <- bootLongPhyloseq(ps, time_var = time_var, subjectID_var = subjectID_var, sampleID_var = sampleID_var, b = b)
         ps.boot <- ps.boot[[1]]
 
-        df.boot <- computeStat(ps = ps.boot, main_factor = main_factor, time_var = time_var,
-            subjectID_var = subjectID_var, b = b)
+        df.boot <- computeStat(ps = ps.boot, main_factor = main_factor, time_var = time_var, subjectID_var = subjectID_var, b = b)
 
 
-        boot.results.bb <- lapply(seq_len(RR), FUN = function(j) {
-            ps.boot.bb <- bootLongPhyloseq(ps.boot, time_var = time_var, subjectID_var = subjectID_var,
-                b = b)
-            ps.boot.bb <- ps.boot.bb[[1]]
-            df.boot.bb <- computeStat(ps = ps.boot.bb, main_factor = main_factor,
-                time_var = time_var, subjectID_var = subjectID_var, b = b)
-            rm(ps.boot.bb)
-            return(df.boot.bb)
+            boot.results.bb <- lapply(seq_len(RR), FUN = function(j) {
+                ps.boot.bb <- bootLongPhyloseq(ps.boot, time_var = time_var, subjectID_var = subjectID_var, sampleID_var = sampleID_var, b = b)
+                ps.boot.bb <- ps.boot.bb[[1]]
+                df.boot.bb <- computeStat(ps = ps.boot.bb, main_factor = main_factor, time_var = time_var, subjectID_var = subjectID_var, b = b)
+                rm(ps.boot.bb)
+                return(df.boot.bb)
 
-        })
+            })
 
         rm(ps.boot)
 

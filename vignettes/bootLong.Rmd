@@ -31,7 +31,7 @@ Install [R](https://www.r-project.org/) and [RStudio](https://www.rstudio.com/).
 
 
 Install packages: 
-```{r install_packages}
+```{r install_packages, eval = FALSE}
 pkgs <- c("ggplot2","dplyr","tidyr",
           "phyloseq", "limma","ashr",
           "gridExtra", "geepack","MASS",
@@ -64,7 +64,8 @@ library(parallel)
 library(magrittr)
 library(joineR)
 library(DESeq2)
-library(bootLong)
+#library(bootLong)
+devtools::load_all(".")
 ```
 
 Set the computational resources: we need to specify the number of cores for subsampling method. 
@@ -404,8 +405,8 @@ l.opt
 Finally, we run the block bootstrap method with the optimal block size for differential abundance analysis.
 
 
-```{r message=FALSE, warning=FALSE, eval=FALSE}
-R <- 10
+```{r message=FALSE, warning=FALSE}
+R <- 5
 RR <- 5
 main_factor <- "Preterm"
 time_var <- "Time"
@@ -414,12 +415,13 @@ sampleID_var = "SampleID"
 
 system.time(
     boot_res <- bootLongMethod(ps, 
-                               main_factor = main_factor, 
-                               time_var = time_var, 
-                               subjectID_var = subjectID_var, 
-                               b = l.opt, 
-                               R = R, 
-                               RR = RR)
+        main_factor = main_factor, 
+        time_var = time_var,   
+        sampleID_var = sampleID_var,
+        subjectID_var = subjectID_var, 
+        b = l.opt, 
+        R = R, 
+        RR = RR)
     )
 
 #saveRDS(boot_res,"./MBB.rds")
@@ -429,7 +431,7 @@ system.time(
 
 We can make a summary of differential abundance ASV.
 
-```{r message=FALSE,warning=FALSE,eval=FALSE}
+```{r message=FALSE,warning=FALSE, eval=FALSE}
 boot_res <- readRDS("./MBB.rds")
 FDR <- .05
 taxalevel <- "Genus"

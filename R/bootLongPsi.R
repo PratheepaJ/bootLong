@@ -10,8 +10,7 @@
 #'         second element ``observed statistic``
 #'
 #' @export
-bootLongPsi <- function(ps, main_factor, time_var, subjectID_var, sampleID_var, b, R, RR,
-    T.obs.full = NULL, ncores) {
+bootLongPsi <- function(ps, main_factor, time_var, subjectID_var, sampleID_var, b, R, RR, T.obs.full = NULL, ncores) {
 
     res.obs <- computeStat(ps = ps, main_factor = main_factor, time_var = time_var, subjectID_var = subjectID_var, b = b)
 
@@ -31,16 +30,10 @@ bootLongPsi <- function(ps, main_factor, time_var, subjectID_var, sampleID_var, 
             df.boot.bb <- computeStat(ps = ps.boot.bb, main_factor = main_factor, time_var = time_var, subjectID_var = subjectID_var, b = b)
             # rm(ps.boot.bb)
             return(df.boot.bb)
-            #return(ps.boot.bb)
-
         })
 
         #rm(ps.boot)
-
         return(list(df.boot, boot.results.bb))
-        #return(list(ps.boot, boot.results.bb))
-
-
     }, mc.cores = ncores)
 
     boot.results.all <- lapply(boot.results, "[[", 1)
