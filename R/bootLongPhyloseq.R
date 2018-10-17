@@ -2,8 +2,8 @@
 #'
 #' Creates block bootstrap realization of a \code{phyloseq}.
 #'
+#' @param sampleID_var Character string. The name of the sample ID variable.
 #' @inheritParams computeStat
-#'
 #' @return a \code{phyloseq} object. A block bootstrap realization of \code{ps}.
 #' @export
 bootLongPhyloseq <- function(ps, time_var, subjectID_var, sampleID_var, b) {
@@ -11,22 +11,17 @@ bootLongPhyloseq <- function(ps, time_var, subjectID_var, sampleID_var, b) {
     # if(dim(otu_table(ps))[1]==nsamples(ps)){ otu_table(ps) =
     # t(otu_table(ps,taxa_are_rows = T)) }
 
-    sam_pss <- sample_data(ps) %>% data.frame
-    sam_pss %<>% mutate(Index = seq(1, nsamples(ps), by = 1))
+    sam.pss <- sample_data(ps) %>% data.frame
+    sam.pss %<>% mutate(Index = seq(1, nsamples(ps), by = 1))
 
-    if (!is.factor(sam_pss[, subjectID_var])) {
-        sam_pss[, subjectID_var] <- factor(sam_pss[, subjectID_var], levels = unique(sam_pss[, subjectID_var] ))
-    }#comment this later
+    sam.pss[, subjectID_var] <- factor(sam.pss[, subjectID_var], levels = unique(sam.pss[, subjectID_var] ))
 
-
-    if (!is.numeric(sam_pss[, time_var])) {
-        sam_pss[, time_var] <- as.numeric(sam_pss[, time_var])
-    }#comment this later
+    sam.pss[, time_var] <- as.numeric(sam.pss[, time_var])
 
     ot <- otu_table(ps) %>% data.frame
 
-    g <- sam_pss[, subjectID_var]
-    sam_ps.split.by.subjects <- split(sam_pss, g)
+    g <- sam.pss[, subjectID_var]
+    sam_ps.split.by.subjects <- split(sam.pss, g)
 
     num.of.rep.obs <- lapply(sam_ps.split.by.subjects, function(x) {
         dim(x)[1]
@@ -47,9 +42,9 @@ bootLongPhyloseq <- function(ps, time_var, subjectID_var, sampleID_var, b) {
 
     boot.sample.indices <- as.numeric(unlist(sampling.blks.within.subject.indices))
 
-    rownames(sam_pss) <- sam_pss[, sampleID_var] %>% as.character()
+    rownames(sam.pss) <- sam.pss[, sampleID_var] %>% as.character()
     blk.boot.ot <- ot[, boot.sample.indices]
-    blk.boot.sam_ps <- sam_pss[boot.sample.indices, ]
+    blk.boot.sam_ps <- sam.pss[boot.sample.indices, ]
     blk.boot.sam_ps[, sampleID_var] <- colnames(blk.boot.ot) %>% as.factor
 
     blk.boot.sam_ps[, subjectID_var] <- factor(blk.boot.sam_ps[, subjectID_var], levels = unique(blk.boot.sam_ps[, subjectID_var] ))

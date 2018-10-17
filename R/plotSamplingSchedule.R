@@ -2,7 +2,7 @@
 #'
 #' This function plots the sampling schedule.
 #'
-#' @param ps phyloseq object
+#' @param ps phyloseq object.
 #' @param time_var Character string. The name of the variable to map time in the plot (integer vector).
 #' @param subjectID_var Character string. The name of the variable to map Subject Ids in the plot (factor vector).
 #' @param main_factor Character string. The name of the variable to map main factor in the plot (factor vector).

@@ -4,7 +4,10 @@
 #'
 #' Computes the library normalization factors using the median-ratio method, computes the observation-level weight using the mean-variance relationship (modification to \code{\link[limma]{voom}}), computes the residuals using glm \code{\link[MASS]{glm.nb}}, computes the working correlation based on the given block size, computes the regression coefficient using the generalized estimating equation \code{\link[geeM]{geem}}.
 #'
-#' @inheritParams plotSamplingSchedule
+#' @param ps phyloseq object.
+#' @param main_factor Character string. The name of the covariate variable.
+#' @param time_var time_var Character string. The name of the time variable.
+#' @param subjectID_var Character string. The name of the subject ID variable.
 #' @param b A numeric. The block size to account for the dependence within-subject.
 #'
 #' @return dataframe with the last column corresponds to taxa names
@@ -73,6 +76,7 @@ computeStat <- function(ps, main_factor, time_var, subjectID_var, b) {
 
         dffT$res <- rese
         dfsub <- dffT
+
         if (!is.factor(dfsub[, time_var])) {
             dfsub[, time_var] <- as.factor(dfsub[, time_var])
         }

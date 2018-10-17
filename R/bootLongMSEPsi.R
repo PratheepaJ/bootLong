@@ -30,11 +30,11 @@ bootLongMSEPsi <- function(ps,main_factor,time_var,subjectID_var,sampleID_var,b,
 
     g <- sam_ps[, subjectID_var]
 
-    sam_ps <- split(sam_ps, g)
+    sam_ps.lst <- split(sam_ps, g)
 
     num.sub.sam <- max(qj) - max(Wj) + 1
 
-    sam_ps.q.W <- mapply(sam_ps, as.list(qj), as.list(Wj), FUN = list, SIMPLIFY = FALSE)
+    sam_ps.q.W <- mapply(sam_ps.lst, as.list(qj), as.list(Wj), FUN = list, SIMPLIFY = FALSE)
 
     sam_ps.q.W.or <- lapply(sam_ps.q.W, function(x) {
         x[[1]] <- dplyr::arrange_(x[[1]], time_var)
@@ -61,12 +61,17 @@ bootLongMSEPsi <- function(ps,main_factor,time_var,subjectID_var,sampleID_var,b,
 
     }
 
-    Khat <- lapply(ps.sub, function(x) {
-        k.hat <- bootLongPsi(x,main_factor = main_factor,time_var=time_var,subjectID_var = subjectID_var,sampleID_var = sampleID_var,b=b,R = R,RR =RR,T.obs.full = T.obs.full,ncores = ncores)
-        k.hat <- k.hat[[1]]
-        return(k.hat)
-    })
+    # Khat <- lapply(ps.sub, function(x) {
+    #     k.hat <- bootLongPsi(ps = x,main_factor=main_factor,time_var=time_var,subjectID_var=subjectID_var,sampleID_var=sampleID_var,b=b,R=R,RR=RR,T.obs.full=T.obs.full,ncores = ncores)
+    #     k.hat.v <- k.hat[[1]]
+    #     return(k.hat.v)
+    # })
 
+    Khat <- lapply(ps.sub, function(y){
+        k.hat <- bootLongPsi(ps = y, main_factor = main_factor, time_var = time_var, subjectID_var = subjectID_var, sampleID_var = sampleID_var, b = b, R = R, RR = RR, T.obs.full = T.obs.full, ncores = ncores)
+        k.hat.v <- k.hat[[1]]
+        return(k.hat.v)
+        })
 
     rm(ps)
     rm(sam_ps)
@@ -88,7 +93,8 @@ bootLongMSEPsi <- function(ps,main_factor,time_var,subjectID_var,sampleID_var,b,
 
     rt <- list(MSE_i = MSE_i, Khat = Khat, Khat.obs = Khat.obs)
 
-    gc(reset = TRUE)
+    #gc(reset = TRUE)
 
     return(rt)
+    return(ps.sub)
 }

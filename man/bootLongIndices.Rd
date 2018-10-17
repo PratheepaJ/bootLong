@@ -9,7 +9,7 @@ bootLongIndices(x, time_var, b, L, blks.first.index)
 \arguments{
 \item{x}{A dataframe. It must have \code{Index} column that will be added by \code{bootLongPhyloseq}.}
 
-\item{time_var}{Character string. The name of the variable to map time in the plot (integer vector).}
+\item{time_var}{time_var Character string. The name of the time variable.}
 
 \item{b}{A numeric. The block size to account for the dependence within-subject.}
 

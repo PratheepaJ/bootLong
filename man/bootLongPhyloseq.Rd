@@ -7,11 +7,11 @@
 bootLongPhyloseq(ps, time_var, subjectID_var, sampleID_var, b)
 }
 \arguments{
-\item{ps}{phyloseq object}
+\item{ps}{phyloseq object.}
 
-\item{time_var}{Character string. The name of the variable to map time in the plot (integer vector).}
+\item{time_var}{time_var Character string. The name of the time variable.}
 
-\item{subjectID_var}{Character string. The name of the variable to map Subject Ids in the plot (factor vector).}
+\item{subjectID_var}{Character string. The name of the Subject Id variable.}
 
 \item{b}{A numeric. The block size to account for the dependence within-subject.}
 }

@@ -32,8 +32,8 @@ library(parallel)
 library(magrittr)
 library(joineR)
 library(DESeq2)
-#library(bootLong)
-devtools::load_all(".")
+library(bootLong)
+#devtools::load_all(".")
 
 ## ------------------------------------------------------------------------
 ncores = as.integer(Sys.getenv("SLURM_NTASKS"))

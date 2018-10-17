@@ -8,13 +8,13 @@ bootLongSubsampling(ps, main_factor, time_var, subjectID_var, sampleID_var,
   lI, R, RR, omega = 0.6, lC1 = 1, lC2 = NULL, ncores)
 }
 \arguments{
-\item{ps}{phyloseq object}
+\item{ps}{phyloseq object.}
 
-\item{main_factor}{Character string. The name of the variable to map main factor in the plot (factor vector).}
+\item{main_factor}{Character string. The name of the covariate variable.}
 
-\item{time_var}{Character string. The name of the variable to map time in the plot (integer vector).}
+\item{time_var}{time_var Character string. The name of the time variable.}
 
-\item{subjectID_var}{Character string. The name of the variable to map Subject Ids in the plot (factor vector).}
+\item{subjectID_var}{Character string. The name of the Subject Id variable.}
 
 \item{lI}{A numeric. The initial block size.}
 
