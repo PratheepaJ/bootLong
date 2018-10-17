@@ -48,10 +48,11 @@ bootLongMSEPsi <- function(ps, main_factor, time_var, subjectID_var, sampleID_va
         sub.sam.i <- lapply(sam.ps.q.W.or, function(x) {
             xd <- x[[1]]
             W <- x[[3]]
-            ss <- data.frame(dplyr::slice(x[[1]], i:(W + i - 1)))
+            ss <- dplyr::slice(x[[1]], i:(W + i - 1)) %>% data.frame
             return(ss)
         })
-        sub.sam.i <- do.call("rbind", sub.sam.i)
+        sub.sam.i <- do.call("rbind", sub.sam.i) %>% data.frame
+        rownames(sub.sam.i) <- sub.sam.i[, sampleID_var] %>% as.character
         subsam.id <- sub.sam.i[, sampleID_var] %>% as.character
         #subsam.id <- as.character(subsam.id)
         ps.sub[[i]] <- prune_samples(subsam.id, ps)
