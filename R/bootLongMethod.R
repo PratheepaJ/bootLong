@@ -11,35 +11,36 @@ bootLongMethod <- function(ps, main_factor, time_var, subjectID_var, sampleID_va
     if (dim(otu_table(ps))[1] == nsamples(ps)) {
         otu_table(ps) <- t(otu_table(ps, taxa_are_rows = T))
     }
-    sam_ps <- sample_data(ps) %>% data.frame
 
-    if (!is.numeric(sam_ps[, time_var])) {
-        sam_ps[, time_var] <- as.numeric(sam_ps[, time_var])
-    }
-
-    if (!is.factor(sam_ps[, subjectID_var])) {
-        sam_ps[, subjectID_var] <- factor(sam_ps[, subjectID_var], levels = unique(sam_ps[, subjectID_var] ))
-    }
-
-    if (!is.factor(sam_ps[, sampleID_var])) {
-        sam_ps[, sampleID_var] <- as.factor(sam_ps[, sampleID_var])
-    }
-
-    g <- sam_ps[, subjectID_var]
-    sam.ps.by.sub <- split(sam_ps, g)# if we don't set the order of levels, this split changes the order of subject names according to the alphabet.
-
-    sam.ps.by.sub.mod <- lapply(sam.ps.by.sub, function(x){
-        if (!is.unsorted(x[, time_var])) {
-            x <- x
-        } else {
-            x <- arrange_(x, time_var)
-        }
-    })
-
-    sam.ps.by.sub.mod <- do.call("rbind", sam.ps.by.sub.mod)
-    rownames(sam.ps.by.sub.mod) <- sam.ps.by.sub.mod[,sampleID_var]
-
-    ps <- merge_phyloseq(otu_table(ps, taxa_are_rows = TRUE), sample_data(sam.ps.by.sub.mod), tax_table(ps))
+    # sam_ps <- sample_data(ps) %>% data.frame
+    #
+    # if (!is.numeric(sam_ps[, time_var])) {
+    #     sam_ps[, time_var] <- as.numeric(sam_ps[, time_var])
+    # }
+    #
+    # if (!is.factor(sam_ps[, subjectID_var])) {
+    #     sam_ps[, subjectID_var] <- factor(sam_ps[, subjectID_var], levels = unique(sam_ps[, subjectID_var] ))
+    # }
+    #
+    # if (!is.factor(sam_ps[, sampleID_var])) {
+    #     sam_ps[, sampleID_var] <- as.factor(sam_ps[, sampleID_var])
+    # }
+    #
+    # g <- sam_ps[, subjectID_var]
+    # sam.ps.by.sub <- split(sam_ps, g)# if we don't set the order of levels, this split changes the order of subject names according to the alphabet.
+    #
+    # sam.ps.by.sub.mod <- lapply(sam.ps.by.sub, function(x){
+    #     if (!is.unsorted(x[, time_var])) {
+    #         x <- x
+    #     } else {
+    #         x <- arrange_(x, time_var)
+    #     }
+    # })
+    #
+    # sam.ps.by.sub.mod <- do.call("rbind", sam.ps.by.sub.mod)
+    # rownames(sam.ps.by.sub.mod) <- sam.ps.by.sub.mod[,sampleID_var]
+    #
+    # ps <- merge_phyloseq(otu_table(ps, taxa_are_rows = TRUE), sample_data(sam.ps.by.sub.mod), tax_table(ps))
 
     res.obs <- computeStat(ps = ps, main_factor = main_factor, time_var = time_var, subjectID_var = subjectID_var, b = b)
 
@@ -59,6 +60,7 @@ bootLongMethod <- function(ps, main_factor, time_var, subjectID_var, sampleID_va
                 ps.boot.bb <- bootLongPhyloseq(ps.boot, time_var = time_var, subjectID_var = subjectID_var, sampleID_var = sampleID_var, b = b)
                 ps.boot.bb <- ps.boot.bb[[1]]
                 df.boot.bb <- computeStat(ps = ps.boot.bb, main_factor = main_factor, time_var = time_var, subjectID_var = subjectID_var, b = b)
+
                 rm(ps.boot.bb)
                 return(df.boot.bb)
 
@@ -131,8 +133,7 @@ bootLongMethod <- function(ps, main_factor, time_var, subjectID_var, sampleID_va
     pvalue.adj <- data.frame(pvalue.adj = p.adjust(pvalue, method = "BH"))
 
     txnames <- dplyr::select(res.obs, ASV)
-    out <- data.frame(Taxa = txnames, stat = stat.obs[, 1], pvalue = pvalue,
-        pvalue.adj = pvalue.adj)
+    out <- data.frame(Taxa = txnames, stat = stat.obs[, 1], pvalue = pvalue, pvalue.adj = pvalue.adj)
 
     lcl <- apply(stat.star, 1, FUN = function(x) {
         quantile(x, probs = FDR/2, na.rm = TRUE)
@@ -144,7 +145,7 @@ bootLongMethod <- function(ps, main_factor, time_var, subjectID_var, sampleID_va
     out <- dplyr::bind_cols(out, lcl = lcl, ucl = ucl, T.obs = T.obs[, 1])
 
     rt <- list(out, stat.obs, stat.star, stat.star.star, T.star_obs)
-    names(rt) <- c("summary", "beta.hat", "beta.hat.star", "beta.hat.star.star",
-        "T.obs")
+
+    names(rt) <- c("summary", "beta.hat", "beta.hat.star", "beta.hat.star.star", "T.obs")
     return(rt)
 }
