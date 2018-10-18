@@ -61,29 +61,18 @@ bootLongMSEPsi <- function(ps, main_factor, time_var, subjectID_var, sampleID_va
     }
 
     Khat <- lapply(ps.sub, function(y){
-        k.hat <- bootLongPsi(ps = y, main_factor = main_factor, time_var = time_var, subjectID_var = subjectID_var, sampleID_var = sampleID_var, b = b, R = R, RR = RR, T.obs.full = T.obs.full, ncores = ncores)
+        k.hat <- bootLongPsi(y, main_factor = main_factor, time_var = time_var, subjectID_var = subjectID_var, sampleID_var = sampleID_var, b = b, R = R, RR = RR, T.obs.full = T.obs.full, ncores = ncores)
         k.hat.v <- k.hat[[1]]
         return(k.hat.v)
     })
 
-    # Khat <- list()
-    # for(i in 1:length(ps.sub)){
-    #     k.hat <- bootLongPsi(ps = ps.sub[[i]], main_factor = main_factor, time_var = time_var, subjectID_var = subjectID_var, sampleID_var = sampleID_var, b = b, R = R, RR = RR, T.obs.full = T.obs.full, ncores = ncores)
-    #     Khat[[i]] <- k.hat[[1]]
-    # }
-
-    rm(ps)
-    rm(sam.ps)
-    rm(sam.ps.q.W)
-    rm(sam.ps.q.W.or)
-    rm(ps.sub)
 
     Khat.squared.diff <- lapply(Khat, FUN = function(w) {
         (w - Khat.obs)^2
     })
 
     Khat.squared.diff.df <- Khat.squared.diff %>% data.frame
-    #Khat.squared.diff.df <- do.call("cbind", Khat.squared.diff) %>% data.frame
+
 
     MSE_i <- apply(Khat.squared.diff.df, 1, FUN = function(x) {
         mean(x)
@@ -93,8 +82,8 @@ bootLongMSEPsi <- function(ps, main_factor, time_var, subjectID_var, sampleID_va
 
     rt <- list(MSE_i = MSE_i, Khat = Khat, Khat.obs = Khat.obs)
 
-    #gc(reset = TRUE)
 
     return(rt)
+
 }
 

@@ -66,6 +66,7 @@ library(joineR)
 library(DESeq2)
 #library(bootLong)
 devtools::load_all(".")
+#sourceDirectory("./R")
 ```
 
 Set the computational resources: we need to specify the number of cores for subsampling method. 
