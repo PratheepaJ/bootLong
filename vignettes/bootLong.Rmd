@@ -361,11 +361,11 @@ $$l_{o} = \left(\frac{1}{\omega}\right)^{1/5}l_{\omega}$$.
 ```{r message=FALSE,warning=FALSE, eval=FALSE}
 omega <- .6
 #mse_results <- readRDS("./MSE.rds")
-blks <- length(mse_results)
+blks <- length(mse.results)
 mse <- list()
 
 for(i in 1:blks){
-    mse[[i]] <- mse_results[[i]]$MSE_i
+    mse[[i]] <- mse.results[[i]]$MSE_i
     }
 
 mse.avg <- lapply(mse,function(x){mean(x,na.rm=T)})

@@ -8,42 +8,12 @@
 #' @export
 bootLongMethod <- function(ps, main_factor, time_var, subjectID_var, sampleID_var, b, R, RR, FDR = 0.1) {
 
-    # doParallel::registerDoParallel(parallel::detectCores())
-    # BiocParallel::register(BiocParallel::DoparParam())
+    doParallel::registerDoParallel(parallel::detectCores())
+    BiocParallel::register(BiocParallel::DoparParam())
 
     if (dim(otu_table(ps))[1] == nsamples(ps)) {
         otu_table(ps) <- t(otu_table(ps, taxa_are_rows = T))
     }
-
-    # sam_ps <- sample_data(ps) %>% data.frame
-    #
-    # if (!is.numeric(sam_ps[, time_var])) {
-    #     sam_ps[, time_var] <- as.numeric(sam_ps[, time_var])
-    # }
-    #
-    # if (!is.factor(sam_ps[, subjectID_var])) {
-    #     sam_ps[, subjectID_var] <- factor(sam_ps[, subjectID_var], levels = unique(sam_ps[, subjectID_var] ))
-    # }
-    #
-    # if (!is.factor(sam_ps[, sampleID_var])) {
-    #     sam_ps[, sampleID_var] <- as.factor(sam_ps[, sampleID_var])
-    # }
-    #
-    # g <- sam_ps[, subjectID_var]
-    # sam.ps.by.sub <- split(sam_ps, g)# if we don't set the order of levels, this split changes the order of subject names according to the alphabet.
-    #
-    # sam.ps.by.sub.mod <- lapply(sam.ps.by.sub, function(x){
-    #     if (!is.unsorted(x[, time_var])) {
-    #         x <- x
-    #     } else {
-    #         x <- arrange_(x, time_var)
-    #     }
-    # })
-    #
-    # sam.ps.by.sub.mod <- do.call("rbind", sam.ps.by.sub.mod)
-    # rownames(sam.ps.by.sub.mod) <- sam.ps.by.sub.mod[,sampleID_var]
-    #
-    # ps <- merge_phyloseq(otu_table(ps, taxa_are_rows = TRUE), sample_data(sam.ps.by.sub.mod), tax_table(ps))
 
     res.obs <- computeStat(ps = ps, main_factor = main_factor, time_var = time_var, subjectID_var = subjectID_var, b = b)
 

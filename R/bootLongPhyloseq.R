@@ -8,9 +8,6 @@
 #' @export
 bootLongPhyloseq <- function(ps, time_var, subjectID_var, sampleID_var, b) {
 
-    # if(dim(otu_table(ps))[1]==nsamples(ps)){ otu_table(ps) =
-    # t(otu_table(ps,taxa_are_rows = T)) }
-
     sam.pss <- sample_data(ps) %>% data.frame
     sam.pss %<>% mutate(Index = seq(1, nsamples(ps), by = 1))
 

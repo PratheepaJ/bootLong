@@ -99,7 +99,6 @@ computeStat <- function(ps, main_factor, time_var, subjectID_var, b) {
             }
         }
 
-
         if (!is.numeric(dffT[, time_var])) {
             dffT[, time_var] <- as.numeric(as.character(dffT[, time_var]))
         }
@@ -112,7 +111,7 @@ computeStat <- function(ps, main_factor, time_var, subjectID_var, b) {
         init.beta <- as.numeric(glmft.tx$coefficients)
 
         theta <- glmft.tx$theta
-        #arcsinhlstLink.theta <- arcsinhlstLink(theta)
+
         LinkFun <- function(y){
             log(y + sqrt(y^2 + 1))
         }
@@ -120,7 +119,6 @@ computeStat <- function(ps, main_factor, time_var, subjectID_var, b) {
         VarFun <- function(y){
             y * (1 + y/theta)
         }
-
 
         InvLink <- function(eta){
             0.5 * exp(-eta) * (exp(2 * eta) - 1)
@@ -135,7 +133,9 @@ computeStat <- function(ps, main_factor, time_var, subjectID_var, b) {
         # fit <- geeM::geem(formula = desingGEE, id = idvarV, waves = wavesTime,
         #     data = dffT, family = FunList, corstr = "fixed", weights = weightT,
         #     corr.mat = workCorr, init.beta = init.beta, nodummy = TRUE)$beta
-        fit <-  tryCatch(geeM::geem(formula=desingGEE,id=idvarV,waves = wavesTime,data = dffT,family=FunList,corstr = "fixed",weights = weightT,corr.mat = workCorr,init.beta = init.beta,nodummy=TRUE)$beta,error=function(e){t(glmft.tx$coefficients)})
+        fit <-  tryCatch(geeM::geem(formula = desingGEE, id = idvarV, waves = wavesTime, data = dffT, family = FunList, corstr = "fixed", weights = weightT, corr.mat = workCorr, init.beta = init.beta, nodummy = TRUE)$beta, error = function(e){
+            t(glmft.tx$coefficients)
+            })
 
         return(fit)
 
