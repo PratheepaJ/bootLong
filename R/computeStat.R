@@ -40,17 +40,16 @@ computeStat <- function(ps, main_factor, time_var, subjectID_var, b) {
 
     sj <- estimateSizeFactorsForMatrix(ot, median, geoMeans = geom_mean_row)
 
-    des <- as.formula(paste("otuT", "~", paste(main_factor, collapse = "+"),
-        "+", "offset(asinh(sj))"))
+    des <- as.formula(paste("otuT", "~", paste(main_factor, collapse = "+"), "+", "offset(asinh(sj))"))
 
-    ## compute weights
+    ## computing weights
     samdf <- sample_data(ps) %>% data.frame
     des_v <- as.formula(paste("~", paste(main_factor, collapse = "+")))
     mm <- model.matrix(des_v, data = samdf)
     v <- asinhVoom(counts = ot, design = mm, sj = sj)
     weights.cal <- v$weights
 
-    # Estimate regression coefficients (using generalized estimating equation)
+    ## Estimating regression coefficients (using generalized estimating equation)
 
     com_beta <- function(taxIndex, sampleDf, otuDf, allSj, weightDf, desingGEE,
         b, subjectID_var, time_var) {
@@ -59,16 +58,12 @@ computeStat <- function(ps, main_factor, time_var, subjectID_var, b) {
         allSj <- as.numeric(allSj)
         weightT <- as.numeric(weightDf[taxIndex, ])
         dffT <- cbind(sampleDf, otuT = otuT, allSj = allSj, weightT = weightT)
-        #dffT <- mutate(dffT, weightT = ifelse(otuT == 0, 0, weightT))
         dffT$idvar <- as.numeric(as.factor(dffT[, subjectID_var]))
         idvar <- "idvar"
         dffT <- arrange_(dffT, idvar, time_var)
 
-        glmft.tx <- tryCatch(MASS::glm.nb(formula = desingGEE, data = dffT, weights = weightT, method = "glm.fit", link = arcsinhLink(theta)),
-            error = function(e){# if all zeros in one level
-                dffT$otuT <- dffT$otuT +1; MASS::glm.nb(formula = desingGEE, data = dffT, weights = weightT, method = "glm.fit", link = arcsinhLink())
-            }
-            )
+
+        glmft.tx <- MASS::glm.nb(formula = desingGEE, data = dffT, weights = weightT, method = "glm.fit", link = arcsinhLink())
 
         rese <- as.vector(residuals(glmft.tx))
 
@@ -130,9 +125,7 @@ computeStat <- function(ps, main_factor, time_var, subjectID_var, b) {
 
         FunList <- list(LinkFun, VarFun, InvLink, InvLinkDeriv)
 
-        # fit <- geeM::geem(formula = desingGEE, id = idvarV, waves = wavesTime,
-        #     data = dffT, family = FunList, corstr = "fixed", weights = weightT,
-        #     corr.mat = workCorr, init.beta = init.beta, nodummy = TRUE)$beta
+
         fit <-  tryCatch(geeM::geem(formula = desingGEE, id = idvarV, waves = wavesTime, data = dffT, family = FunList, corstr = "fixed", weights = weightT, corr.mat = workCorr, init.beta = init.beta, nodummy = TRUE)$beta, error = function(e){
             t(glmft.tx$coefficients)
             })
@@ -144,8 +137,7 @@ computeStat <- function(ps, main_factor, time_var, subjectID_var, b) {
     ind <- as.list(c(1:ntaxa(ps)))
 
     df.beta.hat <- lapply(ind, function(x) {
-        com_beta(x, sampleDf = samdf, otuDf = ot, allSj = sj, weightDf = weights.cal,
-            desingGEE = des, b = b, subjectID_var = subjectID_var, time_var = time_var)
+        com_beta(x, sampleDf = samdf, otuDf = ot, allSj = sj, weightDf = weights.cal, desingGEE = des, b = b, subjectID_var = subjectID_var, time_var = time_var)
     })
 
 
