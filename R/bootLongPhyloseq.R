@@ -36,13 +36,12 @@ bootLongPhyloseq <- function(ps, time_var, subjectID_var, sampleID_var, b) {
             bootLongIndices(x = q, time_var = time_var, b = b, L = L, blks.first.index = blks.first.index)
         })
 
-
     boot.sample.indices <- as.numeric(unlist(sampling.blks.within.subject.indices))
 
     rownames(sam.pss) <- sam.pss[, sampleID_var] %>% as.character()
     blk.boot.ot <- ot[, boot.sample.indices]
     blk.boot.sam_ps <- sam.pss[boot.sample.indices, ]
-    blk.boot.sam_ps[, sampleID_var] <- colnames(blk.boot.ot) %>% as.factor
+    blk.boot.sam_ps[, sampleID_var] <- rownames(blk.boot.sam_ps) %>% as.factor
 
     blk.boot.sam_ps[, subjectID_var] <- factor(blk.boot.sam_ps[, subjectID_var], levels = unique(blk.boot.sam_ps[, subjectID_var] ))
 

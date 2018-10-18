@@ -411,12 +411,13 @@ system.time(
         time_var = time_var,   
         sampleID_var = sampleID_var,
         subjectID_var = subjectID_var, 
-        b = l.opt, 
+        b = 3, 
         R = R, 
         RR = RR)
     )
 
-#saveRDS(boot_res,"./MBB.rds")
+boot_res$summary
+saveRDS(boot_res,"./MBB.rds")
 ```
 
 ###   Inspect the MBB results
