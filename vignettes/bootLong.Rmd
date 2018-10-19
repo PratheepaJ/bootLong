@@ -64,7 +64,7 @@ library(parallel)
 library(magrittr)
 library(joineR)
 library(DESeq2)
-library(bootLong)
+#library(bootLong)
 ```
 
 Set the computational resources: we need to specify the number of cores for subsampling method. 
@@ -109,11 +109,11 @@ set.theme <- theme_update(panel.border = element_blank(),
                     legend.key = element_blank())
 
 
-sample_data(ps)$Preterm <- as.factor(sample_data(ps)$Preterm)
+sample_data(ps)$Group <- as.factor(sample_data(ps)$Group)
 
-p <- plotSamplingSchedule(ps, time_var = "Time", subjectID_var = "SubjectID", main_factor = "Preterm", theme_manual = set.theme)
+p <- plotSamplingSchedule(ps, time_var = "Time", subjectID_var = "SubjectID", main_factor = "Group", theme_manual = set.theme)
 
-p <- p + scale_color_discrete(name  ="Group",breaks=c("FALSE", "TRUE"),labels=c("Term", "Preterm"))
+p <- p + scale_color_discrete(name  ="Group",breaks=c("Case", "Control"),labels=c("Case", "Control"))
 p
 #ggsave("./sampling_schedule.eps", plot=p, width = 8, height = 5.5)
 ```
@@ -160,11 +160,11 @@ Partial autocorrelataion (PACF) at lag $h$ measures the correlation between repe
 2) We choose top six abundance ASVs (based on the transformed count) to visualize the dependence within-subject. We can choose different ASVs by changing `starttaxa` and `endtaxa`  arguments in `longPACFMultiple()`.
 
 ```{r pacf, message=FALSE, warning=FALSE}
-ps.tr <- psTransform(ps, main_factor = "Preterm") 
+ps.tr <- psTransform(ps, main_factor = "Group") 
 
 p.all <- longPACFMultiple(ps.tr[[1]],
                              ps.tr[[2]], 
-                             main_factor = "Preterm", 
+                             main_factor = "Group", 
                              time_var = "Time", 
                              starttaxa = 1, 
                              endtaxa = 6,
@@ -172,7 +172,7 @@ p.all <- longPACFMultiple(ps.tr[[1]],
 
 #   Change the legend labels
 p.all <- lapply(p.all, function(x){
-    x + scale_fill_discrete(name  ="Group", breaks=c("FALSE", "TRUE"), labels = c("Term", "Preterm"))
+    x + scale_fill_discrete(name  ="Group",breaks=c("Case", "Control"),labels=c("Case", "Control"))
     })
 
 #   extract the common legend for all taxa
@@ -195,14 +195,14 @@ grid.arrange(arrangeGrob(grobs=plist,nrow=2,widths=c(3,3,3)),
              widths=c(10,2))
 ```
 
-Only the largest spike is observed at lag 1 for both term and preterm. However, almost all the ASVs show that the PACF is less than .25 (sufficiently zero) after lag 4. Therefore, the initial block size is 5 (lag 4 corresponds to block size 5). 
+Only the largest spike is observed at lag 1 for both term and preterm. However, almost all the ASVs show that the PACF is less than .25 (sufficiently zero) after lag 3. Therefore, the initial block size is 4 (lag 3 corresponds to block size 4). 
 
 
 ###  Correlogram
 ```{r corr, message=FALSE, warning=FALSE}
 p.all <- longCorreloMultiple(ps.tr[[1]],
                              ps.tr[[2]], 
-                             main_factor = "Preterm", 
+                             main_factor = "Group", 
                              time_var = "Time", 
                              starttaxa = 1, 
                              endtaxa = 6,
@@ -210,7 +210,7 @@ p.all <- longCorreloMultiple(ps.tr[[1]],
 
 #   Change the legend labels
 p.all <- lapply(p.all, function(x){
-    x + scale_fill_discrete(name  ="Group", breaks=c("FALSE", "TRUE"), labels = c("Term", "Preterm"))
+    x + scale_fill_discrete(name  ="Group",breaks=c("Case", "Control"),labels=c("Case", "Control"))
     })
 
 #   extract the common legend for all taxa
@@ -232,7 +232,7 @@ grid.arrange(arrangeGrob(grobs=plist,nrow=2,widths=c(3,3,3)),
              widths=c(10,2))
 ```
 
-We observe that the correlogram tends to be sufficiently zero (first time) at lag 4 for almost all the ASVs. Therefore, the initial block size is 5.
+We observe that the correlogram tends to be sufficiently zero (first time) at lag 3 for almost all the ASVs. Therefore, the initial block size is 4.
 
 
 ### longitudinal data lag-plots
@@ -241,7 +241,7 @@ lags <- as.list(seq(1,8))
 
 p.lags <- lapply(lags,function(x){
     longLagPlot(ps.tr[[2]], 
-        main_factor="Preterm", 
+        main_factor="Group", 
         time_var = "Time", 
         taxon = 1, 
         x, 
@@ -249,7 +249,7 @@ p.lags <- lapply(lags,function(x){
 
 #   Change the legend labels
 p.lags <- lapply(p.lags, function(x){
-    x+scale_color_discrete(name  ="Group", breaks=c("FALSE", "TRUE"), labels=c("Term", "Preterm"))
+    x+scale_color_discrete(name  ="Group",breaks=c("Case", "Control"),labels=c("Case", "Control"))
     })
 
 leg <- plot_common_legend(p.lags[[1]])
@@ -274,7 +274,7 @@ grid.arrange(arrangeGrob(grobs=plist,nrow=2,widths=c(3,3,3,3)),
 ```
 
 
-We observe that for the top abundance ASV, the lag-plot at lag 4 deviates from a linear line. Thus, we choose an initial block size of 5.
+We observe that for the top abundance ASV, the lag-plot at lag 3 (green) deviates from a linear line. Thus, we choose an initial block size of 4.
 
 ### Variogram for longitudinal data
 
@@ -283,7 +283,7 @@ We can plot points (residuals) by choosing argument `point = TRUE` in `longVario
 ```{r message=FALSE, warning=FALSE}
 p.all <- longVarioMultiple(ps.tr[[1]],
                            ps.tr[[2]],
-                           main_factor = "Preterm",
+                           main_factor = "Group",
                            time_var="Time",
                            subjectID_var = "SubjectID",
                            starttaxa = 1,
@@ -293,7 +293,7 @@ p.all <- longVarioMultiple(ps.tr[[1]],
 
 #   Change the legend labels
 p.all <- lapply(p.all, function(x){
-    x + scale_color_discrete(name  ="Group", breaks=c("FALSE", "TRUE"), labels=c("Term", "Preterm "))
+    x + scale_color_discrete(name  ="Group",breaks=c("Case", "Control"),labels=c("Case", "Control"))
     })
 
 leg <- plot_common_legend(p.all[[1]])
@@ -316,25 +316,22 @@ grid.arrange(arrangeGrob(grobs=plist, nrow=2, widths=c(3,3,3)),
 ```
 
 
-We observe that variogram reaches the residual variance at lag 4 for almost all of the top six ASVs. Thus, we choose an initial block size of 5.
+We cannot get a clear idea about inital block size because subject variability dominates variogram fit.
 
-All the exploratory tools suggest an inital block size of 5.
+Other all the exploratory tools suggest an inital block size of 4.
 
 We will choose 60\% of repeated observations for the subsampling because we can compute mean squared error of two-sided probability over FIVE subsamples (because there are 10 repeated observations from each subject). 
 
-Note: there is a trade-off between choosing the percentage and creating a number of subsamples. We need to create as larger as possible number of bootstrap samples with initial block size 5 (prefer to have a larger percentage and should be at least 6 repeated observations), and we need to create as many subsamples as possible (smaller percentage and should be at least 6 repeated observations.)
-
-
 #   The block bootstrap method
 
-First, we identify the opitmal block size for the subsample. We use the initial block size 5 ($l_{I} =5$) and subsample percentage 60\% ($\omega = .6$) to identify the opitmal block size. 
+First, we identify the opitmal block size for the subsample. We use the initial block size 4 ($l_{I} =4$) and subsample percentage 60\% ($\omega = .6$) to identify the opitmal block size. 
 
 ## Subsampling
 
 ```{r message=FALSE,warning=FALSE, eval=FALSE}
 R <- 5
 RR <- 4
-main_factor <- "Preterm"
+main_factor <- "Group"
 time_var <- "Time"
 subjectID_var = "SubjectID"
 sampleID_var = "SampleID"
@@ -398,7 +395,7 @@ Finally, we run the block bootstrap method with the optimal block size for diffe
 ```{r message=FALSE, warning=FALSE, eval=FALSE}
 R <- 5
 RR <- 4
-main_factor <- "Preterm"
+main_factor <- "Group"
 time_var <- "Time"
 subjectID_var = "SubjectID"
 sampleID_var = "SampleID"

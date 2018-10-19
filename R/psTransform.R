@@ -55,15 +55,11 @@ psTransform <- function(ps, main_factor) {
         sj <- as.numeric(sj)
         weightT <- as.numeric(weights.cal[ind, ])
         dff <- mutate(samdf, otu = otu, sj = sj, weightT = weightT)
-        #dff <- mutate(dff, weightT = ifelse(otu == 0, 0, weightT))
-        # glmft <- tryCatch(MASS::glm.nb(des, data = dff, weights = weightT, method = "glm.fit", link = arcsinhLink()),
-        #     error = function(e){
-        #         dff$otu <- dff$otu + 1; MASS::glm.nb(des, data = dff, weights = weightT, method = "glm.fit", link = arcsinhLink())
-        #     })
 
-        #glmft <- MASS::glm.nb(des, data = dff, weights = weightT, method = "glm.fit", link = arcsinhLink())
-        glmft.poi <- glm(des, data = dff, weights = weightT, method = "glm.fit", family = poisson)
-        glmft <- MASS::glm.nb(des, data = dff, weights = weightT, method = "glm.fit", link = arcsinhLink(), start = as.numeric(coef(glmft.poi)))
+        glmft <- tryCatch(MASS::glm.nb(des, data = dff, weights = weightT, method = "glm.fit", link = arcsinhLink(), control=glm.control(maxit=1000)),
+            error = function(e){
+                glm(des, data = dff, weights = weightT, method = "glm.fit", family = poisson) #when count is very small
+            })
 
         res_residuals <- resid(glmft)
         rt <- list(res_residuals)

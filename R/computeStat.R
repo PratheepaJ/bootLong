@@ -62,7 +62,7 @@ computeStat <- function(ps, main_factor, time_var, subjectID_var, b) {
         idvar <- "idvar"
         dffT <- arrange_(dffT, idvar, time_var)
 
-        glmft.tx <- MASS::glm.nb(formula = desingGEE, data = dffT, weights = weightT, method = "glm.fit", link = arcsinhLink())
+        glmft.tx <- MASS::glm.nb(formula = desingGEE, data = dffT, weights = weightT, method = "glm.fit", link = arcsinhLink(), control = glm.control(maxit=1000))
 
         rese <- as.vector(residuals(glmft.tx))
 

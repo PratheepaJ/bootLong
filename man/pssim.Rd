@@ -7,7 +7,7 @@
 \format{An object of class \code{'phyloseq'}.
 \describe{
   \item{SubjectID}{IDs of individuals}
-  \item{Preterm}{A factor variable with two levels TRUE or FALSE}
+  \item{Group}{A factor variable with two levels Case or Control}
   \item{SampleID}{Sample ID for each repeated biological sample}
   \item{Time}{Time at repeated biological sample}
 }}
