@@ -189,6 +189,7 @@ plist <- lapply(p.all,function(x){
 #                   leg,
 #                   ncol=2,
 #                   widths=c(10,2))
+                   
 # ggsave("./core_Sim.eps",plot=p,width = 8,height = 5.5)
 
 grid.arrange(arrangeGrob(grobs=plist,nrow=2,widths=c(3,3,3)),
@@ -411,13 +412,12 @@ system.time(
         time_var = time_var,   
         sampleID_var = sampleID_var,
         subjectID_var = subjectID_var, 
-        b = 3, 
+        b = l.opt, 
         R = R, 
         RR = RR)
     )
 
-boot_res$summary
-saveRDS(boot_res,"./MBB.rds")
+#saveRDS(boot_res,"./MBB.rds")
 ```
 
 ###   Inspect the MBB results
