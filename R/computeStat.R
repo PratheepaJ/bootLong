@@ -64,7 +64,7 @@ computeStat <- function(ps, main_factor, time_var, subjectID_var, b) {
 
         glmft.tx <- tryCatch(MASS::glm.nb(desingGEE, data = dffT, weights = weightT, method = "glm.fit", link = arcsinhLink()),
             error = function(e){
-                glm(desingGEE, data = dffT, weights = weightT, method = "glm.fit", family = poisson) #when count is very small
+                glm(desingGEE, data = dffT, weights = weightT, method = "glm.fit", family = poisson(link = arcsinhLink())) #when count is very small
             })
 
         rese <- as.vector(residuals(glmft.tx))
