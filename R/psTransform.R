@@ -56,7 +56,7 @@ psTransform <- function(ps, main_factor) {
         weightT <- as.numeric(weights.cal[ind, ])
         dff <- mutate(samdf, otu = otu, sj = sj, weightT = weightT)
 
-        glmft <- tryCatch(MASS::glm.nb(des, data = dff, weights = weightT, method = "glm.fit", link = arcsinhLink(), control=glm.control(maxit=1000)),
+        glmft <- tryCatch(MASS::glm.nb(des, data = dff, weights = weightT, method = "glm.fit", link = arcsinhLink()),
             error = function(e){
                 glm(des, data = dff, weights = weightT, method = "glm.fit", family = poisson) #when count is very small
             })
