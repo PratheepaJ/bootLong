@@ -32,8 +32,7 @@ library(parallel)
 library(magrittr)
 library(joineR)
 library(DESeq2)
-#library(bootLong)
-devtools::load_all(".")
+library(bootLong)
 
 ## ------------------------------------------------------------------------
 ncores = as.integer(Sys.getenv("SLURM_NTASKS"))
@@ -86,8 +85,7 @@ plot_common_legend <- function(p){
 }
 
 ## ----pacf, message=FALSE, warning=FALSE----------------------------------
-ps.tr <- psTransform(ps, 
-                     main_factor = "Preterm") 
+ps.tr <- psTransform(ps, main_factor = "Preterm") 
 
 p.all <- longPACFMultiple(ps.tr[[1]],
                              ps.tr[[2]], 
@@ -113,6 +111,7 @@ plist <- lapply(p.all,function(x){
 #                   leg,
 #                   ncol=2,
 #                   widths=c(10,2))
+                   
 # ggsave("./core_Sim.eps",plot=p,width = 8,height = 5.5)
 
 grid.arrange(arrangeGrob(grobs=plist,nrow=2,widths=c(3,3,3)),
@@ -242,11 +241,11 @@ grid.arrange(arrangeGrob(grobs=plist, nrow=2, widths=c(3,3,3)),
 ## ----message=FALSE,warning=FALSE, eval=FALSE-----------------------------
 #  omega <- .6
 #  #mse_results <- readRDS("./MSE.rds")
-#  blks <- length(mse_results)
+#  blks <- length(mse.results)
 #  mse <- list()
 #  
 #  for(i in 1:blks){
-#      mse[[i]] <- mse_results[[i]]$MSE_i
+#      mse[[i]] <- mse.results[[i]]$MSE_i
 #      }
 #  
 #  mse.avg <- lapply(mse,function(x){mean(x,na.rm=T)})

@@ -40,10 +40,10 @@ psTransform <- function(ps, main_factor) {
     rownames(ot_trans) <- taxa_names(ps)
 
     # computing weights and residuals
-    samdf <- sample_data(ps) %>% data.frame
     des <- as.formula(paste("otu", "~", paste(main_factor, collapse = "+"), "+", "offset(asinh(sj))"))
 
     ## computing weights
+    samdf <- sample_data(ps) %>% data.frame
     des_v <- as.formula(paste("~", paste(main_factor, collapse = "+")))
     mm <- model.matrix(des_v, data = samdf)
     v <- asinhVoom(counts = ot, design = mm, sj = sj)
@@ -55,11 +55,16 @@ psTransform <- function(ps, main_factor) {
         sj <- as.numeric(sj)
         weightT <- as.numeric(weights.cal[ind, ])
         dff <- mutate(samdf, otu = otu, sj = sj, weightT = weightT)
-        dff <- mutate(dff, weightT = ifelse(otu == 0, 0, weightT))
-        glmft <- tryCatch(MASS::glm.nb(des, data = dff, weights = weightT, method = "glm.fit", link = arcsinhLink()),
-            error = function(e){
-                dff$otu <- dff$otu + 1; MASS::glm.nb(des, data = dff, weights = weightT, method = "glm.fit", link = arcsinhLink())
-            })
+        #dff <- mutate(dff, weightT = ifelse(otu == 0, 0, weightT))
+        # glmft <- tryCatch(MASS::glm.nb(des, data = dff, weights = weightT, method = "glm.fit", link = arcsinhLink()),
+        #     error = function(e){
+        #         dff$otu <- dff$otu + 1; MASS::glm.nb(des, data = dff, weights = weightT, method = "glm.fit", link = arcsinhLink())
+        #     })
+
+        #glmft <- MASS::glm.nb(des, data = dff, weights = weightT, method = "glm.fit", link = arcsinhLink())
+        glmft.poi <- glm(des, data = dff, weights = weightT, method = "glm.fit", family = poisson)
+        glmft <- MASS::glm.nb(des, data = dff, weights = weightT, method = "glm.fit", link = arcsinhLink(), start = as.numeric(coef(glmft.poi)))
+
         res_residuals <- resid(glmft)
         rt <- list(res_residuals)
         names(rt) <- c("response_residuals")
@@ -72,7 +77,7 @@ psTransform <- function(ps, main_factor) {
     })
 
     resi <- lapply(resi_fitted, "[[", 1)
-    resi <- data.frame(do.call("rbind", resi))
+    resi <- do.call("rbind", resi) %>% data.frame
     colnames(resi) <- sample_names(ps)
     rownames(resi) <- taxa_names(ps)
 

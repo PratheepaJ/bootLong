@@ -13,6 +13,10 @@
 #' @export
 #' @importFrom parallel mclapply
 bootLongMSEPsi <- function(ps, main_factor, time_var, subjectID_var, sampleID_var, b, R, RR, qj, Wj, Khat.obs = NULL, T.obs.full = NULL, ncores){
+
+    # doParallel::registerDoParallel(parallel::detectCores())
+    # BiocParallel::register(BiocParallel::DoparParam())
+
     if (is.null(Khat.obs)) {
         stop("User needs to run bootLongPsi() function with an initial block length ")
     }

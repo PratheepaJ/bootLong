@@ -13,8 +13,8 @@
 #' @importFrom parallel mclapply
 bootLongSubsampling <- function(ps, main_factor, time_var, subjectID_var, sampleID_var, lI, R, RR, omega = .6, lC1 = 1, lC2 = NULL, ncores){
 
-    doParallel::registerDoParallel(parallel::detectCores())
-    BiocParallel::register(BiocParallel::DoparParam())
+    # doParallel::registerDoParallel(parallel::detectCores())
+    # BiocParallel::register(BiocParallel::DoparParam())
 
     if (dim(otu_table(ps))[1] == nsamples(ps)) {
         otu_table(ps) <- t(otu_table(ps, taxa_are_rows = T))
@@ -47,7 +47,7 @@ bootLongSubsampling <- function(ps, main_factor, time_var, subjectID_var, sample
 
     blk.size.choice <- as.list(c(1:length(lC)))
 
-    mse.Khat.Kobs <- bplapply(blk.size.choice, function(y){
+    mse.Khat.Kobs <- lapply(blk.size.choice, function(y){
         bt <- bootLongMSEPsi(ps = ps, main_factor = main_factor, time_var = time_var, subjectID_var = subjectID_var, sampleID_var = sampleID_var, b = y, R = R, RR = RR, qj = qj, Wj = Wj, Khat.obs = Khat.obs, T.obs.full = T.obs, ncores = ncores)
         return(bt)
     })

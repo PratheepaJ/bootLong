@@ -64,9 +64,7 @@ library(parallel)
 library(magrittr)
 library(joineR)
 library(DESeq2)
-#library(bootLong)
-devtools::load_all(".")
-#sourceDirectory("./R")
+library(bootLong)
 ```
 
 Set the computational resources: we need to specify the number of cores for subsampling method. 
@@ -162,8 +160,7 @@ Partial autocorrelataion (PACF) at lag $h$ measures the correlation between repe
 2) We choose top six abundance ASVs (based on the transformed count) to visualize the dependence within-subject. We can choose different ASVs by changing `starttaxa` and `endtaxa`  arguments in `longPACFMultiple()`.
 
 ```{r pacf, message=FALSE, warning=FALSE}
-ps.tr <- psTransform(ps, 
-                     main_factor = "Preterm") 
+ps.tr <- psTransform(ps, main_factor = "Preterm") 
 
 p.all <- longPACFMultiple(ps.tr[[1]],
                              ps.tr[[2]], 
