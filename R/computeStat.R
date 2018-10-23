@@ -67,14 +67,16 @@ computeStat <- function(ps, main_factor, time_var, subjectID_var, b) {
                 glm(desingGEE, data = dffT, weights = weightT, method = "glm.fit", family = poisson(link = arcsinhLink())) #when count is very small
             })
 
+        rese <- as.vector(residuals(glmft.tx))
 
+        dffT$res <- rese
         dfsub <- dffT
 
         if (!is.factor(dfsub[, time_var])) {
             dfsub[, time_var] <- as.factor(dfsub[, time_var])
         }
 
-        meanT <- data.frame(dfsub %>% group_by_(time_var) %>% summarise(meanr = mean(otuT)))
+        meanT <- data.frame(dfsub %>% group_by_(time_var) %>% summarise(meanr = mean(res)))
 
         if (!is.numeric(meanT[, time_var])) {
             meanT[, time_var] <- as.numeric(as.character(meanT[, time_var]))
@@ -117,9 +119,7 @@ computeStat <- function(ps, main_factor, time_var, subjectID_var, b) {
         FunList <- list(LinkFun, VarFun, InvLink, InvLinkDeriv)
 
 
-        fit <-  tryCatch(geeM::geem(formula = desingGEE, id = idvarV, waves = wavesTime, data = dffT, family = FunList, corstr = "fixed", weights = weightT, corr.mat = workCorr, init.beta = init.beta, nodummy = TRUE)$beta, error = function(e){
-            t(glmft.tx$coefficients)
-            })
+        fit <-  geeM::geem(formula = desingGEE, id = idvarV, waves = wavesTime, data = dffT, family = FunList, corstr = "fixed", weights = weightT, corr.mat = workCorr, init.beta = init.beta, nodummy = TRUE)$beta
 
         return(fit)
 
