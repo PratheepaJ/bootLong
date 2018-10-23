@@ -67,16 +67,14 @@ computeStat <- function(ps, main_factor, time_var, subjectID_var, b) {
                 glm(desingGEE, data = dffT, weights = weightT, method = "glm.fit", family = poisson(link = arcsinhLink())) #when count is very small
             })
 
-        rese <- as.vector(residuals(glmft.tx))
 
-        dffT$res <- rese
         dfsub <- dffT
 
         if (!is.factor(dfsub[, time_var])) {
             dfsub[, time_var] <- as.factor(dfsub[, time_var])
         }
 
-        meanT <- data.frame(dfsub %>% group_by_(time_var) %>% summarise(meanr = mean(res)))
+        meanT <- data.frame(dfsub %>% group_by_(time_var) %>% summarise(meanr = mean(otuT)))
 
         if (!is.numeric(meanT[, time_var])) {
             meanT[, time_var] <- as.numeric(as.character(meanT[, time_var]))
@@ -84,17 +82,8 @@ computeStat <- function(ps, main_factor, time_var, subjectID_var, b) {
 
         meanT <- arrange_(meanT, time_var)
 
-        meanr <- ts(meanT$meanr, start = min(meanT[, time_var]), end = max(meanT[,
-            time_var]), frequency = 1)
+        workCorr <- bootLongWorkingCor(meanT$meanr, b)
 
-        acf.res <- as.numeric(acf(meanr, plot = F, lag.max = length(meanr))$acf)
-
-        workCorr <- matrix(nrow = length(acf.res), ncol = length(acf.res))
-        for (rw in 1:length(acf.res)) {
-            for (nc in 1:length(acf.res)) {
-                workCorr[rw, nc] <- acf.res[(abs(rw - nc) + 1)]
-            }
-        }
 
         if (!is.numeric(dffT[, time_var])) {
             dffT[, time_var] <- as.numeric(as.character(dffT[, time_var]))
