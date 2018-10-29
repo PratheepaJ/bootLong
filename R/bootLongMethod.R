@@ -6,7 +6,7 @@
 #'
 #' @return list of dataframe with ASV, observed stat, pvalues, adjusted pvalues, lcl, ucl, observed pivotal quantity; stat.obs; stat.star; stat.star.star; T.star_obs.
 #' @export
-bootLongMethod <- function(ps, main_factor, time_var, subjectID_var, sampleID_var, b, R, RR, FDR = 0.1) {
+bootLongMethod <- function(ps, main_factor, time_var, subjectID_var, sampleID_var, b, R, RR, FDR = 0.05) {
 
     doParallel::registerDoParallel(parallel::detectCores())
     BiocParallel::register(BiocParallel::DoparParam())
@@ -24,6 +24,7 @@ bootLongMethod <- function(ps, main_factor, time_var, subjectID_var, sampleID_va
     boot.results <- bplapply(seq_len(R), FUN = function(i) {
 
         ps.boot <- bootLongPhyloseq(ps, time_var = time_var, subjectID_var = subjectID_var, sampleID_var = sampleID_var, b = b)
+
         ps.boot <- ps.boot[[1]]
 
         df.boot <- computeStat(ps = ps.boot, main_factor = main_factor, time_var = time_var, subjectID_var = subjectID_var, b = b)
@@ -60,8 +61,7 @@ bootLongMethod <- function(ps, main_factor, time_var, subjectID_var, sampleID_va
     sd.stat <- apply(stat.star, 1, FUN = sd, na.rm = FALSE)
 
     beta.obs <- res.obs[, 2]
-    shrink.beta.obs <- suppressMessages(ash(beta.obs, sebetahat = sd.stat,
-        mixcompdist = "normal"))
+    shrink.beta.obs <- suppressMessages(ash(beta.obs, sebetahat = sd.stat, mixcompdist = "normal"))
     shrink.beta.est <- shrink.beta.obs$result$PosteriorMean
 
     rm(boot.results.all)
@@ -82,8 +82,7 @@ bootLongMethod <- function(ps, main_factor, time_var, subjectID_var, sampleID_va
     }))
 
     shrink.beta.boot <- lapply(seq_len(R), function(i) {
-        suppressMessages(ash(stat.star[, i], sebetahat = sd.stat.star[, i],
-            mixcompdist = "normal"))$result
+        suppressMessages(ash(stat.star[, i], sebetahat = sd.stat.star[, i], mixcompdist = "normal"))$result
     })
 
     shrink.beta.boot.est <- lapply(shrink.beta.boot, function(ii) {
@@ -95,6 +94,7 @@ bootLongMethod <- function(ps, main_factor, time_var, subjectID_var, sampleID_va
     T.num.star <- data.frame(apply(stat.star, 2, function(x) {
         x - stat.obs
     }))
+
     T.star <- T.num.star/sd.stat.star
 
     T.star_obs <- dplyr::bind_cols(T.star, T.obs = T.obs[, 1])

@@ -9,7 +9,7 @@
 bootLongPhyloseq <- function(ps, time_var, subjectID_var, sampleID_var, b) {
 
     sam.pss <- sample_data(ps) %>% data.frame
-    sam.pss %<>% mutate(Index = seq(1, nsamples(ps), by = 1))
+    sam.pss$Index <- seq(1, nsamples(ps), by = 1)
 
     sam.pss[, subjectID_var] <- factor(sam.pss[, subjectID_var], levels = unique(sam.pss[, subjectID_var] ))
 
@@ -38,12 +38,12 @@ bootLongPhyloseq <- function(ps, time_var, subjectID_var, sampleID_var, b) {
 
     boot.sample.indices <- as.numeric(unlist(sampling.blks.within.subject.indices))
 
-    rownames(sam.pss) <- sam.pss[, sampleID_var] %>% as.character()
+    # sum(rownames(sam.pss)==sam.pss[, sampleID_var] %>% as.character())
     blk.boot.ot <- ot[, boot.sample.indices]
     blk.boot.sam_ps <- sam.pss[boot.sample.indices, ]
     blk.boot.sam_ps[, sampleID_var] <- rownames(blk.boot.sam_ps) %>% as.factor
 
-    blk.boot.sam_ps[, subjectID_var] <- factor(blk.boot.sam_ps[, subjectID_var], levels = unique(blk.boot.sam_ps[, subjectID_var] ))
+    blk.boot.sam_ps[, subjectID_var] <- factor(blk.boot.sam_ps[, subjectID_var], levels = unique(blk.boot.sam_ps[, subjectID_var]))
 
     g2 <- blk.boot.sam_ps[, subjectID_var]
     boot.sam_ps <- split(blk.boot.sam_ps, g2)
@@ -55,7 +55,6 @@ bootLongPhyloseq <- function(ps, time_var, subjectID_var, sampleID_var, b) {
     })
 
     blk.boot.sam_ps <- do.call(rbind, boot.sam_ps)
-
 
     blk.boot.sam_ps <- dplyr::select(blk.boot.sam_ps, -Index)
     colnames(blk.boot.ot) <- blk.boot.sam_ps[, sampleID_var] %>% as.character

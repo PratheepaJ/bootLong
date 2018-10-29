@@ -13,6 +13,8 @@
 #' @export
 bootLongIndices <- function(x, time_var, b, L, blks.first.index) {
 
+    blks.first.index <- as.list(blks.first.index)
+
     x[,time_var] <- as.numeric(x[,time_var])
 
     if (!is.unsorted(x[, time_var])) {
@@ -25,7 +27,7 @@ bootLongIndices <- function(x, time_var, b, L, blks.first.index) {
 
     num_of_blks <- num_of_rep_obs_x - b + 1
 
-    if (num_of_blks > 0) {
+    if ((num_of_blks > 0) & (L > num_of_blks)) {#unbalanced design of repeated observations
         if ((L - num_of_blks)%%num_of_rep_obs_x == 0) {
             howrep <- rep(1:num_of_rep_obs_x, times = (L - num_of_blks)/num_of_rep_obs_x)
         } else {

@@ -48,7 +48,6 @@ asinhVoom <- function(counts, design = NULL, sj, span = 0.5,
 
 
     sx <- fit$Amean
-    #sx <- fit$Amean
     sy <- sqrt(fit$sigma)
     allzero <- rowSums(counts) == 0
     if (any(allzero)) {

@@ -49,15 +49,16 @@ computeStat <- function(ps, main_factor, time_var, subjectID_var, b) {
     v <- asinhVoom(counts = ot, design = mm, sj = sj)
     weights.cal <- v$weights
 
+    ot_trans <- t(asinh(t(ot)/sj))
     ## Estimating regression coefficients (using generalized estimating equation)
 
-    com_beta <- function(taxIndex, sampleDf, otuDf, allSj, weightDf, desingGEE,
-        b, subjectID_var, time_var) {
+    com_beta <- function(taxIndex, sampleDf, otuDf, allSj, weightDf, desingGEE, b, subjectID_var, time_var, ot_trans) {
 
         otuT <- as.numeric(otuDf[taxIndex, ])
         allSj <- as.numeric(allSj)
         weightT <- as.numeric(weightDf[taxIndex, ])
-        dffT <- cbind(sampleDf, otuT = otuT, allSj = allSj, weightT = weightT)
+        ot_transT <- as.numeric(ot_trans[taxIndex, ])
+        dffT <- cbind(sampleDf, otuT = otuT, allSj = allSj, weightT = weightT, ot_TransT = ot_transT)
         dffT$idvar <- as.numeric(as.factor(dffT[, subjectID_var]))
         idvar <- "idvar"
         dffT <- arrange_(dffT, idvar, time_var)
@@ -81,6 +82,18 @@ computeStat <- function(ps, main_factor, time_var, subjectID_var, b) {
         if (!is.numeric(meanT[, time_var])) {
             meanT[, time_var] <- as.numeric(as.character(meanT[, time_var]))
         }
+
+        # dfsub <- dffT
+        #
+        # if (!is.factor(dfsub[, time_var])) {
+        #     dfsub[, time_var] <- as.factor(dfsub[, time_var])
+        # }
+        #
+        # meanT <- data.frame(dfsub %>% group_by_(time_var) %>% summarise(meanr = mean(ot_TransT)))
+        #
+        # if (!is.numeric(meanT[, time_var])) {
+        #     meanT[, time_var] <- as.numeric(as.character(meanT[, time_var]))
+        # }
 
         meanT <- arrange_(meanT, time_var)
 
@@ -119,7 +132,9 @@ computeStat <- function(ps, main_factor, time_var, subjectID_var, b) {
         FunList <- list(LinkFun, VarFun, InvLink, InvLinkDeriv)
 
 
-        fit <-  geeM::geem(formula = desingGEE, id = idvarV, waves = wavesTime, data = dffT, family = FunList, corstr = "fixed", weights = weightT, corr.mat = workCorr, init.beta = init.beta, nodummy = TRUE)$beta
+        fit <-  tryCatch(geeM::geem(formula = desingGEE, id = idvarV, waves = wavesTime, data = dffT, family = FunList, corstr = "fixed", weights = weightT, corr.mat = workCorr, init.beta = init.beta, nodummy = TRUE)$beta, error = function(e){
+            t(glmft.tx$coefficients)
+            })
 
         return(fit)
 
@@ -128,7 +143,7 @@ computeStat <- function(ps, main_factor, time_var, subjectID_var, b) {
     ind <- as.list(c(1:ntaxa(ps)))
 
     df.beta.hat <- lapply(ind, function(x) {
-        com_beta(x, sampleDf = samdf, otuDf = ot, allSj = sj, weightDf = weights.cal, desingGEE = des, b = b, subjectID_var = subjectID_var, time_var = time_var)
+        com_beta(x, sampleDf = samdf, otuDf = ot, allSj = sj, weightDf = weights.cal, desingGEE = des, b = b, subjectID_var = subjectID_var, time_var = time_var, ot_trans = ot_trans)
     })
 
 
