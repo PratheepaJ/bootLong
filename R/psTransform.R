@@ -58,7 +58,7 @@ psTransform <- function(ps, main_factor) {
 
         glmft <- tryCatch(MASS::glm.nb(des, data = dff, weights = weightT, method = "glm.fit", link = arcsinhLink()),
             error = function(e){
-                glm(des, data = dff, weights = weightT, method = "glm.fit", family = poisson(link = arcsinhLink())) #when count is very small
+                dff$otu <- dff$otu + .5;MASS::glm.nb(des, data = dff, weights = weightT, method = "glm.fit")#when count is very small
             })
 
         res_residuals <- resid(glmft)
@@ -66,6 +66,7 @@ psTransform <- function(ps, main_factor) {
         names(rt) <- c("response_residuals")
         return(rt)
     }
+
 
     resi_fitted <- lapply(seq_len(ntaxa(ps)), function(x) {
         response_residulas_fitted(x, samdf = samdf, ot = ot, sj = sj,

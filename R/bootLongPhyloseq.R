@@ -28,8 +28,10 @@ bootLongPhyloseq <- function(ps, time_var, subjectID_var, sampleID_var, b) {
         x - b + 1
     })
 
+    num.of.rep.obs.max <- num.of.rep.obs %>% unlist %>% max
     L <- num.of.blks %>% unlist %>% max
-    blks.first.index <- sample(1:L, L, replace = TRUE)
+    L0 <- ceiling(num.of.rep.obs.max/b)
+    blks.first.index <- sample(1:L, L0, replace = TRUE)
 
     sampling.blks.within.subject.indices <- lapply(sam_ps.split.by.subjects,
         FUN = function(q) {

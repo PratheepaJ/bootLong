@@ -198,44 +198,6 @@ grid.arrange(arrangeGrob(grobs=plist,nrow=2,widths=c(3,3,3)),
 
 Only the largest spike is observed at lag 1 for both term and preterm. However, almost all the ASVs show that the PACF is less than .25 (sufficiently zero) after lag 3. Therefore, the initial block size is 4 (lag 3 corresponds to block size 4). 
 
-
-###  Correlogram
-```{r corr, message=FALSE, warning=FALSE}
-p.all <- longCorreloMultiple(ps.tr[[1]],
-                             ps.tr[[2]], 
-                             main_factor = "Group", 
-                             time_var = "Time", 
-                             starttaxa = 1, 
-                             endtaxa = 6,
-                             taxlevel = "Genus")
-
-#   Change the legend labels
-p.all <- lapply(p.all, function(x){
-    x + scale_fill_discrete(name  ="Group",breaks=c("Case", "Control"),labels=c("Case", "Control"))
-    })
-
-#   extract the common legend for all taxa
-leg <- plot_common_legend(p.all[[1]])
-
-plist <- lapply(p.all,function(x){
-    x+theme(legend.position="none")
-    })
-
-# p <- grid.arrange(arrangeGrob(grobs=plist,nrow=2,widths=c(3,3,3)),
-#                   leg,
-#                   ncol=2,
-#                   widths=c(10,2))
-# ggsave("./core_Sim.eps",plot=p,width = 8,height = 5.5)
-
-grid.arrange(arrangeGrob(grobs=plist,nrow=2,widths=c(3,3,3)),
-             leg,
-             ncol=2,
-             widths=c(10,2))
-```
-
-We observe that the correlogram tends to be sufficiently zero (first time) at lag 3 for almost all the ASVs. Therefore, the initial block size is 4.
-
-
 ### longitudinal data lag-plots
 ```{r lag-plots, message=FALSE,warning=FALSE}
 lags <- as.list(seq(1,8))
@@ -276,6 +238,43 @@ grid.arrange(arrangeGrob(grobs=plist,nrow=2,widths=c(3,3,3,3)),
 
 
 We observe that for the top abundance ASV, the lag-plot at lag 3 (green) deviates from a linear line. Thus, we choose an initial block size of 4.
+
+###  Correlogram
+```{r corr, message=FALSE, warning=FALSE}
+p.all <- longCorreloMultiple(ps.tr[[1]],
+                             ps.tr[[2]], 
+                             main_factor = "Group", 
+                             time_var = "Time", 
+                             starttaxa = 1, 
+                             endtaxa = 6,
+                             taxlevel = "Genus")
+
+#   Change the legend labels
+p.all <- lapply(p.all, function(x){
+    x + scale_fill_discrete(name  ="Group",breaks=c("Case", "Control"),labels=c("Case", "Control"))
+    })
+
+#   extract the common legend for all taxa
+leg <- plot_common_legend(p.all[[1]])
+
+plist <- lapply(p.all,function(x){
+    x+theme(legend.position="none")
+    })
+
+# p <- grid.arrange(arrangeGrob(grobs=plist,nrow=2,widths=c(3,3,3)),
+#                   leg,
+#                   ncol=2,
+#                   widths=c(10,2))
+# ggsave("./core_Sim.eps",plot=p,width = 8,height = 5.5)
+
+grid.arrange(arrangeGrob(grobs=plist,nrow=2,widths=c(3,3,3)),
+             leg,
+             ncol=2,
+             widths=c(10,2))
+```
+
+We observe that the correlogram tends to be sufficiently zero (first time) at lag 3 for almost all the ASVs. Therefore, the initial block size is 4.
+
 
 ### Variogram for longitudinal data
 
@@ -319,7 +318,7 @@ grid.arrange(arrangeGrob(grobs=plist, nrow=2, widths=c(3,3,3)),
 
 We cannot get a clear idea about inital block size because subject variability dominates variogram fit.
 
-Other all the exploratory tools suggest an inital block size of 4.
+All other exploratory tools suggest an inital block size of 4.
 
 We will choose 60\% of repeated observations for the subsampling because we can compute mean squared error of two-sided probability over FIVE subsamples (because there are 10 repeated observations from each subject). 
 

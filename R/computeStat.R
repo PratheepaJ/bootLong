@@ -38,6 +38,7 @@ computeStat <- function(ps, main_factor, time_var, subjectID_var, b) {
 
     geom_mean_row <- apply(ot, 1, FUN = geo_mean)
 
+
     sj <- estimateSizeFactorsForMatrix(ot, median, geoMeans = geom_mean_row)
 
     des <- as.formula(paste("otuT", "~", paste(main_factor, collapse = "+"), "+", "offset(asinh(sj))"))
@@ -65,26 +66,27 @@ computeStat <- function(ps, main_factor, time_var, subjectID_var, b) {
 
         glmft.tx <- tryCatch(MASS::glm.nb(desingGEE, data = dffT, weights = weightT, method = "glm.fit", link = arcsinhLink()),
             error = function(e){
-                glm(desingGEE, data = dffT, weights = weightT, method = "glm.fit", family = poisson(link = arcsinhLink())) #when count is very small
+                dffT$otuT <- dffT$otuT + .5;MASS::glm.nb(desingGEE, data = dffT, weights = weightT, method = "glm.fit") #when count is very small
             })
 
-        rese <- as.vector(residuals(glmft.tx))
-
-        dffT$res <- rese
-        dfsub <- dffT
-
-        if (!is.factor(dfsub[, time_var])) {
-            dfsub[, time_var] <- as.factor(dfsub[, time_var])
-        }
-
-        meanT <- data.frame(dfsub %>% group_by_(time_var) %>% summarise(meanr = mean(res)))
-
-        if (!is.numeric(meanT[, time_var])) {
-            meanT[, time_var] <- as.numeric(as.character(meanT[, time_var]))
-        }
-
+        # rese <- as.vector(residuals(glmft.tx))
+        #
+        # dffT$res <- rese
         # dfsub <- dffT
         #
+        # if (!is.factor(dfsub[, time_var])) {
+        #     dfsub[, time_var] <- as.factor(dfsub[, time_var])
+        # }
+        #
+        # meanT <- data.frame(dfsub %>% group_by_(time_var) %>% summarise(meanr = mean(res)))
+        #
+        # if (!is.numeric(meanT[, time_var])) {
+        #     meanT[, time_var] <- as.numeric(as.character(meanT[, time_var]))
+        # }
+
+        dfsub <- dffT
+
+
         # if (!is.factor(dfsub[, time_var])) {
         #     dfsub[, time_var] <- as.factor(dfsub[, time_var])
         # }
@@ -94,11 +96,23 @@ computeStat <- function(ps, main_factor, time_var, subjectID_var, b) {
         # if (!is.numeric(meanT[, time_var])) {
         #     meanT[, time_var] <- as.numeric(as.character(meanT[, time_var]))
         # }
+        #
+        # meanT <- arrange_(meanT, time_var)
+        #
+        # workCorr <- bootLongWorkingCor(meanT$meanr, b)
 
-        meanT <- arrange_(meanT, time_var)
 
-        workCorr <- bootLongWorkingCor(meanT$meanr, b)
 
+        dfsub[, subjectID_var] <- factor(dfsub[, subjectID_var], levels = unique(dfsub[, subjectID_var]))
+
+        g <- dfsub[, subjectID_var]
+        dfsub.sp <- split(dfsub, g)
+        bootCorr <- lapply(dfsub.sp, function(x, b){
+            bootLongWorkingCor(x$otuT, b)
+        })
+
+
+        workCorr <- bdiag(bootCorr) %>% as.matrix
 
         if (!is.numeric(dffT[, time_var])) {
             dffT[, time_var] <- as.numeric(as.character(dffT[, time_var]))
