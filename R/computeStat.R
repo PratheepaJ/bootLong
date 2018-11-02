@@ -69,45 +69,13 @@ computeStat <- function(ps, main_factor, time_var, subjectID_var, b) {
                 dffT$otuT <- dffT$otuT + .5;MASS::glm.nb(desingGEE, data = dffT, weights = weightT, method = "glm.fit") #when count is very small
             })
 
-        # rese <- as.vector(residuals(glmft.tx))
-        #
-        # dffT$res <- rese
-        # dfsub <- dffT
-        #
-        # if (!is.factor(dfsub[, time_var])) {
-        #     dfsub[, time_var] <- as.factor(dfsub[, time_var])
-        # }
-        #
-        # meanT <- data.frame(dfsub %>% group_by_(time_var) %>% summarise(meanr = mean(res)))
-        #
-        # if (!is.numeric(meanT[, time_var])) {
-        #     meanT[, time_var] <- as.numeric(as.character(meanT[, time_var]))
-        # }
-
         dfsub <- dffT
-
-
-        # if (!is.factor(dfsub[, time_var])) {
-        #     dfsub[, time_var] <- as.factor(dfsub[, time_var])
-        # }
-        #
-        # meanT <- data.frame(dfsub %>% group_by_(time_var) %>% summarise(meanr = mean(ot_TransT)))
-        #
-        # if (!is.numeric(meanT[, time_var])) {
-        #     meanT[, time_var] <- as.numeric(as.character(meanT[, time_var]))
-        # }
-        #
-        # meanT <- arrange_(meanT, time_var)
-        #
-        # workCorr <- bootLongWorkingCor(meanT$meanr, b)
-
-
 
         dfsub[, subjectID_var] <- factor(dfsub[, subjectID_var], levels = unique(dfsub[, subjectID_var]))
 
         g <- dfsub[, subjectID_var]
         dfsub.sp <- split(dfsub, g)
-        bootCorr <- lapply(dfsub.sp, function(x, b){
+        bootCorr <- lapply(dfsub.sp, function(x){
             bootLongWorkingCor(x$otuT, b)
         })
 

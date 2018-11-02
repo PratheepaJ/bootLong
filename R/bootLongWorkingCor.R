@@ -7,6 +7,60 @@
 #' @export
 bootLongWorkingCor <- function(x, b){
 
+    q <- length(x)
+    k <- (b-1)
+
+    autoCorr <- function(gk){
+        Yi.list <- lapply(seq_len((q-gk)), function(i){
+            Yi <- x[i]
+            for(j in 2:(gk+2)){
+                Yi[j] <- x[i]*x[i+(j-2)]
+            }
+            return(Yi)
+        })
+
+        Yi <- do.call(rbind, Yi.list)
+
+        # make blocks of Yi
+        L <- length(Yi.list) - b + 1
+        L0 <- ceiling((q - gk)/b)
+
+        first.ind <- sample(1:L, L0, replace = TRUE)
+        Y.boot <- lapply(first.ind, function(y){
+            y:(y + b - 1)
+        })
+
+        Y.boot <- unlist(Y.boot)[1:length(Yi.list)]
+        Yi.boot <- Yi[Y.boot, ]
+
+        #### need to do from here
+        sum.Yi <- colSums(Yi)
+        sum.Yi[1] <- sum.Yi[1] + sum(x[(q-gk+1):q])
+        sum.Yi[2] <- sum.Yi[2] + sum(x[(q-gk+1):q]^2)
+        deno <- c(q, seq(q, (q-gk)))
+
+        Y.bar <- sum.Yi/deno
+        corrK <- (Y.bar[length(Y.bar)]- (Y.bar[1])^2)/(Y.bar[2]- (Y.bar[1])^2)
+        return(corrK)
+    }
+
+    corK <- lapply(1:k, FUN = autoCorr)
+    corK <- unlist(corK)
+
+    for(k in b:(length(x)-1)){
+        corK[k] <- 0
+    }
+
+    corK <- c(1, corK)
+    acf.res <- corK
+    workCorr <- matrix(nrow = length(acf.res), ncol = length(acf.res))
+    for (rw in 1:length(acf.res)) {
+        for (nc in 1:length(acf.res)) {
+            workCorr[rw, nc] <- acf.res[(abs(rw - nc) + 1)]
+        }
+    }
+
+
     # corrK <- numeric(0)
     #
     # y.list0 <- lapply(seq_len((length(x))), function(i){
@@ -105,15 +159,15 @@ bootLongWorkingCor <- function(x, b){
         #     }
         # }
 
-        #method 1
-        acf.res <- as.numeric(acf(x, plot = F,lag.max = length(x))$acf)
-        #acf.res[(b+1):length(acf.res)] <- 0
-        workCorr <- matrix(nrow = length(acf.res), ncol = length(acf.res))
-        for (rw in 1:length(acf.res)) {
-            for (nc in 1:length(acf.res)) {
-                workCorr[rw, nc] <- acf.res[(abs(rw - nc) + 1)]
-            }
-        }
+        #method 1 (working)
+        # acf.res <- as.numeric(acf(x, plot = F,lag.max = length(x))$acf)
+        # #acf.res[(b+1):length(acf.res)] <- 0
+        # workCorr <- matrix(nrow = length(acf.res), ncol = length(acf.res))
+        # for (rw in 1:length(acf.res)) {
+        #     for (nc in 1:length(acf.res)) {
+        #         workCorr[rw, nc] <- acf.res[(abs(rw - nc) + 1)]
+        #     }
+        # }
 
     return(workCorr)
 
