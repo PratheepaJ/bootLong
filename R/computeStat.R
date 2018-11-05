@@ -76,7 +76,7 @@ computeStat <- function(ps, main_factor, time_var, subjectID_var, b) {
         g <- dfsub[, subjectID_var]
         dfsub.sp <- split(dfsub, g)
         bootCorr <- lapply(dfsub.sp, function(x){
-            bootLongWorkingCor(x$otuT, b)
+            bootLongWorkingCor(x$ot_TransT, b)
         })
 
 
@@ -127,7 +127,6 @@ computeStat <- function(ps, main_factor, time_var, subjectID_var, b) {
     df.beta.hat <- lapply(ind, function(x) {
         com_beta(x, sampleDf = samdf, otuDf = ot, allSj = sj, weightDf = weights.cal, desingGEE = des, b = b, subjectID_var = subjectID_var, time_var = time_var, ot_trans = ot_trans)
     })
-
 
     df.beta.hat <- data.frame(do.call("rbind", df.beta.hat))
 
