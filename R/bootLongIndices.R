@@ -15,7 +15,9 @@ bootLongIndices <- function(x, time_var, b, L, blks.first.index) {
 
     blks.first.index <- as.list(blks.first.index)
 
-    x[,time_var] <- as.numeric(x[,time_var])
+    if(!is.numeric(x[, time_var])){
+        x[, time_var] <- as.numeric(x[, time_var])
+        }
 
     if (!is.unsorted(x[, time_var])) {
         x <- x
@@ -23,16 +25,16 @@ bootLongIndices <- function(x, time_var, b, L, blks.first.index) {
         x <- arrange_(x, time_var)
     }
 
-    num_of_rep_obs_x <- dim(x)[1]
+    num.of.rep.obs.x <- dim(x)[1]
 
-    num_of_blks <- num_of_rep_obs_x - b + 1
+    num.of.blks <- num.of.rep.obs.x - b + 1
 
-    if ((num_of_blks > 0) & (L > num_of_blks)) {#unbalanced design of repeated observations
-        if ((L - num_of_blks)%%num_of_rep_obs_x == 0) {
-            howrep <- rep(1:num_of_rep_obs_x, times = (L - num_of_blks)/num_of_rep_obs_x)
+    if ((L > num.of.blks)) {#unbalanced design of repeated observations
+        if ((L - num.of.blks)%%num.of.rep.obs.x == 0) {
+            howrep <- rep(1:num.of.rep.obs.x, times = (L - num.of.blks)/num.of.rep.obs.x)
         } else {
-            howrep <- c(rep(1:num_of_rep_obs_x, times = (L - num_of_blks)/num_of_rep_obs_x),
-                1:((L - num_of_blks)%%num_of_rep_obs_x))
+            howrep <- c(rep(1:num.of.rep.obs.x, times = (L - num.of.blks)/num.of.rep.obs.x),
+                1:((L - num.of.blks)%%num.of.rep.obs.x))
         }
 
         expand_x <- bind_rows(x, x[howrep, ])
@@ -41,13 +43,13 @@ bootLongIndices <- function(x, time_var, b, L, blks.first.index) {
 
     subject.sample.indices <- numeric(0)
 
-    if (num_of_blks <= 0) {
+    if (L==0) {
         subject.sample.indices <- x$Index
     } else {
         subject.sample.indices <- x$Index[unlist(lapply(blks.first.index, FUN = function(y) {
             y:(y + b - 1)
         }))]
-        subject.sample.indices <- subject.sample.indices[1:num_of_rep_obs_x]
+        subject.sample.indices <- subject.sample.indices[1:num.of.rep.obs.x]
     }
 
     return(subject.sample.indices)

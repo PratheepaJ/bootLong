@@ -41,10 +41,17 @@ computeStat <- function(ps, main_factor, time_var, subjectID_var, b) {
 
     sj <- estimateSizeFactorsForMatrix(ot, median, geoMeans = geom_mean_row)
 
-    des <- as.formula(paste("otuT", "~", paste(main_factor, collapse = "+"), "+", "offset(asinh(sj))"))
+    des <- as.formula(paste("otuT", "~", paste(main_factor, collapse = "+"), "+", "offset(asinh(allSjT))"))
 
     ## computing weights
     samdf <- sample_data(ps) %>% data.frame
+    if(!is.numeric(samdf[, time_var])){
+        samdf[, time_var] <- as.numeric(samdf[, time_var])
+        }
+    if(!is.factor(samdf[, subjectID_var])){
+        samdf[, subjectID_var] <- as.factor(samdf[, subjectID_var])
+        }
+
     des_v <- as.formula(paste("~", paste(main_factor, collapse = "+")))
     mm <- model.matrix(des_v, data = samdf)
     v <- asinhVoom(counts = ot, design = mm, sj = sj)
@@ -59,7 +66,7 @@ computeStat <- function(ps, main_factor, time_var, subjectID_var, b) {
         allSj <- as.numeric(allSj)
         weightT <- as.numeric(weightDf[taxIndex, ])
         ot_transT <- as.numeric(ot_trans[taxIndex, ])
-        dffT <- cbind(sampleDf, otuT = otuT, allSj = allSj, weightT = weightT, ot_TransT = ot_transT)
+        dffT <- cbind(sampleDf, otuT = otuT, allSjT = allSj, weightT = weightT, ot_TransT = ot_transT)
         dffT$idvar <- as.numeric(as.factor(dffT[, subjectID_var]))
         idvar <- "idvar"
         dffT <- arrange_(dffT, idvar, time_var)
@@ -78,12 +85,21 @@ computeStat <- function(ps, main_factor, time_var, subjectID_var, b) {
         bootCorr <- lapply(dfsub.sp, function(x){
             bootLongWorkingCor(x$ot_TransT, b)
         })
-
-
         workCorr <- bdiag(bootCorr) %>% as.matrix
 
-        if (!is.numeric(dffT[, time_var])) {
-            dffT[, time_var] <- as.numeric(as.character(dffT[, time_var]))
+
+        # if(!is.factor(dfsub[,time_var])){dfsub[,time_var] <- as.factor(dfsub[,time_var])}
+        # g <- dfsub[, time_var]
+        # dfsub.sp <- split(dfsub, g)
+        #
+        # tt <- unlist(lapply(dfsub.sp, function(x){
+        #     max(x$ot_TransT)
+        # }))
+        #
+        # workCorr <- bootLongWorkingCor(tt, b)
+
+        if (!is.integer(dffT[, time_var])) {
+            dffT[, time_var] <- as.integer(as.character(dffT[, time_var]))
         }
 
         wavesTime <- dffT[, time_var]
