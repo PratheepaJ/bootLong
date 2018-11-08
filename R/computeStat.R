@@ -73,8 +73,10 @@ computeStat <- function(ps, main_factor, time_var, subjectID_var, b) {
 
         glmft.tx <- tryCatch(MASS::glm.nb(desingGEE, data = dffT, weights = weightT, method = "glm.fit", link = arcsinhLink()),
             error = function(e){
-                dffT$otuT <- dffT$otuT + .5;MASS::glm.nb(desingGEE, data = dffT, weights = weightT, method = "glm.fit") #when count is very small
+                dffT$otuT <- dffT$otuT + .5;glm(desingGEE, data = dffT, weights = weightT, method = "glm.fit", family = poisson()) #when count is very small
             })
+
+        # glmft.tx <- MASS::glm.nb(desingGEE, data = dffT, weights = weightT, method = "glm.fit", link = arcsinhLink())
 
         dfsub <- dffT
 
@@ -83,7 +85,7 @@ computeStat <- function(ps, main_factor, time_var, subjectID_var, b) {
         g <- dfsub[, subjectID_var]
         dfsub.sp <- split(dfsub, g)
         bootCorr <- lapply(dfsub.sp, function(x){
-            bootLongWorkingCor(x$ot_TransT, b)
+            bootLongWorkingCor(x$ot_transT, b)
         })
         workCorr <- bdiag(bootCorr) %>% as.matrix
 
@@ -98,8 +100,8 @@ computeStat <- function(ps, main_factor, time_var, subjectID_var, b) {
         #
         # workCorr <- bootLongWorkingCor(tt, b)
 
-        if (!is.integer(dffT[, time_var])) {
-            dffT[, time_var] <- as.integer(as.character(dffT[, time_var]))
+        if (!is.numeric(dffT[, time_var])) {
+            dffT[, time_var] <- as.numeric(as.character(dffT[, time_var]))
         }
 
         wavesTime <- dffT[, time_var]
@@ -130,9 +132,20 @@ computeStat <- function(ps, main_factor, time_var, subjectID_var, b) {
         FunList <- list(LinkFun, VarFun, InvLink, InvLinkDeriv)
 
 
-        fit <-  tryCatch(geeM::geem(formula = desingGEE, id = idvarV, waves = wavesTime, data = dffT, family = FunList, corstr = "fixed", weights = weightT, corr.mat = workCorr, init.beta = init.beta, nodummy = TRUE)$beta, error = function(e){
-            t(glmft.tx$coefficients)
+        fit.m <-  tryCatch(geeM::geem(formula = desingGEE, id = idvarV, waves = wavesTime, data = dffT, family = FunList, corstr = "fixed", weights = weightT, corr.mat = workCorr, init.beta = init.beta, nodummy = TRUE), error = function(e){
+            #t(glmft.tx$coefficients)
+            glmft.tx
             })
+
+        # fit.m <-  tryCatch(geeM::geem(formula = desingGEE, id = idvarV, waves = wavesTime, data = dffT, family = FunList, corstr = "ar1", weights = weightT, init.beta = init.beta, nodummy = TRUE), error = function(e){
+        #     glmft.tx
+        # })
+
+        if(class(fit.m) == "geem"){
+            fit <- fit.m$beta
+        }else{
+            fit <- t(fit.m$coefficients)
+        }
 
         return(fit)
 
@@ -141,7 +154,8 @@ computeStat <- function(ps, main_factor, time_var, subjectID_var, b) {
     ind <- as.list(c(1:ntaxa(ps)))
 
     df.beta.hat <- lapply(ind, function(x) {
-        com_beta(x, sampleDf = samdf, otuDf = ot, allSj = sj, weightDf = weights.cal, desingGEE = des, b = b, subjectID_var = subjectID_var, time_var = time_var, ot_trans = ot_trans)
+        rt <- com_beta(x, sampleDf = samdf, otuDf = ot, allSj = sj, weightDf = weights.cal, desingGEE = des, b = b, subjectID_var = subjectID_var, time_var = time_var, ot_trans = ot_trans)
+        return(rt)
     })
 
     df.beta.hat <- data.frame(do.call("rbind", df.beta.hat))
