@@ -6,7 +6,7 @@
 #'
 #' @return \code{ggplot2} object of PACF for one taxon according to the taxon index.
 #' @export
-longPACFSingle <- function(ps, main_factor, time_var, taxon, taxlevel = "Species") {
+longPACFSingle <- function(ps, main_factor, time_var, taxon, taxlevel = "Species", lag.max = 10) {
 
     taxon_name <- tax_table(ps)[taxon, taxlevel]
     df.taxa <- data.frame(sample_data(ps), otu = as.numeric(t(otu_table(ps)[taxon,
@@ -19,7 +19,7 @@ longPACFSingle <- function(ps, main_factor, time_var, taxon, taxlevel = "Species
     res.sep <- lapply(df.taxa.sep, function(m) {
         m$Time <- as.factor(m$Time)
         m <- m %>% group_by(Time) %>% summarise(meant = mean(otu))
-        pacf.res <- pacf(m$meant, plot = F)
+        pacf.res <- pacf(m$meant, plot = F, lag.max = lag.max)
         return(pacf.res)
     })
 
