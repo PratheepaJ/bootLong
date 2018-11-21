@@ -119,10 +119,8 @@ computeStat <- function(ps, main_factor, time_var, subjectID_var, b) {
 
 
         fit.m <-  tryCatch(geeM::geem(formula = desingGEE, id = idvarV, waves = wavesTime, data = dffT, family = FunList, corstr = "fixed", weights = weightT, corr.mat = workCorr, init.beta = init.beta, nodummy = TRUE), error = function(e){
-            glmft.tx
+            glmft.tx # if the condition number is large, then, we use corr.mat = idependence
             })
-
-
 
         if(class(fit.m) == "geem"){
             fit <- fit.m$beta
@@ -140,10 +138,6 @@ computeStat <- function(ps, main_factor, time_var, subjectID_var, b) {
         rt <- com_beta(x, sampleDf = samdf, otuDf = ot, allSj = sj, weightDf = weights.cal, desingGEE = des, b = b, subjectID_var = subjectID_var, time_var = time_var, ot_trans = ot_trans)
         return(rt)
     })
-
-    for(i in 15:ntaxa(ps)){
-        com_beta(i, sampleDf = samdf, otuDf = ot, allSj = sj, weightDf = weights.cal, desingGEE = des, b = b, subjectID_var = subjectID_var, time_var = time_var, ot_trans = ot_trans)
-    }
 
     df.beta.hat <- data.frame(do.call("rbind", df.beta.hat))
 

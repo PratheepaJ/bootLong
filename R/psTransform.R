@@ -71,10 +71,6 @@ psTransform <- function(ps, main_factor) {
             des.I = des, weights.I = weights.cal)
     })
 
-    # for(x in 1:ntaxa(ps)){
-    #     residulasFitted(ind.I = x, samdf.I = samdf, ot.I = ot, sj.I = sj,
-    #         des.I = des, weights.I = weights.cal)
-    # }
 
     resi <- lapply(resi.fitted, "[[", 1)
     resi <- do.call("rbind", resi) %>% data.frame
@@ -82,8 +78,6 @@ psTransform <- function(ps, main_factor) {
     rownames(resi) <- taxa_names(ps)
 
     ps.resid.asinh <- phyloseq(otu_table(resi, taxa_are_rows = T), sample_data(ps), tax_table(ps))
-
-
 
     rt <- list(ps.ot.asinh, ps.resid.asinh)
     names(rt) <- c("asinh_transformed_counts", "asinh_transformed_residulas")
