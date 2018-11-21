@@ -68,7 +68,7 @@ library(DESeq2)
 devtools::load_all(".")
 ```
 
-Set the computational resources: we need to specify the number of cores for subsampling method. 
+Set the computational resources: we need to specify the number of cores for subsampling method and block bootstrap method. 
 ```{r}
 ncores = as.integer(Sys.getenv("SLURM_NTASKS"))
 if(is.na(ncores)) ncores <- parallel::detectCores()
@@ -80,14 +80,14 @@ ncores
 ### Load the example dataset stored as a phyloseq object in the ``bootLong`` package (or use your own data stored as a phyloseq object)
 
 ```{r }
-ps <- pssim
+ps <- psSim
 ```
 
 ##  Summary
 
 After loading the phyloseq, we recommend to check the variable names and some summary for each variable in the sample table. In the example data, we have SubjectID, SampleID, Time, Covariates (Preterm).
 
-```{r eval=FALSE}
+```{r }
 names(sample_data(ps))
 table(sample_data(ps)$SubjectID, sample_data(ps)$Time)
 ```
@@ -102,7 +102,7 @@ set.theme <- theme_update(panel.border = element_blank(),
                     panel.grid = element_line(size = .8),
                     axis.ticks = element_blank(),
                     legend.title = element_text(size = 8),
-                    legend.text = element_text(size = 6),
+                    legend.text = element_text(size = 8),
                     axis.text = element_text(size = 8),
                     axis.title = element_text(size = 8),
                     strip.background = element_blank(),
@@ -127,7 +127,9 @@ Preprocessing will help to reduce unwanted noise.
 
 Filter ASVs: for example, we remove ASVs with less than 10% prevalence in all samples.  
 
-```{r eval=FALSE}
+Before filtering, we will check whether ASVs are on rows and samples are on columns.
+
+```{r }
 if (dim(otu_table(ps))[2] != nsamples(ps)) {
         otu_table(ps) <- t(otu_table(ps))
     }
@@ -151,6 +153,9 @@ plot_common_legend <- function(p){
 }
 ```
 
+```{r include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, fig.width=7.5, fig.height=5.5, eval = FALSE)
+```
 
 ###  PACF
 
@@ -158,13 +163,13 @@ Partial autocorrelataion (PACF) at lag $h$ measures the correlation between repe
 
 1) We use `psTransform()` to get phyloseq objects with transformed count table and residuals after fitting a negative-binomial regression (residuals show the dependence in repeated observations).
 
-2) We choose top six abundance ASVs (based on the transformed count) to visualize the dependence within-subject. We can choose different ASVs by changing `starttaxa` and `endtaxa`  arguments in `longPACFMultiple()`.
+2) We choose top six abundance ASVs (based on the total transformed abundance) to visualize the dependence within-subject. We can choose different ASVs by changing `starttaxa` and `endtaxa`  arguments in `longPACFMultiple()`.
 
 ```{r pacf, message=FALSE, warning=FALSE}
 ps.tr <- psTransform(ps, main_factor = "Group") 
 
-p.all <- longPACFMultiple(ps.tr[[1]],
-                             ps.tr[[2]], 
+p.all <- longPACFMultiple(pstr  = ps.tr[[1]],
+                             psres = ps.tr[[2]], 
                              main_factor = "Group", 
                              time_var = "Time", 
                              starttaxa = 1, 
@@ -188,7 +193,7 @@ plist <- lapply(p.all,function(x){
 #                   ncol=2,
 #                   widths=c(10,2))
                    
-# ggsave("./core_Sim.eps",plot=p,width = 8,height = 5.5)
+# ggsave("./pac_Sim.eps",plot=p,width = 8,height = 5.5)
 
 grid.arrange(arrangeGrob(grobs=plist,nrow=2,widths=c(3,3,3)),
              leg,

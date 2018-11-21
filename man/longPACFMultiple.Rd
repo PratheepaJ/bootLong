@@ -5,7 +5,7 @@
 \title{Plots the PACF given the multiple taxa indices.}
 \usage{
 longPACFMultiple(pstr, psres, main_factor, time_var, starttaxa = 1,
-  endtaxa = 4, taxlevel = "Species")
+  endtaxa = 4, taxlevel = "Species", lag.max = 10)
 }
 \arguments{
 \item{pstr}{phyloseq object. The asinh transfomed of the otu_table.}

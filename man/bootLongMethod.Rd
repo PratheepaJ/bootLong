@@ -5,7 +5,7 @@
 \title{bootLongMethod}
 \usage{
 bootLongMethod(ps, main_factor, time_var, subjectID_var, sampleID_var, b,
-  R, RR, FDR = 0.1)
+  R, RR, FDR = 0.05)
 }
 \arguments{
 \item{ps}{phyloseq object.}

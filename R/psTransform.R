@@ -4,7 +4,7 @@
 #'
 #' @inheritParams plotSamplingSchedule
 #'
-#' @return A list of phyloseq objects. The first element is the asinh transformed of otu_table and the second element is the residuals of \code{\link[MASS]{glm.nb}} fit.
+#' @return A list of phyloseq objects. The first phyloseq element contains the arcsinh transformed of otu_table and the second phyloseq element contains the residuals of \code{\link[MASS]{glm.nb}} fit in otu table.
 #' @export
 #' @importFrom MASS glm.nb
 #' @importFrom DESeq2 estimateSizeFactorsForMatrix
@@ -20,9 +20,7 @@ psTransform <- function(ps, main_factor) {
         stop("otu_table entries must be integer")
     }
 
-    # variance stabilization for negative binomial distribution accounting for
-    # library sizes.
-    geo_mean <- function(x) {
+    geoMean <- function(x) {
         if(all(x == 0)){
             val <- 0
         }else{
@@ -31,60 +29,63 @@ psTransform <- function(ps, main_factor) {
         return(val)
     }
 
-    geom_mean_row <- apply(ot, 1, FUN = geo_mean)
+    geom.mean.row <- apply(ot, 1, FUN = geoMean)
 
-    sj <- estimateSizeFactorsForMatrix(ot, median, geoMeans = geom_mean_row)
+    sj <- estimateSizeFactorsForMatrix(ot, median, geoMeans = geom.mean.row)
 
-    ot_trans <- t(asinh(t(ot)/sj))
-    colnames(ot_trans) <- sample_names(ps)
-    rownames(ot_trans) <- taxa_names(ps)
+    ot.trans <- t(asinh(t(ot)/sj))
+    colnames(ot.trans) <- sample_names(ps)
+    rownames(ot.trans) <- taxa_names(ps)
+
+    ps.ot.asinh <- phyloseq(otu_table(ot.trans, taxa_are_rows = TRUE), sample_data(ps),tax_table(ps))
 
     # computing weights and residuals
     des <- as.formula(paste("otu", "~", paste(main_factor, collapse = "+"), "+", "offset(asinh(sj))"))
 
     ## computing weights
     samdf <- sample_data(ps) %>% data.frame
-    des_v <- as.formula(paste("~", paste(main_factor, collapse = "+")))
-    mm <- model.matrix(des_v, data = samdf)
+    des.v <- as.formula(paste("~", paste(main_factor, collapse = "+")))
+    mm <- model.matrix(des.v, data = samdf)
     v <- asinhVoom(counts = ot, design = mm, sj = sj)
     weights.cal <- v$weights
 
     ## computing residuals
-    response_residulas_fitted <- function(ind, samdf, ot, sj, des, weights.cal) {
-        otu <- as.numeric(ot[ind, ])
-        sj <- as.numeric(sj)
-        weightT <- as.numeric(weights.cal[ind, ])
-        dff <- mutate(samdf, otu = otu, sj = sj, weightT = weightT)
+    residulasFitted <- function(ind.I, samdf.I, ot.I, sj.I, des.I, weights.I) {
+        otu.T <- ot.I[ind.I, ] %>% as.numeric
+        sj.T <- sj.I %>% as.numeric
+        weight.T <- weights.I[ind.I, ] %>% as.numeric
+        dff <- mutate(select_(samdf.I, main_factor), otu = otu.T, sj = sj.T, weightT = weight.T)
 
-        glmft <- tryCatch(MASS::glm.nb(des, data = dff, weights = weightT, method = "glm.fit", link = arcsinhLink()),
-            error = function(e){
-                dff$otu <- dff$otu + 1;glm(des, data = dff, weights = weightT, method = "glm.fit", family = poisson())#when count is very small
-            })
+        dff[, main_factor] <- as.factor(dff[, main_factor])
 
-        res_residuals <- resid(glmft)
-        rt <- list(res_residuals)
+        glmft <- suppressWarnings(MASS::glm.nb(des.I, data = dff, weights = weightT, method = "glm.fit", link = arcsinhLink()))
+        res.residuals <- resid(glmft)
+        rt <- list(res.residuals)
         names(rt) <- c("response_residuals")
         return(rt)
     }
 
 
-    resi_fitted <- lapply(seq_len(ntaxa(ps)), function(x) {
-        response_residulas_fitted(x, samdf = samdf, ot = ot, sj = sj,
-            des = des, weights.cal = weights.cal)
+    resi.fitted <- lapply(seq_len(ntaxa(ps)), function(x) {
+        residulasFitted(ind.I = x, samdf.I = samdf, ot.I = ot, sj.I = sj,
+            des.I = des, weights.I = weights.cal)
     })
 
-    resi <- lapply(resi_fitted, "[[", 1)
+    # for(x in 1:ntaxa(ps)){
+    #     residulasFitted(ind.I = x, samdf.I = samdf, ot.I = ot, sj.I = sj,
+    #         des.I = des, weights.I = weights.cal)
+    # }
+
+    resi <- lapply(resi.fitted, "[[", 1)
     resi <- do.call("rbind", resi) %>% data.frame
     colnames(resi) <- sample_names(ps)
     rownames(resi) <- taxa_names(ps)
 
-    ps_resid_asinh <- phyloseq(otu_table(resi, taxa_are_rows = T), sample_data(ps),
-        tax_table(ps))
+    ps.resid.asinh <- phyloseq(otu_table(resi, taxa_are_rows = T), sample_data(ps), tax_table(ps))
 
-    ps_ot_asinh <- phyloseq(otu_table(ot_trans, taxa_are_rows = TRUE), sample_data(ps),
-        tax_table(ps))
 
-    rt <- list(ps_ot_asinh, ps_resid_asinh)
+
+    rt <- list(ps.ot.asinh, ps.resid.asinh)
     names(rt) <- c("asinh_transformed_counts", "asinh_transformed_residulas")
     return(rt)
 }

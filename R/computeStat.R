@@ -66,17 +66,12 @@ computeStat <- function(ps, main_factor, time_var, subjectID_var, b) {
         allSj <- as.numeric(allSj)
         weightT <- as.numeric(weightDf[taxIndex, ])
         ot_transT <- as.numeric(ot_trans[taxIndex, ])
-        dffT <- cbind(sampleDf, otuT = otuT, allSjT = allSj, weightT = weightT, ot_TransT = ot_transT)
+        dffT <- cbind(sampleDf, otuT = otuT, allSjT = allSj, weightT = weightT, ot_transT = ot_transT)
         dffT$idvar <- as.numeric(as.factor(dffT[, subjectID_var]))
         idvar <- "idvar"
         dffT <- arrange_(dffT, idvar, time_var)
 
-        glmft.tx <- tryCatch(MASS::glm.nb(desingGEE, data = dffT, weights = weightT, method = "glm.fit", link = arcsinhLink()),
-            error = function(e){
-                dffT$otuT <- dffT$otuT + 1;glm(desingGEE, data = dffT, weights = weightT, method = "glm.fit", family = poisson()) #when count is very small
-            })
-
-        # glmft.tx <- MASS::glm.nb(desingGEE, data = dffT, weights = weightT, method = "glm.fit", link = arcsinhLink())
+        glmft.tx <- suppressWarnings(MASS::glm.nb(desingGEE, data = dffT, weights = weightT, method = "glm.fit", link = arcsinhLink()))
 
         dfsub <- dffT
 
@@ -84,21 +79,12 @@ computeStat <- function(ps, main_factor, time_var, subjectID_var, b) {
 
         g <- dfsub[, subjectID_var]
         dfsub.sp <- split(dfsub, g)
+
+
         bootCorr <- lapply(dfsub.sp, function(x){
             bootLongWorkingCor(x$ot_transT, b)
         })
         workCorr <- bdiag(bootCorr) %>% as.matrix
-
-
-        # if(!is.factor(dfsub[,time_var])){dfsub[,time_var] <- as.factor(dfsub[,time_var])}
-        # g <- dfsub[, time_var]
-        # dfsub.sp <- split(dfsub, g)
-        #
-        # tt <- unlist(lapply(dfsub.sp, function(x){
-        #     max(x$ot_TransT)
-        # }))
-        #
-        # workCorr <- bootLongWorkingCor(tt, b)
 
         if (!is.numeric(dffT[, time_var])) {
             dffT[, time_var] <- as.numeric(as.character(dffT[, time_var]))
@@ -122,24 +108,21 @@ computeStat <- function(ps, main_factor, time_var, subjectID_var, b) {
         }
 
         InvLink <- function(eta){
-            0.5 * exp(-eta) * (exp(2 * eta) - 1)
+            pmax((0.5 * exp(-eta) * (exp(2 * eta) - 1)), .Machine$double.eps)
         }
 
         InvLinkDeriv <- function(eta){
-            0.5 * (exp(eta) + exp(-eta))
+            pmax((0.5 * (exp(eta) + exp(-eta))), .Machine$double.eps)
         }
 
         FunList <- list(LinkFun, VarFun, InvLink, InvLinkDeriv)
 
 
         fit.m <-  tryCatch(geeM::geem(formula = desingGEE, id = idvarV, waves = wavesTime, data = dffT, family = FunList, corstr = "fixed", weights = weightT, corr.mat = workCorr, init.beta = init.beta, nodummy = TRUE), error = function(e){
-            #t(glmft.tx$coefficients)
             glmft.tx
             })
 
-        # fit.m <-  tryCatch(geeM::geem(formula = desingGEE, id = idvarV, waves = wavesTime, data = dffT, family = FunList, corstr = "ar1", weights = weightT, init.beta = init.beta, nodummy = TRUE), error = function(e){
-        #     glmft.tx
-        # })
+
 
         if(class(fit.m) == "geem"){
             fit <- fit.m$beta
@@ -157,6 +140,10 @@ computeStat <- function(ps, main_factor, time_var, subjectID_var, b) {
         rt <- com_beta(x, sampleDf = samdf, otuDf = ot, allSj = sj, weightDf = weights.cal, desingGEE = des, b = b, subjectID_var = subjectID_var, time_var = time_var, ot_trans = ot_trans)
         return(rt)
     })
+
+    for(i in 15:ntaxa(ps)){
+        com_beta(i, sampleDf = samdf, otuDf = ot, allSj = sj, weightDf = weights.cal, desingGEE = des, b = b, subjectID_var = subjectID_var, time_var = time_var, ot_trans = ot_trans)
+    }
 
     df.beta.hat <- data.frame(do.call("rbind", df.beta.hat))
 

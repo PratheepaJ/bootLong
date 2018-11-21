@@ -4,7 +4,8 @@
 \alias{longPACFSingle}
 \title{Plots the PACF (Partial Autocorrelation Function) given the taxon index.}
 \usage{
-longPACFSingle(ps, main_factor, time_var, taxon, taxlevel = "Species")
+longPACFSingle(ps, main_factor, time_var, taxon, taxlevel = "Species",
+  lag.max = 10)
 }
 \arguments{
 \item{ps}{phyloseq object.}
