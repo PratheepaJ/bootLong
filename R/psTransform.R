@@ -7,7 +7,6 @@
 #' @return A list of phyloseq objects. The first phyloseq element contains the arcsinh transformed of otu_table and the second phyloseq element contains the residuals of \code{\link[MASS]{glm.nb}} fit in otu table.
 #' @export
 #' @importFrom MASS glm.nb
-#' @importFrom DESeq2 estimateSizeFactorsForMatrix
 psTransform <- function(ps, main_factor) {
 
     if (dim(otu_table(ps))[2] != nsamples(ps)) {

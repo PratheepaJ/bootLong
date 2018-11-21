@@ -34,7 +34,7 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, fig.width =
 
 
 Install packages: 
-```{r eval = FALSE}
+```{r }
 pkgs <- c("ggplot2","dplyr","tidyr",
           "phyloseq", "limma","ashr",
           "gridExtra","MASS",
@@ -67,8 +67,7 @@ library(magrittr)
 library(joineR)
 library(DESeq2)
 library(grid)
-#library(bootLong)
-devtools::load_all(".")
+library(bootLong)
 ```
 
 Set the computational resources: we need to specify the number of cores for subsampling method and block bootstrap method. 

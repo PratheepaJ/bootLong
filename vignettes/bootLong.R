@@ -4,18 +4,18 @@ list(lC1 = 2L, lC2 = 3L)
 ## ----setup, include=FALSE------------------------------------------------
 knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, fig.width = 7.5, fig.height = 5.5)
 
-## ----eval = FALSE--------------------------------------------------------
-#  pkgs <- c("ggplot2","dplyr","tidyr",
-#            "phyloseq", "limma","ashr",
-#            "gridExtra","MASS",
-#            "geeM", "R.utils", "BiocParallel",
-#            "doParallel", "parallel","magrittr",
-#            "joineR", "DESeq2", "grid")
-#  
-#  source("http://bioconductor.org/biocLite.R")
-#  biocLite(setdiff(pkgs,installed.packages()), suppressUpdates = TRUE)
-#  
-#  devtools::install_github("PratheepaJ/bootLong")
+## ------------------------------------------------------------------------
+pkgs <- c("ggplot2","dplyr","tidyr",
+          "phyloseq", "limma","ashr",
+          "gridExtra","MASS",
+          "geeM", "R.utils", "BiocParallel",
+          "doParallel", "parallel","magrittr",
+          "joineR", "DESeq2", "grid")
+
+source("http://bioconductor.org/biocLite.R")
+biocLite(setdiff(pkgs,installed.packages()), suppressUpdates = TRUE)
+
+devtools::install_github("PratheepaJ/bootLong")
 
 ## ----load_packages-------------------------------------------------------
 library(ggplot2)
@@ -35,8 +35,7 @@ library(magrittr)
 library(joineR)
 library(DESeq2)
 library(grid)
-#library(bootLong)
-devtools::load_all(".")
+library(bootLong)
 
 ## ------------------------------------------------------------------------
 ncores = as.integer(Sys.getenv("SLURM_NTASKS"))
