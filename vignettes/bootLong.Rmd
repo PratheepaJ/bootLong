@@ -15,31 +15,30 @@ vignette: >
 bibliography: bootLong.bib
 ---
 
+Microbiome data consist of the frequency of higher resolution amplicon sequence variants (ASVs) \citep{CMRHJH2016} in each biological sample, clinical and demographic information about biological samples, phylogenetic tree, taxonomy table. Our `bootLong` package requires (phyloseq)[https://joey711.github.io/phyloseq/] for the entire workflow.
 
-In this workflow we provide differential abundance analysis for longitudinal microbiome data. In addition, we provide statistical tools to explore the sampling schedule and within-subject dependence for each ASV. 
+In this workflow, we provide differential abundance analysis for longitudinal microbiome data. In addition, we provide statistical tools to explore the sampling schedule and within-subject dependence for each ASV. 
 
-The manuscript is under revision and it's available in (stat arXiv) [https://arxiv.org/abs/1809.01832]. If you are intersted in learning the method, we suggest to look at our manuscript.
-
-Our bootLong package requires (phyloseq)[https://joey711.github.io/phyloseq/] object to do the analysis. 
-
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, fig.width=7.5, fig.height=5.5)
-```
+The manuscript is under revision and it's available in (stat arXiv) [https://arxiv.org/abs/1809.01832]. 
 
 Install [R](https://www.r-project.org/) and [RStudio](https://www.rstudio.com/). Open this `Rmd` file in RStudio. Then run the following code to install all required packages.
 
 
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, fig.width = 7.5, fig.height = 5.5)
+```
+
+
 Install packages: 
-```{r install_packages, eval = FALSE}
+```{r eval = FALSE}
 pkgs <- c("ggplot2","dplyr","tidyr",
           "phyloseq", "limma","ashr",
-          "gridExtra", "geepack","MASS",
+          "gridExtra","MASS",
           "geeM", "R.utils", "BiocParallel",
           "doParallel", "parallel","magrittr",
-          "joineR", "DESeq2")
+          "joineR", "DESeq2", "grid")
 
-#   installed packages that were not installed already
 source("http://bioconductor.org/biocLite.R")
 biocLite(setdiff(pkgs,installed.packages()), suppressUpdates = TRUE)
 
@@ -64,6 +63,7 @@ library(parallel)
 library(magrittr)
 library(joineR)
 library(DESeq2)
+library(grid)
 #library(bootLong)
 devtools::load_all(".")
 ```
@@ -96,6 +96,8 @@ table(sample_data(ps)$SubjectID, sample_data(ps)$Time)
 
 We can visualize the sampling schedule for each subject and facet by different conditions. This plot can be modified using your preferred theme, legends, etc. For example, `set.theme` can be changed to have point size 10, legend title can be changed from `Preterm` to `Group`, levels of `Preterm` can be changed to `Term` and `Preterm`, etc. 
 
+The sampling schedlue will be used to choose the percentage of subsampling to find the optimal block szie.
+
 ```{r }
 theme_set(theme_bw())
 set.theme <- theme_update(panel.border = element_blank(),
@@ -107,7 +109,8 @@ set.theme <- theme_update(panel.border = element_blank(),
                     axis.title = element_text(size = 8),
                     strip.background = element_blank(),
                     strip.text = element_text(size = 8),
-                    legend.key = element_blank())
+                    legend.key = element_blank(),
+    plot.title = element_text(hjust = 0.5))
 
 
 sample_data(ps)$Group <- as.factor(sample_data(ps)$Group)
@@ -116,8 +119,11 @@ p <- plotSamplingSchedule(ps, time_var = "Time", subjectID_var = "SubjectID", ma
 
 p <- p + scale_color_discrete(name  ="Group",breaks=c("Case", "Control"),labels=c("Case", "Control"))
 p
-#ggsave("./sampling_schedule.eps", plot=p, width = 8, height = 5.5)
+#ggsave("./Example_sampling_schedule.eps", plot = p, width = 8, height = 5.5)
 ```
+
+In order to make at least 5 overlapping subsamples, we should choose $\omega = .6$ ($\omega$ cannot be more than .6). The maximum repeated observations from each subject for the subsample is $10 \times .6 = 6$. Thus, the number of overlapping subsamples $W = 10 - 6 + 1 = 5$.
+
 
 ##   Preprocessing
 
@@ -134,13 +140,15 @@ if (dim(otu_table(ps))[2] != nsamples(ps)) {
         otu_table(ps) <- t(otu_table(ps))
     }
 threshold <- .1
-keep_asv <- apply(otu_table(ps),1,function(x){sum(x>0)}) > threshold*nsamples(ps)
-ps <- prune_taxa(keep_asv,ps)
+keep_asv <- apply(otu_table(ps), 1, function(x){
+    sum(x > 0)
+    }) > threshold*nsamples(ps)
+ps <- prune_taxa(keep_asv, ps)
 ```
 
 ##  Exploratory analysis
 
-Here we provide tools to explore the within-subject dependence. 
+Here we provide tools to explore the within-subject dependence. These tools will be used to decide the initial block size for the subsampling method.
 
 - Extract the common legend [https://github.com/hadley/ggplot2/wiki/Share-a-legend-between-two-ggplot2-graphs]
 
@@ -153,23 +161,28 @@ plot_common_legend <- function(p){
 }
 ```
 
-```{r include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, fig.width=7.5, fig.height=5.5, eval = FALSE)
-```
 
 ###  PACF
 
 Partial autocorrelataion (PACF) at lag $h$ measures the correlation between repeated observations that are seperated by $h$ time units after adjusting for the correlation at shorter lags.  
 
-1) We use `psTransform()` to get phyloseq objects with transformed count table and residuals after fitting a negative-binomial regression (residuals show the dependence in repeated observations).
+1) If you prefer to name strain number with the taxonomy (Species/Genus/Family/Order...) selected and be consistent with all the results, run the following with appropriate changes.
 
-2) We choose top six abundance ASVs (based on the total transformed abundance) to visualize the dependence within-subject. We can choose different ASVs by changing `starttaxa` and `endtaxa`  arguments in `longPACFMultiple()`.
+```{r eval=FALSE}
+tax_table(ps)[, "Genus"] <- paste0(tax_table(ps)[, "Genus"],"_st_" ,seq(1, ntaxa(ps)))
 
-```{r pacf, message=FALSE, warning=FALSE}
+```
+
+2) We use `psTransform()` to get phyloseq objects with transformed count table and residuals after fitting a negative-binomial regression.
+
+3) We choose top six abundance ASVs (based on the total transformed abundance) to visualize the dependence within-subject. We can choose different ASVs by changing `starttaxa` and `endtaxa`  arguments in `longPACFMultiple()`.
+
+
+```{r pacf}
 ps.tr <- psTransform(ps, main_factor = "Group") 
 
 p.all <- longPACFMultiple(pstr  = ps.tr[[1]],
-                             psres = ps.tr[[2]], 
+                             psres = ps.tr[[1]], 
                              main_factor = "Group", 
                              time_var = "Time", 
                              starttaxa = 1, 
@@ -178,14 +191,14 @@ p.all <- longPACFMultiple(pstr  = ps.tr[[1]],
 
 #   Change the legend labels
 p.all <- lapply(p.all, function(x){
-    x + scale_fill_discrete(name  ="Group",breaks=c("Case", "Control"),labels=c("Case", "Control"))
+    x + scale_fill_discrete(name  ="Group", breaks=c("Case", "Control"), labels=c("Case", "Control"))
     })
 
 #   extract the common legend for all taxa
 leg <- plot_common_legend(p.all[[1]])
 
 plist <- lapply(p.all,function(x){
-    x+theme(legend.position="none")
+    x + theme(legend.position = "none")
     })
 
 # p <- grid.arrange(arrangeGrob(grobs=plist,nrow=2,widths=c(3,3,3)),
@@ -193,37 +206,48 @@ plist <- lapply(p.all,function(x){
 #                   ncol=2,
 #                   widths=c(10,2))
                    
-# ggsave("./pac_Sim.eps",plot=p,width = 8,height = 5.5)
+# ggsave("./Example_PAC.eps",plot=p,width = 8,height = 5.5)
 
-grid.arrange(arrangeGrob(grobs=plist,nrow=2,widths=c(3,3,3)),
+grid.arrange(arrangeGrob(grobs = plist, nrow=2, widths=c(3,3,3)),
              leg,
-             ncol=2,
-             widths=c(10,2))
+             ncol = 2,
+             widths = c(10, 2))
 ```
 
-Only the largest spike is observed at lag 1 for both term and preterm. However, almost all the ASVs show that the PACF is less than .25 (sufficiently zero) after lag 3. Therefore, the initial block size is 4 (lag 3 corresponds to block size 4). 
+The largest spike (|PAC| > .25) is observed at lag-1 for both term and preterm in all ASVs. The spike at lag-2 is closer to .25 for ASV_30 and ASV_27 in case. The spike decreases at lag-3 and then, increases at lag-4 for all ASVs. Thus, We can assume that five consecutive observations make a block. We will choose an inital block size of 5. 
+
+We can also check the lag-plot for each ASV and it is interpreted as follows:
+
+1) For each ASV, we plot transformed abundances at different lags. The lag-plot is interpreted as follows: 
+
+    (i) lack of autocorrelation is implied by the absence of a pattern in the lag plot,
+    (ii) weak to moderate autocorrelation is implied by less clustering of points along the diagonal, and
+    (iii) high autocorrelation is implied by tight clustering of points along the diagonal.
 
 ### longitudinal data lag-plots
+
+Let us check the lag-plot for ASV_30. We need to specify the ASV index in the 'taxon' option. In this example, 'taxon = 30'.
+
 ```{r lag-plots, message=FALSE,warning=FALSE}
-lags <- as.list(seq(1,8))
+lags <- as.list(seq(1, 8))
 
 p.lags <- lapply(lags,function(x){
     longLagPlot(ps.tr[[2]], 
-        main_factor="Group", 
+        main_factor = "Group", 
         time_var = "Time", 
-        taxon = 1, 
+        taxon = 30, 
         x, 
-        taxlevel="Genus")})
+        taxlevel = "Genus")})
 
 #   Change the legend labels
 p.lags <- lapply(p.lags, function(x){
-    x+scale_color_discrete(name  ="Group",breaks=c("Case", "Control"),labels=c("Case", "Control"))
+    x + scale_color_discrete(name  = "Group", breaks = c("Case", "Control"), labels = c("Case", "Control"))
     })
 
 leg <- plot_common_legend(p.lags[[1]])
 
 plist <- lapply(p.lags,function(x){
-    x+theme(legend.position="none")
+    x+theme(legend.position = "none")
     })
 
 
@@ -232,22 +256,27 @@ plist <- lapply(p.lags,function(x){
 #                   ncol=2,
 #                   widths=c(10,2))
 # 
-# ggsave("./lag_sim.eps",plot=p,width = 8,height = 5.5)
+# ggsave("./Example_lag_plot.eps",plot=p,width = 8,height = 5.5)
 
-grid.arrange(arrangeGrob(grobs=plist,nrow=2,widths=c(3,3,3,3)), 
+grid.arrange(arrangeGrob(grobs = plist, nrow = 2, widths = c(3, 3, 3, 3)), 
              leg, 
-             ncol=2, 
-             widths=c(10,2))
+             ncol = 2, 
+             widths = c(10, 2), top = textGrob("ASV 30", gp = gpar(fontsize = 8, font = 3)))
 
 ```
 
+For ASV 30, we observe that points are almost on the diagonal at lag-1. Then, points are less clustering along the diagonal at lag-3. We can either choose an initial block size of 4 according to lag-plot or 5 accroding to PAC plots. However, we visualized a lag-plot for one ASV but we visualized PAC for six ASVs. Thus, we will still choose $l_{I} = 5.$
 
-We observe that for the top abundance ASV, the lag-plot at lag 3 (green) deviates from a linear line. Thus, we choose an initial block size of 4.
+In practice, we can choose initial block size using PAC plots. If there are spurious effects at larger lags and suggesting to choose `BIG` initial block size, we can diagnose those using lag-plot for particular ASV. There might be a spurious higher autocorrelation at larger lags due to a small number of observations or abundances close to zero.
+
 
 ###  Correlogram
+
+In practice, we can also choose $l_{I}$ using correlogram. First, we use the variance-stabilizing transformation on the original abundance table. Then, for each ASV, we compute the average transformed abundance at each time point. Finally, we plot within-subject autocorrelation for top six abundances ASVs. These top six ASVs are selected according to the sum of transformed abundances for each ASV. Using the autocorrelation plots, we consider the first occurrence of a lag with sufficiently close to zero autocorrelation as initial block size $l_{I}$. There might be a spurious higher autocorrelation at larger lags due to a small number of observations or abundances close to zero.
+
 ```{r corr, message=FALSE, warning=FALSE}
 p.all <- longCorreloMultiple(ps.tr[[1]],
-                             ps.tr[[2]], 
+                             ps.tr[[1]], 
                              main_factor = "Group", 
                              time_var = "Time", 
                              starttaxa = 1, 
@@ -263,63 +292,28 @@ p.all <- lapply(p.all, function(x){
 leg <- plot_common_legend(p.all[[1]])
 
 plist <- lapply(p.all,function(x){
-    x+theme(legend.position="none")
+    x + theme(legend.position = "none")
     })
 
 # p <- grid.arrange(arrangeGrob(grobs=plist,nrow=2,widths=c(3,3,3)),
 #                   leg,
 #                   ncol=2,
 #                   widths=c(10,2))
-# ggsave("./core_Sim.eps",plot=p,width = 8,height = 5.5)
+# ggsave("./Example_correlogram.eps",plot=p,width = 8,height = 5.5)
 
-grid.arrange(arrangeGrob(grobs=plist,nrow=2,widths=c(3,3,3)),
+grid.arrange(arrangeGrob(grobs = plist, nrow = 2, widths = c(3, 3, 3)),
              leg,
-             ncol=2,
-             widths=c(10,2))
+             ncol = 2,
+             widths=c(10, 2))
 ```
 
-We observe that the correlogram tends to be sufficiently zero (first time) at lag 3 for almost all the ASVs. Therefore, the initial block size is 4.
+We observe that the correlogram tends to be sufficiently zero at lag 3 for almost all the ASVs. Therefore, the initial block size is 4.
 
 
-### Variogram for longitudinal data
 
-We can plot points (residuals) by choosing argument `point = TRUE` in `longVarioMultiple()`.
-
-```{r message=FALSE, warning=FALSE}
-p.all <- longVarioMultiple(ps.tr[[1]],
-                           ps.tr[[2]],
-                           main_factor = "Group",
-                           time_var="Time",
-                           subjectID_var = "SubjectID",
-                           starttaxa = 1,
-                           endtaxa = 6,
-                           point = TRUE,
-                           taxlevel = "Species")
-
-#   Change the legend labels
-p.all <- lapply(p.all, function(x){
-    x + scale_color_discrete(name  ="Group",breaks=c("Case", "Control"),labels=c("Case", "Control"))
-    })
-
-leg <- plot_common_legend(p.all[[1]])
-
-plist <- lapply(p.all,function(x){
-    x + theme(legend.position="none")
-    })
-
-# p <- grid.arrange(arrangeGrob(grobs=plist, nrow=2, widths=c(3,3,3)),
-#                   leg,
-#                   ncol=2,
-#                   widths=c(10,2))
-# 
-# ggsave("./vario_sim.eps", plot=p, width = 8, height = 5.5)
-
-grid.arrange(arrangeGrob(grobs=plist, nrow=2, widths=c(3,3,3)),
-             leg,
-             ncol=2,
-             widths=c(10,2))
+```{r include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, fig.width = 7.5, fig.height = 5.5, eval = FALSE)
 ```
-
 
 We cannot get a clear idea about inital block size because subject variability dominates variogram fit.
 
