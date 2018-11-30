@@ -24,8 +24,6 @@ bootLongMSEPsi <- function(ps, main_factor, time_var, subjectID_var, sampleID_va
         stop("User needs to provide observed test statistic")
     }
 
-
-
     sam.ps <- sample_data(ps) %>% data.frame
 
     sam.ps[, time_var] <- as.numeric(sam.ps[, time_var])

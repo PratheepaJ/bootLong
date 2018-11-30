@@ -15,6 +15,12 @@ bootLongMethod <- function(ps, main_factor, time_var, subjectID_var, sampleID_va
         otu_table(ps) <- t(otu_table(ps, taxa_are_rows = T))
     }
 
+    sam.ps <- sample_data(ps) %>% data.frame
+
+    if(!(all(as.character(sam.ps[, sampleID_var]) == sample_names(ps)))){
+        stop(paste0(sampleID_var, " must be same as sample names in the phyloseq"))
+    }
+
     res.obs <- computeStat(ps = ps, main_factor = main_factor, time_var = time_var, subjectID_var = subjectID_var, b = b)
 
     stat.name <- colnames(res.obs)[2]
