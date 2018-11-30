@@ -22,6 +22,9 @@ bootLongSubsampling <- function(ps, main_factor, time_var, subjectID_var, sample
 
     sam.ps <- sample_data(ps) %>% data.frame
 
+    if(!(all(as.character(sam.ps[, sampleID_var]) == sample_names(ps)))){
+        stop(paste0(sampleID_var, " must be same as sample names in the phyloseq"))
+    }
 
     sam.ps[, subjectID_var] <- factor(sam.ps[, subjectID_var], levels = unique(sam.ps[, subjectID_var]))
 
