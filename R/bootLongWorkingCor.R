@@ -11,7 +11,6 @@ bootLongWorkingCor <- function(x, b){
     q <- length(x)
     maxk <- (b-1)
 
-
     autoCorr <- function(gk, first.ind, b, q, x){
 
         X.boot <- lapply(first.ind, function(y){
@@ -38,11 +37,12 @@ bootLongWorkingCor <- function(x, b){
 
     }
 
-    if(all(x == 0)){
+    if(all(x == 0) | (q <= b)){
         workCorr <- diag(q)
     }else{
         workCorr <- matrix(-1, nrow = q, ncol = q)
         L <- q - b + 1
+
         L0 <- ceiling(q/b)
 
         while (det(workCorr) <= 0) {

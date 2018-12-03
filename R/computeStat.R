@@ -89,6 +89,7 @@ computeStat <- function(ps, main_factor, time_var, subjectID_var, b) {
         bootCorr <- lapply(dfsub.sp, function(x){
             bootLongWorkingCor(x$ot_transT, b)
         })
+
         workCorr <- bdiag(bootCorr) %>% as.matrix
 
         if (!is.numeric(dffT[, time_var])) {
