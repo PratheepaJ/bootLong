@@ -328,11 +328,11 @@ We observe that the correlogram tends to be sufficiently zero at lag-4 for almos
 
 All other exploratory tools suggest an inital block size of 5.
 
-Now we have chosen the initial parameters or the subsampling method. $\omega = .6$ and $l_{I} =5$. 
+Now we have chosen the initial parameters for the subsampling method. $\omega = .6$ and $l_{I} =5$. 
 
 #   The block bootstrap method
 
-First, we identify the opitmal block size for the subsample. We use the initial block size 5 ($l_{I} = 5$) and subsampling percentage 60\% ($\omega = .6$) to identify the opitmal block size. 
+First, we identify the opitmal block size for the subsample. We use the initial block size 5 ($l_{I} = 5$) and subsampling proportion $\omega = .6$ to identify the opitmal block size. 
 
 ## Subsampling
 
@@ -384,7 +384,7 @@ fileN <- paste0("MSE_",setting_name,".rds")
 saveRDS(MSE.all, fileN)
 ```
 
-1) Find the optimal block size for the subsample of 60\% (l_{\omega}) using MSE plot. 
+1) Find the optimal block size for the subsample (l_{\omega}) using MSE plot. 
 
 2) Find the optimal block size for the original data using the formula.
 
