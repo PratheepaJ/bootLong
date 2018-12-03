@@ -9,6 +9,10 @@ bootLongWorkingCor <- function(x, b){
 
     ## naive method
     q <- length(x)
+
+    if(q <= b){
+        b <- q
+    }
     maxk <- (b-1)
 
     autoCorr <- function(gk, first.ind, b, q, x){
@@ -37,7 +41,7 @@ bootLongWorkingCor <- function(x, b){
 
     }
 
-    if(all(x == 0) | (q <= b)){
+    if(all(x == 0) | maxk == 0){
         workCorr <- diag(q)
     }else{
         workCorr <- matrix(-1, nrow = q, ncol = q)
