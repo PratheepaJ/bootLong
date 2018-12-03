@@ -49,7 +49,9 @@ bootLongWorkingCor <- function(x, b){
 
         L0 <- ceiling(q/b)
 
-        while (det(workCorr) <= 0) {
+        ite = 0
+
+        while (det(workCorr) <= 0 | ite < 51) {
             first.ind <- sample(1:L, L0, replace = TRUE)
             corK <- lapply(1:maxk, FUN = autoCorr, first.ind = first.ind, b = b, q = q, x = x)
             corK <- unlist(corK)
@@ -66,6 +68,12 @@ bootLongWorkingCor <- function(x, b){
                     workCorr[rw, nc] <- acf.res[(abs(rw - nc) + 1)]
                 }
             }
+
+            ite <- ite + 1
+        }
+
+        if(ite >= 50){
+            workCorr <- diag(q)
         }
     }
 
