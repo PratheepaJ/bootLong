@@ -15,7 +15,7 @@ vignette: >
 bibliography: bootLong.bib
 params:
   lC1: 2
-  lC2: 3
+  lC2: 2
 ---
 
 Microbiome data consist of the frequency of higher resolution amplicon sequence variants (ASVs) \citep{CMRHJH2016} in each biological sample, clinical and demographic information about biological samples, phylogenetic tree, taxonomy table. Our `bootLong` package requires (phyloseq)[https://joey711.github.io/phyloseq/] for the entire workflow.
@@ -34,7 +34,7 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, fig.width =
 
 
 Install packages: 
-```{r }
+```{r eval=FALSE}
 pkgs <- c("ggplot2","dplyr","tidyr",
           "phyloseq", "limma","ashr",
           "gridExtra","MASS",
@@ -67,7 +67,8 @@ library(magrittr)
 library(joineR)
 library(DESeq2)
 library(grid)
-library(bootLong)
+#library(bootLong)
+devtools::load_all(".")
 ```
 
 Set the computational resources: we need to specify the number of cores for subsampling method and block bootstrap method. 

@@ -49,15 +49,17 @@ bootLongWorkingCor <- function(x, b){
 
         L0 <- ceiling(q/b)
 
-        ite = 0
+        ite <- 0
 
-        while (det(workCorr) <= 0 | ite < 51) {
+        while (det(workCorr) <= 0 & ite < 51) {
             first.ind <- sample(1:L, L0, replace = TRUE)
             corK <- lapply(1:maxk, FUN = autoCorr, first.ind = first.ind, b = b, q = q, x = x)
             corK <- unlist(corK)
 
-            for(k in b:(q-1)){
-                corK[k] <- 0
+            if(!(b == q)){
+                for(k in b:(q-1)){
+                    corK[k] <- 0
+                }
             }
 
             corK <- c(1, corK)
@@ -70,11 +72,13 @@ bootLongWorkingCor <- function(x, b){
             }
 
             ite <- ite + 1
+
+            if(ite >= 50){
+                workCorr <- diag(q)
+            }
         }
 
-        if(ite >= 50){
-            workCorr <- diag(q)
-        }
+
     }
 
 

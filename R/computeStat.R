@@ -71,62 +71,123 @@ computeStat <- function(ps, main_factor, time_var, subjectID_var, b) {
         idvar <- "idvar"
         dffT <- arrange_(dffT, idvar, time_var)
 
-        # glmft.tx <- suppressWarnings(MASS::glm.nb(desingGEE, data = dffT, weights = weightT, method = "glm.fit", link = arcsinhLink()))
 
-        glmft.tx <- tryCatch(MASS::glm.nb(desingGEE, data = dffT, weights = weightT, method = "glm.fit", link = arcsinhLink()),
-            error = function(e){
-                dffT$otuT <- dffT$otuT + sample(c(0,1),length(dffT$otuT), replace = TRUE); glm(desingGEE, data = dffT, weights = weightT, method = "glm.fit", family = poisson()) #when count is very small
+
+        doGLMnbGEE <- function(){
+            glmft.tx <- MASS::glm.nb(desingGEE, data = dffT, weights = weightT, method = "glm.fit", link = arcsinhLink())
+
+            dfsub <- dffT
+
+            dfsub[, subjectID_var] <- factor(dfsub[, subjectID_var], levels = unique(dfsub[, subjectID_var]))
+
+            g <- dfsub[, subjectID_var]
+            dfsub.sp <- split(dfsub, g)
+
+
+            bootCorr <- lapply(dfsub.sp, function(x){
+                bootLongWorkingCor(x$ot_transT, b)
             })
 
-        dfsub <- dffT
+            workCorr <- bdiag(bootCorr) %>% as.matrix
 
-        dfsub[, subjectID_var] <- factor(dfsub[, subjectID_var], levels = unique(dfsub[, subjectID_var]))
+            if (!is.numeric(dffT[, time_var])) {
+                dffT[, time_var] <- as.numeric(as.character(dffT[, time_var]))
+            }
 
-        g <- dfsub[, subjectID_var]
-        dfsub.sp <- split(dfsub, g)
+            wavesTime <- dffT[, time_var]
+            idvarV <- dffT[, "idvar"]
 
+            theta <- glmft.tx$theta
 
-        bootCorr <- lapply(dfsub.sp, function(x){
-            bootLongWorkingCor(x$ot_transT, b)
+            init.beta <- as.numeric(glmft.tx$coefficients)
+
+            theta <- glmft.tx$theta
+
+            LinkFun <- function(y){
+                log(y + sqrt(y^2 + 1))
+            }
+
+            VarFun <- function(y){
+                y * (1 + y/theta)
+            }
+
+            InvLink <- function(eta){
+                pmax((0.5 * exp(-eta) * (exp(2 * eta) - 1)), .Machine$double.eps)
+            }
+
+            InvLinkDeriv <- function(eta){
+                pmax((0.5 * (exp(eta) + exp(-eta))), .Machine$double.eps)
+            }
+
+            FunList <- list(LinkFun, VarFun, InvLink, InvLinkDeriv)
+
+            geeM::geem(formula = desingGEE, id = idvarV, waves = wavesTime, data = dffT, family = FunList, corstr = "fixed", weights = weightT, corr.mat = workCorr, init.beta = init.beta, nodummy = TRUE)
+        }
+
+        doGLMPoiss <- function(){
+            glm(desingGEE, data = dffT, weights = weightT, method = "glm.fit", family = poisson())
+        }
+
+        fit.m <- tryCatch(doGLMnbGEE(),
+            error=function(e){
+            doGLMPoiss()
         })
 
-        workCorr <- bdiag(bootCorr) %>% as.matrix
 
-        if (!is.numeric(dffT[, time_var])) {
-            dffT[, time_var] <- as.numeric(as.character(dffT[, time_var]))
-        }
-
-        wavesTime <- dffT[, time_var]
-        idvarV <- dffT[, "idvar"]
-
-        theta <- glmft.tx$theta
-
-        init.beta <- as.numeric(glmft.tx$coefficients)
-
-        theta <- glmft.tx$theta
-
-        LinkFun <- function(y){
-            log(y + sqrt(y^2 + 1))
-        }
-
-        VarFun <- function(y){
-            y * (1 + y/theta)
-        }
-
-        InvLink <- function(eta){
-            pmax((0.5 * exp(-eta) * (exp(2 * eta) - 1)), .Machine$double.eps)
-        }
-
-        InvLinkDeriv <- function(eta){
-            pmax((0.5 * (exp(eta) + exp(-eta))), .Machine$double.eps)
-        }
-
-        FunList <- list(LinkFun, VarFun, InvLink, InvLinkDeriv)
-
-
-        fit.m <-  tryCatch(geeM::geem(formula = desingGEE, id = idvarV, waves = wavesTime, data = dffT, family = FunList, corstr = "fixed", weights = weightT, corr.mat = workCorr, init.beta = init.beta, nodummy = TRUE), error = function(e){
-            glmft.tx # if the condition number is large, then, we use corr.mat = idependence
-            })
+        # glmft.tx <- tryCatch(MASS::glm.nb(desingGEE, data = dffT, weights = weightT, method = "glm.fit", link = arcsinhLink()),
+        #     error = function(e){
+        #         glm(desingGEE, data = dffT, weights = weightT, method = "glm.fit", family = poisson()) #when count is very small
+        #     })
+        #
+        # dfsub <- dffT
+        #
+        # dfsub[, subjectID_var] <- factor(dfsub[, subjectID_var], levels = unique(dfsub[, subjectID_var]))
+        #
+        # g <- dfsub[, subjectID_var]
+        # dfsub.sp <- split(dfsub, g)
+        #
+        #
+        # bootCorr <- lapply(dfsub.sp, function(x){
+        #     bootLongWorkingCor(x$ot_transT, b)
+        # })
+        #
+        # workCorr <- bdiag(bootCorr) %>% as.matrix
+        #
+        # if (!is.numeric(dffT[, time_var])) {
+        #     dffT[, time_var] <- as.numeric(as.character(dffT[, time_var]))
+        # }
+        #
+        # wavesTime <- dffT[, time_var]
+        # idvarV <- dffT[, "idvar"]
+        #
+        # theta <- glmft.tx$theta
+        #
+        # init.beta <- as.numeric(glmft.tx$coefficients)
+        #
+        # theta <- glmft.tx$theta
+        #
+        # LinkFun <- function(y){
+        #     log(y + sqrt(y^2 + 1))
+        # }
+        #
+        # VarFun <- function(y){
+        #     y * (1 + y/theta)
+        # }
+        #
+        # InvLink <- function(eta){
+        #     pmax((0.5 * exp(-eta) * (exp(2 * eta) - 1)), .Machine$double.eps)
+        # }
+        #
+        # InvLinkDeriv <- function(eta){
+        #     pmax((0.5 * (exp(eta) + exp(-eta))), .Machine$double.eps)
+        # }
+        #
+        # FunList <- list(LinkFun, VarFun, InvLink, InvLinkDeriv)
+        #
+        #
+        # fit.m <-  tryCatch(geeM::geem(formula = desingGEE, id = idvarV, waves = wavesTime, data = dffT, family = FunList, corstr = "fixed", weights = weightT, corr.mat = workCorr, init.beta = init.beta, nodummy = TRUE), error = function(e){
+        #     glmft.tx # if the condition number is large, then, we use corr.mat = idependence
+        #     })
 
         if(class(fit.m) == "geem"){
             fit <- fit.m$beta
