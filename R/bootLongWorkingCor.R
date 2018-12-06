@@ -51,7 +51,7 @@ bootLongWorkingCor <- function(x, b){
 
         ite <- 0
 
-        while (det(workCorr) <= 0 & ite < 51) {
+        while (det(workCorr) <= 0 & ite < 21) {
             first.ind <- sample(1:L, L0, replace = TRUE)
             corK <- lapply(1:maxk, FUN = autoCorr, first.ind = first.ind, b = b, q = q, x = x)
             corK <- unlist(corK)
@@ -73,7 +73,7 @@ bootLongWorkingCor <- function(x, b){
 
             ite <- ite + 1
 
-            if(ite >= 50){
+            if(ite >= 20){
                 workCorr <- diag(q)
             }
         }
