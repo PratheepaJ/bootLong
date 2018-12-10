@@ -6,6 +6,8 @@
 #' @param omega  A numeric. The proportion between 0 and 1 of repeated observations for subsampling.
 #' @param lC1 A numeric. (optional) any block size to start with. Defualt is 1.
 #' @param lC2 A numeric. (optional) any block size to end with. defualt is (lI-1).
+#' @param psi.hat.lI A logical. psi is estiamted already with the initial block size.
+#' @param psi.hat.lI.val A list. If psi is calculated already, give the list of values.
 #' @inheritParams bootLongMSEPsi
 #'
 #' @return A list of ``MSE`` in calculating K with block sizes lC=1:(lI-1), ``Khat`` values with block sizes lC=1:(lI-1) and ``Khat.obs`` with lI
@@ -67,7 +69,7 @@ bootLongSubsampling <- function(ps, main_factor, time_var, subjectID_var, sample
 
 
 
-    return(mse.Khat.Kobs)
+    return(rt)
 }
 
 
