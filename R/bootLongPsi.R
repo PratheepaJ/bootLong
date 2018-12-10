@@ -14,12 +14,12 @@
 #' @export
 bootLongPsi <- function(ps, main_factor = main_factor, time_var = time_var, subjectID_var = subjectID_var, sampleID_var = sampleID_var, b, R, RR, T.obs.full = NULL, ncores){
 
-    doParallel::registerDoParallel(parallel::detectCores())
-    BiocParallel::register(BiocParallel::DoparParam())
+    # doParallel::registerDoParallel(parallel::detectCores())
+    # BiocParallel::register(BiocParallel::DoparParam())
 
     res.obs <- computeStat(ps = ps, main_factor = main_factor, time_var = time_var, subjectID_var = subjectID_var, b = b)
 
-    boot.results <- bplapply(seq_len(R), FUN = function(i){
+    boot.results <- lapply(seq_len(R), FUN = function(i){
         ps.boot <- bootLongPhyloseq(ps = ps, time_var = time_var, subjectID_var = subjectID_var, sampleID_var = sampleID_var, b = b)
         ps.boot <- ps.boot[[1]]
 
