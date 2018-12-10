@@ -15,6 +15,9 @@
 #' @export
 computeStat <- function(ps, main_factor, time_var, subjectID_var, b) {
 
+    doParallel::registerDoParallel(parallel::detectCores())
+    BiocParallel::register(BiocParallel::DoparParam())
+
     if (dim(otu_table(ps))[2] != nsamples(ps)) {
         otu_table(ps) <- t(otu_table(ps))
     }
@@ -134,61 +137,6 @@ computeStat <- function(ps, main_factor, time_var, subjectID_var, b) {
         })
 
 
-        # glmft.tx <- tryCatch(MASS::glm.nb(desingGEE, data = dffT, weights = weightT, method = "glm.fit", link = arcsinhLink()),
-        #     error = function(e){
-        #         glm(desingGEE, data = dffT, weights = weightT, method = "glm.fit", family = poisson()) #when count is very small
-        #     })
-        #
-        # dfsub <- dffT
-        #
-        # dfsub[, subjectID_var] <- factor(dfsub[, subjectID_var], levels = unique(dfsub[, subjectID_var]))
-        #
-        # g <- dfsub[, subjectID_var]
-        # dfsub.sp <- split(dfsub, g)
-        #
-        #
-        # bootCorr <- lapply(dfsub.sp, function(x){
-        #     bootLongWorkingCor(x$ot_transT, b)
-        # })
-        #
-        # workCorr <- bdiag(bootCorr) %>% as.matrix
-        #
-        # if (!is.numeric(dffT[, time_var])) {
-        #     dffT[, time_var] <- as.numeric(as.character(dffT[, time_var]))
-        # }
-        #
-        # wavesTime <- dffT[, time_var]
-        # idvarV <- dffT[, "idvar"]
-        #
-        # theta <- glmft.tx$theta
-        #
-        # init.beta <- as.numeric(glmft.tx$coefficients)
-        #
-        # theta <- glmft.tx$theta
-        #
-        # LinkFun <- function(y){
-        #     log(y + sqrt(y^2 + 1))
-        # }
-        #
-        # VarFun <- function(y){
-        #     y * (1 + y/theta)
-        # }
-        #
-        # InvLink <- function(eta){
-        #     pmax((0.5 * exp(-eta) * (exp(2 * eta) - 1)), .Machine$double.eps)
-        # }
-        #
-        # InvLinkDeriv <- function(eta){
-        #     pmax((0.5 * (exp(eta) + exp(-eta))), .Machine$double.eps)
-        # }
-        #
-        # FunList <- list(LinkFun, VarFun, InvLink, InvLinkDeriv)
-        #
-        #
-        # fit.m <-  tryCatch(geeM::geem(formula = desingGEE, id = idvarV, waves = wavesTime, data = dffT, family = FunList, corstr = "fixed", weights = weightT, corr.mat = workCorr, init.beta = init.beta, nodummy = TRUE), error = function(e){
-        #     glmft.tx # if the condition number is large, then, we use corr.mat = idependence
-        #     })
-
         if(class(fit.m) == "geem"){
             fit <- fit.m$beta
         }else{
@@ -201,7 +149,7 @@ computeStat <- function(ps, main_factor, time_var, subjectID_var, b) {
 
     ind <- as.list(c(1:ntaxa(ps)))
 
-    df.beta.hat <- lapply(ind, function(x) {
+    df.beta.hat <- BiocParallel::bplapply(ind, function(x) {
         rt <- com_beta(x, sampleDf = samdf, otuDf = ot, allSj = sj, weightDf = weights.cal, desingGEE = des, b = b, subjectID_var = subjectID_var, time_var = time_var, ot_trans = ot_trans)
         return(rt)
     })

@@ -8,8 +8,8 @@
 #' @export
 bootLongMethod <- function(ps, main_factor, time_var, subjectID_var, sampleID_var, b, R, RR, FDR = 0.05) {
 
-    doParallel::registerDoParallel(parallel::detectCores())
-    BiocParallel::register(BiocParallel::DoparParam())
+    # doParallel::registerDoParallel(parallel::detectCores())
+    # BiocParallel::register(BiocParallel::DoparParam())
 
     if (dim(otu_table(ps))[1] == nsamples(ps)) {
         otu_table(ps) <- t(otu_table(ps, taxa_are_rows = T))
@@ -27,7 +27,7 @@ bootLongMethod <- function(ps, main_factor, time_var, subjectID_var, sampleID_va
 
     boot.results <- list()
 
-    boot.results <- BiocParallel::bplapply(seq_len(R), FUN = function(i) {
+    boot.results <- lapply(seq_len(R), FUN = function(i) {
 
         ps.boot <- bootLongPhyloseq(ps, time_var = time_var, subjectID_var = subjectID_var, sampleID_var = sampleID_var, b = b)
 

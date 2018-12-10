@@ -77,7 +77,7 @@ ncores = as.integer(Sys.getenv("SLURM_NTASKS"))
 if(is.na(ncores)) ncores <- parallel::detectCores()
 ncores
 
-setting_name <- "Example"
+setting_name <- "Sim"
 ```
 
 
@@ -340,8 +340,8 @@ First, we identify the opitmal block size for the subsample. We use the initial 
 We can run this code parallel for each block sizes and setting lC1 = lC2 and save the results with the block size (lC1) used.
 
 ```{r eval=FALSE}
-fileN <- paste0("ps", setting_name, ".rds")
-ps <- readRDS(fileN)
+# fileN <- paste0("ps", setting_name, ".rds")
+# ps <- readRDS(fileN)
 
 R <- 100
 RR <- 50
