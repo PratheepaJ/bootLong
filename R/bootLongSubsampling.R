@@ -66,9 +66,6 @@ bootLongSubsampling <- function(ps, main_factor, time_var, subjectID_var, sample
 
     }
 
-
-
-
     return(rt)
 }
 

@@ -15,8 +15,8 @@
 #' @export
 computeStat <- function(ps, main_factor, time_var, subjectID_var, b) {
 
-    doParallel::registerDoParallel(parallel::detectCores())
-    BiocParallel::register(BiocParallel::DoparParam())
+    # doParallel::registerDoParallel(parallel::detectCores())
+    # BiocParallel::register(BiocParallel::DoparParam())
 
     if (dim(otu_table(ps))[2] != nsamples(ps)) {
         otu_table(ps) <- t(otu_table(ps))
@@ -149,7 +149,7 @@ computeStat <- function(ps, main_factor, time_var, subjectID_var, b) {
 
     ind <- as.list(c(1:ntaxa(ps)))
 
-    df.beta.hat <- BiocParallel::bplapply(ind, function(x) {
+    df.beta.hat <- lapply(ind, function(x) {
         rt <- com_beta(x, sampleDf = samdf, otuDf = ot, allSj = sj, weightDf = weights.cal, desingGEE = des, b = b, subjectID_var = subjectID_var, time_var = time_var, ot_trans = ot_trans)
         return(rt)
     })
