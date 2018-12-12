@@ -6,7 +6,7 @@
 \usage{
 bootLongPsi(ps, main_factor = main_factor, time_var = time_var,
   subjectID_var = subjectID_var, sampleID_var = sampleID_var, b, R, RR,
-  T.obs.full = NULL, ncores)
+  T.obs.full = NULL, ncores, compStatParallel = FALSE)
 }
 \arguments{
 \item{ps}{phyloseq object.}
@@ -28,6 +28,8 @@ bootLongPsi(ps, main_factor = main_factor, time_var = time_var,
 \item{T.obs.full}{A numeric vector. The numeric vector of observed statistic.}
 
 \item{ncores}{A numeric. The number of cores to use in \code{\link[parallel]{mclapply}}.}
+
+\item{compStatParallel}{A logical. True is used to use parallel in \code{computeStat} and disable parallel in \code{bootLongPsi} or \code{bootLongMethod}.}
 }
 \value{
 A list with the first element K.val - two-sided significance probability and the second element observed test statistic.

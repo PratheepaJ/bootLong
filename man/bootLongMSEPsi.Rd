@@ -5,7 +5,8 @@
 \title{bootLongMSEPsi}
 \usage{
 bootLongMSEPsi(ps, main_factor, time_var, subjectID_var, sampleID_var, b,
-  R, RR, qj, Wj, Khat.obs = NULL, T.obs.full = NULL, ncores)
+  R, RR, qj, Wj, Khat.obs = NULL, T.obs.full = NULL, ncores,
+  compStatParallel = FALSE)
 }
 \arguments{
 \item{ps}{phyloseq object.}
@@ -33,6 +34,8 @@ bootLongMSEPsi(ps, main_factor, time_var, subjectID_var, sampleID_var, b,
 \item{T.obs.full}{A numeric vector. The numeric vector of observed statistic.}
 
 \item{ncores}{A numeric. The number of cores to use in \code{\link[parallel]{mclapply}}.}
+
+\item{compStatParallel}{A logical. True is used to use parallel in \code{computeStat} and disable parallel in \code{bootLongPsi} or \code{bootLongMethod}.}
 }
 \value{
 A list of MSE computed with given block size b, Khat with all subsamples, Khat with initial block size.

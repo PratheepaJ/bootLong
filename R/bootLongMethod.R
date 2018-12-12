@@ -3,13 +3,11 @@
 #' @param FDR A numeric. False discovery rate.
 #' @inheritParams bootLongPhyloseq
 #' @inheritParams bootLongSubsampling
+#' @inheritParams computeStat
 #'
 #' @return list of dataframe with ASV, observed stat, pvalues, adjusted pvalues, lcl, ucl, observed pivotal quantity; stat.obs; stat.star; stat.star.star; T.star_obs.
 #' @export
-bootLongMethod <- function(ps, main_factor, time_var, subjectID_var, sampleID_var, b, R, RR, FDR = 0.05) {
-
-    doParallel::registerDoParallel(parallel::detectCores())
-    BiocParallel::register(BiocParallel::DoparParam())
+bootLongMethod <- function(ps, main_factor, time_var, subjectID_var, sampleID_var, b, R, RR, FDR = 0.05, compStatParallel = FALSE) {
 
     if (dim(otu_table(ps))[1] == nsamples(ps)) {
         otu_table(ps) <- t(otu_table(ps, taxa_are_rows = T))
@@ -21,34 +19,65 @@ bootLongMethod <- function(ps, main_factor, time_var, subjectID_var, sampleID_va
         stop(paste0(sampleID_var, " must be same as sample names in the phyloseq"))
     }
 
-    res.obs <- computeStat(ps = ps, main_factor = main_factor, time_var = time_var, subjectID_var = subjectID_var, b = b)
+    res.obs <- computeStat(ps = ps, main_factor = main_factor, time_var = time_var, subjectID_var = subjectID_var, b = b, compStatParallel = TRUE)
 
     stat.name <- colnames(res.obs)[2]
 
     boot.results <- list()
 
-    boot.results <- BiocParallel::bplapply(seq_len(R), FUN = function(i) {
+    if(compStatParallel){
+        boot.results <- lapply(seq_len(R), FUN = function(i) {
 
-        ps.boot <- bootLongPhyloseq(ps, time_var = time_var, subjectID_var = subjectID_var, sampleID_var = sampleID_var, b = b)
+            ps.boot <- bootLongPhyloseq(ps, time_var = time_var, subjectID_var = subjectID_var, sampleID_var = sampleID_var, b = b)
 
-        ps.boot <- ps.boot[[1]]
+            ps.boot <- ps.boot[[1]]
 
-        df.boot <- computeStat(ps = ps.boot, main_factor = main_factor, time_var = time_var, subjectID_var = subjectID_var, b = b)
+            df.boot <- computeStat(ps = ps.boot, main_factor = main_factor, time_var = time_var, subjectID_var = subjectID_var, b = b, compStatParallel = compStatParallel)
 
 
             boot.results.bb <- lapply(seq_len(RR), FUN = function(j) {
                 ps.boot.bb <- bootLongPhyloseq(ps.boot, time_var = time_var, subjectID_var = subjectID_var, sampleID_var = sampleID_var, b = b)
                 ps.boot.bb <- ps.boot.bb[[1]]
-                df.boot.bb <- computeStat(ps = ps.boot.bb, main_factor = main_factor, time_var = time_var, subjectID_var = subjectID_var, b = b)
+                df.boot.bb <- computeStat(ps = ps.boot.bb, main_factor = main_factor, time_var = time_var, subjectID_var = subjectID_var, b = b, compStatParallel = compStatParallel)
                 rm(ps.boot.bb)
                 return(df.boot.bb)
 
             })
 
-        rm(ps.boot)
+            rm(ps.boot)
 
-        return(list(df.boot, boot.results.bb))
-    })
+            return(list(df.boot, boot.results.bb))
+        })
+
+    }else{
+
+        doParallel::registerDoParallel(parallel::detectCores())
+        BiocParallel::register(BiocParallel::DoparParam())
+
+        boot.results <- BiocParallel::bplapply(seq_len(R), FUN = function(i) {
+
+            ps.boot <- bootLongPhyloseq(ps, time_var = time_var, subjectID_var = subjectID_var, sampleID_var = sampleID_var, b = b)
+
+            ps.boot <- ps.boot[[1]]
+
+            df.boot <- computeStat(ps = ps.boot, main_factor = main_factor, time_var = time_var, subjectID_var = subjectID_var, b = b, compStatParallel = compStatParallel)
+
+
+            boot.results.bb <- lapply(seq_len(RR), FUN = function(j) {
+                ps.boot.bb <- bootLongPhyloseq(ps.boot, time_var = time_var, subjectID_var = subjectID_var, sampleID_var = sampleID_var, b = b)
+                ps.boot.bb <- ps.boot.bb[[1]]
+                df.boot.bb <- computeStat(ps = ps.boot.bb, main_factor = main_factor, time_var = time_var, subjectID_var = subjectID_var, b = b, compStatParallel = compStatParallel)
+                rm(ps.boot.bb)
+                return(df.boot.bb)
+
+            })
+
+            rm(ps.boot)
+
+            return(list(df.boot, boot.results.bb))
+        })
+    }
+
 
     boot.results.all <- lapply(boot.results, "[[", 1)
 

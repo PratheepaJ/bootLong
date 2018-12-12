@@ -67,8 +67,8 @@ library(magrittr)
 library(joineR)
 library(DESeq2)
 library(grid)
-library(bootLong)
-#devtools::load_all(".")
+#library(bootLong)
+devtools::load_all(".")
 ```
 
 Set the computational resources: we need to specify the number of cores for subsampling method and block bootstrap method. 
@@ -337,11 +337,47 @@ First, we identify the opitmal block size for the subsample. We use the initial 
 
 ## Subsampling
 
-We can run this code parallel for each block sizes and setting lC1 = lC2 and save the results with the block size (lC1) used.
+1) Compute $\psi(q,l_{I})$ and $T_{i}\left(q, l_{I}\right)$ using the initial block size and the full data.
+
+```{r eval=FALSE}
+R <- 100
+RR <- 50
+main_factor <- "Group"
+time_var <- "Time"
+subjectID_var = "SubjectID"
+sampleID_var = "SampleID"
+lI <- 5
+omega <- .6
+
+system.time(
+    mse.results <- bootLongSubsampling(ps = ps, 
+        main_factor = main_factor, 
+        time_var = time_var, 
+        subjectID_var = subjectID_var, 
+        sampleID_var = sampleID_var, 
+        lI = lI, 
+        R = R, 
+        RR = RR, 
+        omega = omega, 
+        lC1 = lC1, lC2 = lC2, 
+        ncores = ncores, psi.hat.lI = FALSE, psi.hat.lI.val = NULL, compStatParallel = FALSE)
+)
+
+fileN <- paste0("./psi.hat.lI_", setting_name,".rds")
+saveRDS(mse.results, fileN)
+```
+
+2) We can run the following code parallel for each block sizes (lC1 = lC2) if we have already saved `psi.hat.lI`.
+    - Save the mse results for each lC1 
+    
+Use `compStatParallel = TRUE` if you have more ASVs than `R`.
 
 ```{r eval=FALSE}
 # fileN <- paste0("ps", setting_name, ".rds")
 # ps <- readRDS(fileN)
+
+fileN <- paste0("./psi.hat.lI_", setting_name,".rds")
+psi.hat.lI.val <- readRDS(fileN)
 
 R <- 100
 RR <- 50
@@ -363,7 +399,7 @@ system.time(
         RR = RR, 
         omega = omega, 
         lC1 = lC1, lC2 = lC2, 
-        ncores = ncores)
+        ncores = ncores, psi.hat.lI = TRUE, psi.hat.lI.val = psi.hat.lI.val, compStatParallel = FALSE)
 )
 
 fileN <- paste0("MSE_", setting_name, "_lC1", lC1,".rds")
@@ -374,7 +410,7 @@ saveRDS(mse.results, fileN)
 
 We combine the results for all the possible $lC1$. In this example, $lC1 = 2, 3, 4$
 
-```{r eval=FALSE}
+```{r eval = FALSE}
 MSE.all <- list()
 for(lC1 in 2:4){
   filename <- paste0("MSE_",setting_name,"_lC1", lC1,".rds")
@@ -457,7 +493,7 @@ system.time(
         subjectID_var = subjectID_var, 
         b = l.opt, 
         R = R, 
-        RR = RR)
+        RR = RR, FDR = .05, compStatParallel = FALSE)
     )
 
 fileN <- paste0("MBB_",setting_name,".rds")

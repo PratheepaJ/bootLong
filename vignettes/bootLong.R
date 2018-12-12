@@ -35,8 +35,8 @@ library(magrittr)
 library(joineR)
 library(DESeq2)
 library(grid)
-library(bootLong)
-#devtools::load_all(".")
+#library(bootLong)
+devtools::load_all(".")
 
 ## ------------------------------------------------------------------------
 ncores = as.integer(Sys.getenv("SLURM_NTASKS"))
@@ -212,8 +212,38 @@ grid.arrange(arrangeGrob(grobs = plist, nrow = 2, widths = c(3, 3, 3)),
              widths=c(10, 2))
 
 ## ----eval=FALSE----------------------------------------------------------
+#  R <- 100
+#  RR <- 50
+#  main_factor <- "Group"
+#  time_var <- "Time"
+#  subjectID_var = "SubjectID"
+#  sampleID_var = "SampleID"
+#  lI <- 5
+#  omega <- .6
+#  
+#  system.time(
+#      mse.results <- bootLongSubsampling(ps = ps,
+#          main_factor = main_factor,
+#          time_var = time_var,
+#          subjectID_var = subjectID_var,
+#          sampleID_var = sampleID_var,
+#          lI = lI,
+#          R = R,
+#          RR = RR,
+#          omega = omega,
+#          lC1 = lC1, lC2 = lC2,
+#          ncores = ncores, psi.hat.lI = FALSE, psi.hat.lI.val = NULL, compStatParallel = FALSE)
+#  )
+#  
+#  fileN <- paste0("./psi.hat.lI_", setting_name,".rds")
+#  saveRDS(mse.results, fileN)
+
+## ----eval=FALSE----------------------------------------------------------
 #  # fileN <- paste0("ps", setting_name, ".rds")
 #  # ps <- readRDS(fileN)
+#  
+#  fileN <- paste0("./psi.hat.lI_", setting_name,".rds")
+#  psi.hat.lI.val <- readRDS(fileN)
 #  
 #  R <- 100
 #  RR <- 50
@@ -235,13 +265,13 @@ grid.arrange(arrangeGrob(grobs = plist, nrow = 2, widths = c(3, 3, 3)),
 #          RR = RR,
 #          omega = omega,
 #          lC1 = lC1, lC2 = lC2,
-#          ncores = ncores)
+#          ncores = ncores, psi.hat.lI = TRUE, psi.hat.lI.val = psi.hat.lI.val, compStatParallel = FALSE)
 #  )
 #  
 #  fileN <- paste0("MSE_", setting_name, "_lC1", lC1,".rds")
 #  saveRDS(mse.results, fileN)
 
-## ----eval=FALSE----------------------------------------------------------
+## ----eval = FALSE--------------------------------------------------------
 #  MSE.all <- list()
 #  for(lC1 in 2:4){
 #    filename <- paste0("MSE_",setting_name,"_lC1", lC1,".rds")
@@ -309,7 +339,7 @@ grid.arrange(arrangeGrob(grobs = plist, nrow = 2, widths = c(3, 3, 3)),
 #          subjectID_var = subjectID_var,
 #          b = l.opt,
 #          R = R,
-#          RR = RR)
+#          RR = RR, FDR = .05, compStatParallel = FALSE)
 #      )
 #  
 #  fileN <- paste0("MBB_",setting_name,".rds")

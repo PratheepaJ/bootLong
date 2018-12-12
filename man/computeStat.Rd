@@ -4,7 +4,8 @@
 \alias{computeStat}
 \title{computeStat}
 \usage{
-computeStat(ps, main_factor, time_var, subjectID_var, b)
+computeStat(ps, main_factor, time_var, subjectID_var, b,
+  compStatParallel = FALSE)
 }
 \arguments{
 \item{ps}{phyloseq object.}
@@ -16,6 +17,8 @@ computeStat(ps, main_factor, time_var, subjectID_var, b)
 \item{subjectID_var}{Character string. The name of the subject ID variable.}
 
 \item{b}{A numeric. The block size to account for the dependence within-subject.}
+
+\item{compStatParallel}{A logical. True is used to use parallel in \code{computeStat} and disable parallel in \code{bootLongPsi} or \code{bootLongMethod}.}
 }
 \value{
 dataframe with the last column corresponds to taxa names

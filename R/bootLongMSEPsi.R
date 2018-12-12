@@ -12,7 +12,7 @@
 #'
 #' @export
 #' @importFrom parallel mclapply
-bootLongMSEPsi <- function(ps, main_factor, time_var, subjectID_var, sampleID_var, b, R, RR, qj, Wj, Khat.obs = NULL, T.obs.full = NULL, ncores){
+bootLongMSEPsi <- function(ps, main_factor, time_var, subjectID_var, sampleID_var, b, R, RR, qj, Wj, Khat.obs = NULL, T.obs.full = NULL, ncores, compStatParallel = FALSE){
 
     # doParallel::registerDoParallel(parallel::detectCores())
     # BiocParallel::register(BiocParallel::DoparParam())
@@ -65,7 +65,7 @@ bootLongMSEPsi <- function(ps, main_factor, time_var, subjectID_var, sampleID_va
     }
 
     Khat <- lapply(ps.sub, function(y){
-        k.hat <- bootLongPsi(y, main_factor = main_factor, time_var = time_var, subjectID_var = subjectID_var, sampleID_var = sampleID_var, b = b, R = R, RR = RR, T.obs.full = T.obs.full, ncores = ncores)
+        k.hat <- bootLongPsi(y, main_factor = main_factor, time_var = time_var, subjectID_var = subjectID_var, sampleID_var = sampleID_var, b = b, R = R, RR = RR, T.obs.full = T.obs.full, ncores = ncores, compStatParallel = compStatParallel)
         k.hat.v <- k.hat[[1]]
         return(k.hat.v)
     })

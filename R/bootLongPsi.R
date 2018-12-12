@@ -12,30 +12,54 @@
 #' @return A list with the first element K.val - two-sided significance probability and the second element observed test statistic.
 #'
 #' @export
-bootLongPsi <- function(ps, main_factor = main_factor, time_var = time_var, subjectID_var = subjectID_var, sampleID_var = sampleID_var, b, R, RR, T.obs.full = NULL, ncores){
+bootLongPsi <- function(ps, main_factor = main_factor, time_var = time_var, subjectID_var = subjectID_var, sampleID_var = sampleID_var, b, R, RR, T.obs.full = NULL, ncores, compStatParallel = FALSE){
 
-    doParallel::registerDoParallel(parallel::detectCores())
-    BiocParallel::register(BiocParallel::DoparParam())
+    res.obs <- computeStat(ps = ps, main_factor = main_factor, time_var = time_var, subjectID_var = subjectID_var, b = b, compStatParallel = TRUE)
 
-    res.obs <- computeStat(ps = ps, main_factor = main_factor, time_var = time_var, subjectID_var = subjectID_var, b = b)
+    if(compStatParallel){
 
-    boot.results <- BiocParallel::bplapply(seq_len(R), FUN = function(i){
-        ps.boot <- bootLongPhyloseq(ps = ps, time_var = time_var, subjectID_var = subjectID_var, sampleID_var = sampleID_var, b = b)
-        ps.boot <- ps.boot[[1]]
+        boot.results <- lapply(seq_len(R), FUN = function(i){
+            ps.boot <- bootLongPhyloseq(ps = ps, time_var = time_var, subjectID_var = subjectID_var, sampleID_var = sampleID_var, b = b)
+            ps.boot <- ps.boot[[1]]
 
-        df.boot <- computeStat(ps = ps.boot, main_factor = main_factor, time_var = time_var, subjectID_var = subjectID_var, b = b)
+            df.boot <- computeStat(ps = ps.boot, main_factor = main_factor, time_var = time_var, subjectID_var = subjectID_var, b = b, compStatParallel = compStatParallel)
 
             boot.results.bb <- lapply(seq_len(RR), FUN = function(j){
                 ps.boot.bb <- bootLongPhyloseq(ps = ps.boot, time_var = time_var, subjectID_var = subjectID_var, sampleID_var = sampleID_var, b = b)
                 ps.boot.bb <- ps.boot.bb[[1]]
-                df.boot.bb <- computeStat(ps = ps.boot.bb, main_factor = main_factor, time_var = time_var, subjectID_var = subjectID_var, b = b)
+                df.boot.bb <- computeStat(ps = ps.boot.bb, main_factor = main_factor, time_var = time_var, subjectID_var = subjectID_var, b = b, compStatParallel = compStatParallel)
 
                 return(df.boot.bb)
             })
 
             rt <- list(df.boot, boot.results.bb)
             return(rt)
-    })
+        })
+
+    }else{# if compStatParallel() is FALSE, use parallel in bootLongPsi
+
+        doParallel::registerDoParallel(parallel::detectCores())
+        BiocParallel::register(BiocParallel::DoparParam())
+
+        boot.results <- BiocParallel::bplapply(seq_len(R), FUN = function(i){
+            ps.boot <- bootLongPhyloseq(ps = ps, time_var = time_var, subjectID_var = subjectID_var, sampleID_var = sampleID_var, b = b)
+            ps.boot <- ps.boot[[1]]
+
+            df.boot <- computeStat(ps = ps.boot, main_factor = main_factor, time_var = time_var, subjectID_var = subjectID_var, b = b, compStatParallel = compStatParallel)
+
+            boot.results.bb <- lapply(seq_len(RR), FUN = function(j){
+                ps.boot.bb <- bootLongPhyloseq(ps = ps.boot, time_var = time_var, subjectID_var = subjectID_var, sampleID_var = sampleID_var, b = b)
+                ps.boot.bb <- ps.boot.bb[[1]]
+                df.boot.bb <- computeStat(ps = ps.boot.bb, main_factor = main_factor, time_var = time_var, subjectID_var = subjectID_var, b = b, compStatParallel = compStatParallel)
+
+                return(df.boot.bb)
+            })
+
+            rt <- list(df.boot, boot.results.bb)
+            return(rt)
+        })
+    }
+
 
     boot.results.all <- lapply(boot.results, "[[", 1)
 

@@ -9,11 +9,11 @@
 #' @param time_var Character string. The name of the time variable.
 #' @param subjectID_var Character string. The name of the subject ID variable.
 #' @param b A numeric. The block size to account for the dependence within-subject.
-#'
+#' @param compStatParallel A logical. True is used to use parallel in \code{computeStat} and disable parallel in \code{bootLongPsi} or \code{bootLongMethod}.
 #' @return dataframe with the last column corresponds to taxa names
 #' and other columns are for estimated coefficients for each covariate using GEE, including Intercept.
 #' @export
-computeStat <- function(ps, main_factor, time_var, subjectID_var, b) {
+computeStat <- function(ps, main_factor, time_var, subjectID_var, b, compStatParallel = FALSE) {
 
     # doParallel::registerDoParallel(parallel::detectCores())
     # BiocParallel::register(BiocParallel::DoparParam())
@@ -73,7 +73,6 @@ computeStat <- function(ps, main_factor, time_var, subjectID_var, b) {
         dffT$idvar <- as.numeric(as.factor(dffT[, subjectID_var]))
         idvar <- "idvar"
         dffT <- arrange_(dffT, idvar, time_var)
-
 
 
         doGLMnbGEE <- function(){
@@ -149,10 +148,21 @@ computeStat <- function(ps, main_factor, time_var, subjectID_var, b) {
 
     ind <- as.list(c(1:ntaxa(ps)))
 
-    df.beta.hat <- lapply(ind, function(x) {
-        rt <- com_beta(x, sampleDf = samdf, otuDf = ot, allSj = sj, weightDf = weights.cal, desingGEE = des, b = b, subjectID_var = subjectID_var, time_var = time_var, ot_trans = ot_trans)
-        return(rt)
-    })
+    if(compStatParallel){
+        doParallel::registerDoParallel(parallel::detectCores())
+        BiocParallel::register(BiocParallel::DoparParam())
+
+        df.beta.hat <- BiocParallel::bplapply(ind, function(x) {
+            rt <- com_beta(x, sampleDf = samdf, otuDf = ot, allSj = sj, weightDf = weights.cal, desingGEE = des, b = b, subjectID_var = subjectID_var, time_var = time_var, ot_trans = ot_trans)
+            return(rt)
+        })
+    }else{
+        df.beta.hat <- lapply(ind, function(x) {
+            rt <- com_beta(x, sampleDf = samdf, otuDf = ot, allSj = sj, weightDf = weights.cal, desingGEE = des, b = b, subjectID_var = subjectID_var, time_var = time_var, ot_trans = ot_trans)
+            return(rt)
+        })
+    }
+
 
     df.beta.hat <- data.frame(do.call("rbind", df.beta.hat))
 

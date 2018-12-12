@@ -13,7 +13,7 @@
 #' @return A list of ``MSE`` in calculating K with block sizes lC=1:(lI-1), ``Khat`` values with block sizes lC=1:(lI-1) and ``Khat.obs`` with lI
 #' @export
 #' @importFrom parallel mclapply
-bootLongSubsampling <- function(ps, main_factor, time_var, subjectID_var, sampleID_var, lI, R, RR, omega = .6, lC1 = 1, lC2 = NULL, ncores, psi.hat.lI = FALSE, psi.hat.lI.val = NULL){
+bootLongSubsampling <- function(ps, main_factor, time_var, subjectID_var, sampleID_var, lI, R, RR, omega = .6, lC1 = 1, lC2 = NULL, ncores, psi.hat.lI = FALSE, psi.hat.lI.val = NULL, compStatParallel = FALSE){
 
     # doParallel::registerDoParallel(parallel::detectCores())
     # BiocParallel::register(BiocParallel::DoparParam())
@@ -53,14 +53,14 @@ bootLongSubsampling <- function(ps, main_factor, time_var, subjectID_var, sample
         blk.size.choice <- as.list(lC)
 
         mse.Khat.Kobs <- lapply(blk.size.choice, function(y){
-            bt <- bootLongMSEPsi(ps = ps, main_factor = main_factor, time_var = time_var, subjectID_var = subjectID_var, sampleID_var = sampleID_var, b = y, R = R, RR = RR, qj = qj, Wj = Wj, Khat.obs = Khat.obs, T.obs.full = T.obs, ncores = ncores)
+            bt <- bootLongMSEPsi(ps = ps, main_factor = main_factor, time_var = time_var, subjectID_var = subjectID_var, sampleID_var = sampleID_var, b = y, R = R, RR = RR, qj = qj, Wj = Wj, Khat.obs = Khat.obs, T.obs.full = T.obs, ncores = ncores, compStatParallel = compStatParallel)
             return(bt)
         })
 
         rt <- mse.Khat.Kobs
 
     }else{
-        psi.hat.lI <- bootLongPsi(ps = ps, main_factor = main_factor, time_var = time_var, subjectID_var = subjectID_var, sampleID_var = sampleID_var, b = lI, R = R, RR = RR, T.obs.full = NULL, ncores = ncores)
+        psi.hat.lI <- bootLongPsi(ps = ps, main_factor = main_factor, time_var = time_var, subjectID_var = subjectID_var, sampleID_var = sampleID_var, b = lI, R = R, RR = RR, T.obs.full = NULL, ncores = ncores, compStatParallel = compStatParallel)
 
         rt <- psi.hat.lI
 

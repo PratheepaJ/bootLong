@@ -6,7 +6,8 @@
 \usage{
 bootLongSubsampling(ps, main_factor, time_var, subjectID_var, sampleID_var,
   lI, R, RR, omega = 0.6, lC1 = 1, lC2 = NULL, ncores,
-  psi.hat.lI = FALSE, psi.hat.lI.val = NULL)
+  psi.hat.lI = FALSE, psi.hat.lI.val = NULL,
+  compStatParallel = FALSE)
 }
 \arguments{
 \item{ps}{phyloseq object.}
@@ -36,6 +37,8 @@ bootLongSubsampling(ps, main_factor, time_var, subjectID_var, sampleID_var,
 \item{psi.hat.lI}{A logical. psi is estiamted already with the initial block size.}
 
 \item{psi.hat.lI.val}{A list. If psi is calculated already, give the list of values.}
+
+\item{compStatParallel}{A logical. True is used to use parallel in \code{computeStat} and disable parallel in \code{bootLongPsi} or \code{bootLongMethod}.}
 }
 \value{
 A list of ``MSE`` in calculating K with block sizes lC=1:(lI-1), ``Khat`` values with block sizes lC=1:(lI-1) and ``Khat.obs`` with lI
