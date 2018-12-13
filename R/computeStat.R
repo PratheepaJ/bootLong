@@ -12,6 +12,7 @@
 #' @param compStatParallel A logical. True is used to use parallel in \code{computeStat} and disable parallel in \code{bootLongPsi} or \code{bootLongMethod}.
 #' @return dataframe with the last column corresponds to taxa names
 #' and other columns are for estimated coefficients for each covariate using GEE, including Intercept.
+#' @import phyloseq
 #' @export
 computeStat <- function(ps, main_factor, time_var, subjectID_var, b, compStatParallel = FALSE) {
 

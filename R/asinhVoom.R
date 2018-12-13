@@ -12,7 +12,8 @@
 #' @return A matrix of variance stablized counts.
 #' @export
 #' @importFrom limma lmFit
-
+#' @importFrom stats lowess approxfun
+#' @importFrom graphics title lines
 asinhVoom <- function(counts, design = NULL, sj, span = 0.5,
     plot = FALSE){
 
@@ -91,5 +92,5 @@ asinhVoom <- function(counts, design = NULL, sj, span = 0.5,
     }
 
 
-    new("EList", out)
+    methods::new("EList", out)
 }

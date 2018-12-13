@@ -8,10 +8,9 @@
 #' @inheritParams bootLongPsi
 #'
 #' @return A list of MSE computed with given block size b, Khat with all subsamples, Khat with initial block size.
-#'
+#' @importFrom magrittr %>%
 #'
 #' @export
-#' @importFrom parallel mclapply
 bootLongMSEPsi <- function(ps, main_factor, time_var, subjectID_var, sampleID_var, b, R, RR, qj, Wj, Khat.obs = NULL, T.obs.full = NULL, ncores, compStatParallel = FALSE){
 
     # doParallel::registerDoParallel(parallel::detectCores())

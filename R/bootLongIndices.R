@@ -22,7 +22,7 @@ bootLongIndices <- function(x, time_var, b, L, blks.first.index) {
     if (!is.unsorted(x[, time_var])) {
         x <- x
     } else {
-        x <- arrange_(x, time_var)
+        x <- dplyr::arrange_(x, time_var)
     }
 
     num.of.rep.obs.x <- dim(x)[1]
@@ -37,7 +37,7 @@ bootLongIndices <- function(x, time_var, b, L, blks.first.index) {
                 1:((L - num.of.blks)%%num.of.rep.obs.x))
         }
 
-        expand_x <- bind_rows(x, x[howrep, ])
+        expand_x <- dplyr::bind_rows(x, x[howrep, ])
         x <- expand_x
     }
 

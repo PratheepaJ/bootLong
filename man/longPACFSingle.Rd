@@ -17,6 +17,8 @@ longPACFSingle(ps, main_factor, time_var, taxon, taxlevel = "Species",
 \item{taxon}{Numeric. The index of taxon to get the correlogram.}
 
 \item{taxlevel}{Character string. The taxonomy level for the plot title.}
+
+\item{lag.max}{Numeric. The maximum lags that PACF to be computed.}
 }
 \value{
 \code{ggplot2} object of PACF for one taxon according to the taxon index.

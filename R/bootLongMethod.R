@@ -6,6 +6,8 @@
 #' @inheritParams computeStat
 #'
 #' @return list of dataframe with ASV, observed stat, pvalues, adjusted pvalues, lcl, ucl, observed pivotal quantity; stat.obs; stat.star; stat.star.star; T.star_obs.
+#' @importFrom stats sd p.adjust quantile
+#' @importFrom ashr ash
 #' @export
 bootLongMethod <- function(ps, main_factor, time_var, subjectID_var, sampleID_var, b, R, RR, FDR = 0.05, compStatParallel = FALSE) {
 

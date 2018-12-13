@@ -34,18 +34,18 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, fig.width =
 
 
 Install packages: 
-```{r eval=FALSE}
+```{r }
 pkgs <- c("ggplot2","dplyr","tidyr",
           "phyloseq", "limma","ashr",
           "gridExtra","MASS",
-          "geeM", "R.utils", "BiocParallel",
+          "geeM", "BiocParallel",
           "doParallel", "parallel","magrittr",
-          "joineR", "DESeq2", "grid")
+          "joineR", "DESeq2", "grid", "devtools")
 
 source("http://bioconductor.org/biocLite.R")
 biocLite(setdiff(pkgs,installed.packages()), suppressUpdates = TRUE)
 
-devtools::install_github("PratheepaJ/bootLong")
+#devtools::install_github("PratheepaJ/bootLong")
 ```
 
 load packages:
@@ -59,7 +59,7 @@ library(ashr)
 library(gridExtra)
 library(MASS)
 library(geeM)
-library(R.utils)
+#library(R.utils)
 library(BiocParallel)
 library(doParallel)
 library(parallel)
@@ -67,8 +67,8 @@ library(magrittr)
 library(joineR)
 library(DESeq2)
 library(grid)
-#library(bootLong)
-devtools::load_all(".")
+library(bootLong)
+#devtools::load_all(".")
 ```
 
 Set the computational resources: we need to specify the number of cores for subsampling method and block bootstrap method. 

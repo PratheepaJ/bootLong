@@ -2,6 +2,7 @@
 #'
 #' @param taxon Numeric. The index of taxon to get the correlogram.
 #' @param taxlevel Character string. The taxonomy level for the plot title.
+#' @param lag.max Numeric. The maximum lags that PACF to be computed.
 #' @inheritParams plotSamplingSchedule
 #'
 #' @return \code{ggplot2} object of PACF for one taxon according to the taxon index.

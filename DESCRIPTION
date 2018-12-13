@@ -17,9 +17,11 @@ LazyData: true
 Imports:
     ashr,
     BiocParallel,
+    DESeq2,
     dplyr,
     doParallel,
     ggplot2,
+    gridExtra,
     joineR,
     lazyeval,
     limma,

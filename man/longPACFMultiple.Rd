@@ -21,6 +21,8 @@ longPACFMultiple(pstr, psres, main_factor, time_var, starttaxa = 1,
 \item{endtaxa}{Numeric. The last index of taxa ordered by total reads}
 
 \item{taxlevel}{Character string. The taxonomy level for the plot title.}
+
+\item{lag.max}{Numeric. The maximum lags that PACF to be computed.}
 }
 \value{
 \code{ggplot2} object of PACF for multiple taxa.
