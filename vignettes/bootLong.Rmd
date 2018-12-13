@@ -59,7 +59,6 @@ library(ashr)
 library(gridExtra)
 library(MASS)
 library(geeM)
-#library(R.utils)
 library(BiocParallel)
 library(doParallel)
 library(parallel)
@@ -68,7 +67,8 @@ library(joineR)
 library(DESeq2)
 library(grid)
 library(bootLong)
-#devtools::load_all(".")
+# library(R.utils)
+# devtools::load_all(".")
 ```
 
 Set the computational resources: we need to specify the number of cores for subsampling method and block bootstrap method. 
@@ -340,7 +340,8 @@ First, we identify the opitmal block size for the subsample. We use the initial 
 1) Compute $\psi(q,l_{I})$ and $T_{i}\left(q, l_{I}\right)$ using the initial block size and the full data.
 
 ```{r eval=FALSE}
-R <- 100
+#####Note: With 4 cores, this will take almost 18 hours
+R <- 200
 RR <- 50
 main_factor <- "Group"
 time_var <- "Time"
@@ -364,7 +365,7 @@ system.time(
 )
 
 fileN <- paste0("./psi.hat.lI_", setting_name,".rds")
-saveRDS(mse.results, fileN)
+saveRDS(mse.results, fileN) 
 ```
 
 2) We can run the following code parallel for each block sizes (lC1 = lC2) if we have already saved `psi.hat.lI`.
@@ -373,13 +374,15 @@ saveRDS(mse.results, fileN)
 Use `compStatParallel = TRUE` if you have more ASVs than `R`.
 
 ```{r eval=FALSE}
+##### NOTE: With 4 cores, this will take almost 71 hours
+ 
 # fileN <- paste0("ps", setting_name, ".rds")
 # ps <- readRDS(fileN)
 
 fileN <- paste0("./psi.hat.lI_", setting_name,".rds")
 psi.hat.lI.val <- readRDS(fileN)
 
-R <- 100
+R <- 200
 RR <- 50
 main_factor <- "Group"
 time_var <- "Time"
@@ -475,6 +478,7 @@ Finally, we run the block bootstrap method with the optimal block size for diffe
 
 
 ```{r eval=FALSE}
+#### Note: With 4 cores, this will take 17 hours
 R <- 200
 RR <- 50
 main_factor <- "Group"

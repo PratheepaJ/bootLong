@@ -60,6 +60,7 @@ bootLongSubsampling <- function(ps, main_factor, time_var, subjectID_var, sample
         rt <- mse.Khat.Kobs
 
     }else{
+
         psi.hat.lI <- bootLongPsi(ps = ps, main_factor = main_factor, time_var = time_var, subjectID_var = subjectID_var, sampleID_var = sampleID_var, b = lI, R = R, RR = RR, T.obs.full = NULL, ncores = ncores, compStatParallel = compStatParallel)
 
         rt <- psi.hat.lI
