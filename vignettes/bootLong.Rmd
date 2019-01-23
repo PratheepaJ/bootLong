@@ -42,8 +42,8 @@ pkgs <- c("ggplot2","dplyr","tidyr",
           "doParallel", "parallel","magrittr",
           "joineR", "DESeq2", "grid", "devtools")
 
-source("http://bioconductor.org/biocLite.R")
-biocLite(setdiff(pkgs,installed.packages()), suppressUpdates = TRUE)
+
+BiocManager::install(setdiff(pkgs, installed.packages()), update = TRUE)
 
 #devtools::install_github("PratheepaJ/bootLong")
 ```
