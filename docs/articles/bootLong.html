@@ -5,11 +5,12 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Workflow : The Block Bootstrap Method for Longitudinal Microbiome Data • bootLong</title>
+<title>Vignette for bootLong: The Block Bootstrap Method for Longitudinal Microbiome Data • bootLong</title>
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous">
-<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- sticky kit --><script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
-<script src="../pkgdown.js"></script><meta property="og:title" content="Workflow : The Block Bootstrap Method for Longitudinal Microbiome Data">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous">
+<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
+<script src="../pkgdown.js"></script><meta property="og:title" content="Vignette for bootLong: The Block Bootstrap Method for Longitudinal Microbiome Data">
 <meta property="og:description" content="">
 <meta name="twitter:card" content="summary">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
@@ -38,7 +39,7 @@
       <ul class="nav navbar-nav">
 <li>
   <a href="../index.html">
-    <span class="fa fa-home fa-lg"></span>
+    <span class="fas fa fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -58,16 +59,15 @@
 <!--/.navbar -->
 
       
+
       </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
-      <h1>Workflow : The Block Bootstrap Method for Longitudinal Microbiome Data</h1>
-                        <h4 class="author">Pratheepa Jeganathan</h4>
-            <address class="author_afil">
-      Department of Statistics, Stanford University<br><a class="author_email" href="mailto:#"></a><a href="mailto:jpratheepa31@gmail.com">jpratheepa31@gmail.com</a>
-      </address>
+      <h1>Vignette for bootLong: The Block Bootstrap Method for Longitudinal Microbiome Data</h1>
+                        <h4 class="author">Pratheepa Jeganathan and Susan Holmes</h4>
+                  <a class="author_email" href="mailto:#"></a><a href="mailto:jpratheepa31@gmail.com" class="email">jpratheepa31@gmail.com</a>
+      
                   
-            <h4 class="date">2019-01-22</h4>
       
       
       <div class="hidden name"><code>bootLong.Rmd</code></div>
@@ -76,70 +76,101 @@
 
     
     
-<p>Microbiome data consist of the frequency of higher resolution amplicon sequence variants (ASVs)  in each biological sample, clinical and demographic information about biological samples, phylogenetic tree, taxonomy table. Our <code>bootLong</code> package requires (phyloseq)[<a href="https://joey711.github.io/phyloseq/" class="uri">https://joey711.github.io/phyloseq/</a>] for the entire workflow.</p>
-<p>In this workflow, we provide differential abundance analysis for longitudinal microbiome data. In addition, we provide statistical tools to explore the sampling schedule and within-subject dependence for each ASV.</p>
-<p>The manuscript is under revision and it’s available in (stat arXiv) [<a href="https://arxiv.org/abs/1809.01832" class="uri">https://arxiv.org/abs/1809.01832</a>].</p>
+<p>Microbiome data consist of the frequency of higher resolution amplicon sequence variants (ASVs)  in each biological sample, clinical and demographic information about biological samples, phylogenetic tree, taxonomy table. Our <em><a href="https://github.com/PratheepaJ/bootLong">bootLong</a></em> package requires <em><a href="https://bioconductor.org/packages/3.9/phyloseq">phyloseq</a></em> for the entire workflow.</p>
+<p>In this workflow, we provide differential abundance analysis for longitudinal microbiome data. In addition, we provide statistical tools to explore the sampling schedule and within-subject dependency for each ASV.</p>
+<p>A preprint describing the method is available in <a href="https://arxiv.org/abs/1809.01832">stat arXiv</a>.</p>
 <p>Install <a href="https://www.r-project.org/">R</a> and <a href="https://www.rstudio.com/">RStudio</a>. Open this <code>Rmd</code> file in RStudio. Then run the following code to install all required packages.</p>
-<p>Install packages:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">pkgs &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"ggplot2"</span>,<span class="st">"dplyr"</span>,<span class="st">"tidyr"</span>,
-          <span class="st">"phyloseq"</span>, <span class="st">"limma"</span>,<span class="st">"ashr"</span>,
-          <span class="st">"gridExtra"</span>,<span class="st">"MASS"</span>,
-          <span class="st">"geeM"</span>, <span class="st">"BiocParallel"</span>,
-          <span class="st">"doParallel"</span>, <span class="st">"parallel"</span>,<span class="st">"magrittr"</span>,
-          <span class="st">"joineR"</span>, <span class="st">"DESeq2"</span>, <span class="st">"grid"</span>, <span class="st">"devtools"</span>)
-
-
-BiocManager<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/BiocManager/topics/install">install</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/sets">setdiff</a></span>(pkgs, <span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/installed.packages">installed.packages</a></span>()), <span class="dt">update =</span> <span class="ot">TRUE</span>)
-
-<span class="co">#devtools::install_github("PratheepaJ/bootLong")</span></code></pre></div>
-<p>load packages:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(ggplot2)
-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(dplyr)
-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(tidyr)
-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(phyloseq)
-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(limma)
-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(ashr)
-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(gridExtra)
-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(MASS)
-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(geeM)
-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(BiocParallel)
-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(doParallel)
-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(parallel)
-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(magrittr)
-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(joineR)
-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(DESeq2)
-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(grid)
-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(bootLong)
-<span class="co"># library(R.utils)</span>
-<span class="co"># devtools::load_all(".")</span></code></pre></div>
-<p>Set the computational resources: we need to specify the number of cores for subsampling method and block bootstrap method.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ncores =<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/integer">as.integer</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Sys.getenv">Sys.getenv</a></span>(<span class="st">"SLURM_NTASKS"</span>))
-<span class="cf">if</span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/NA">is.na</a></span>(ncores)) ncores &lt;-<span class="st"> </span>parallel<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/parallel/topics/detectCores">detectCores</a></span>()
-ncores</code></pre></div>
-<pre><code>## [1] 4</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">setting_name &lt;-<span class="st"> "Sim"</span></code></pre></div>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">lC1 &lt;-<span class="st"> </span>params<span class="op">$</span>lC1
-lC1</code></pre></div>
-<pre><code>## [1] 2</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">lC2 &lt;-<span class="st"> </span>params<span class="op">$</span>lC2
-lC2</code></pre></div>
-<pre><code>## [1] 2</code></pre>
-<div id="load-the-phyloseq" class="section level2">
+<div id="install-and-load-required-packages" class="section level1">
+<h1 class="hasAnchor">
+<a href="#install-and-load-required-packages" class="anchor"></a>Install and load required packages</h1>
+<div id="install" class="section level2">
 <h2 class="hasAnchor">
-<a href="#load-the-phyloseq" class="anchor"></a>Load the phyloseq</h2>
-<div id="load-the-example-dataset-stored-as-a-phyloseq-object-in-the-bootlong-package-or-use-your-own-data-stored-as-a-phyloseq-object" class="section level3">
-<h3 class="hasAnchor">
-<a href="#load-the-example-dataset-stored-as-a-phyloseq-object-in-the-bootlong-package-or-use-your-own-data-stored-as-a-phyloseq-object" class="anchor"></a>Load the example dataset stored as a phyloseq object in the <code>bootLong</code> package (or use your own data stored as a phyloseq object)</h3>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ps &lt;-<span class="st"> </span>psSim</code></pre></div>
+<a href="#install" class="anchor"></a>Install</h2>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1">pkgs &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"ggplot2"</span>, <span class="st">"dplyr"</span>, <span class="st">"tidyr"</span>,</a>
+<a class="sourceLine" id="cb1-2" data-line-number="2">          <span class="st">"phyloseq"</span>, <span class="st">"limma"</span>, <span class="st">"ashr"</span>,</a>
+<a class="sourceLine" id="cb1-3" data-line-number="3">          <span class="st">"gridExtra"</span>, <span class="st">"MASS"</span>,</a>
+<a class="sourceLine" id="cb1-4" data-line-number="4">          <span class="st">"geeM"</span>, <span class="st">"BiocParallel"</span>,</a>
+<a class="sourceLine" id="cb1-5" data-line-number="5">          <span class="st">"doParallel"</span>, <span class="st">"parallel"</span>,<span class="st">"magrittr"</span>,</a>
+<a class="sourceLine" id="cb1-6" data-line-number="6">          <span class="st">"joineR"</span>, <span class="st">"DESeq2"</span>, <span class="st">"grid"</span>, <span class="st">"devtools"</span>)</a>
+<a class="sourceLine" id="cb1-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb1-8" data-line-number="8"></a>
+<a class="sourceLine" id="cb1-9" data-line-number="9">BiocManager<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/BiocManager/man/install.html">install</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/sets.html">setdiff</a></span>(pkgs, <span class="kw"><a href="https://rdrr.io/r/utils/installed.packages.html">installed.packages</a></span>()), <span class="dt">update =</span> <span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb1-10" data-line-number="10"></a>
+<a class="sourceLine" id="cb1-11" data-line-number="11"><span class="co">#devtools::install_github("PratheepaJ/bootLong")</span></a></code></pre></div>
+</div>
+<div id="load" class="section level2">
+<h2 class="hasAnchor">
+<a href="#load" class="anchor"></a>load</h2>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(ggplot2)</a>
+<a class="sourceLine" id="cb2-2" data-line-number="2"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(dplyr)</a>
+<a class="sourceLine" id="cb2-3" data-line-number="3"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(tidyr)</a>
+<a class="sourceLine" id="cb2-4" data-line-number="4"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(phyloseq)</a>
+<a class="sourceLine" id="cb2-5" data-line-number="5"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(limma)</a>
+<a class="sourceLine" id="cb2-6" data-line-number="6"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(ashr)</a>
+<a class="sourceLine" id="cb2-7" data-line-number="7"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(gridExtra)</a>
+<a class="sourceLine" id="cb2-8" data-line-number="8"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(MASS)</a>
+<a class="sourceLine" id="cb2-9" data-line-number="9"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(geeM)</a>
+<a class="sourceLine" id="cb2-10" data-line-number="10"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(BiocParallel)</a>
+<a class="sourceLine" id="cb2-11" data-line-number="11"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(doParallel)</a>
+<a class="sourceLine" id="cb2-12" data-line-number="12"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(parallel)</a>
+<a class="sourceLine" id="cb2-13" data-line-number="13"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(magrittr)</a>
+<a class="sourceLine" id="cb2-14" data-line-number="14"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(joineR)</a>
+<a class="sourceLine" id="cb2-15" data-line-number="15"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(DESeq2)</a>
+<a class="sourceLine" id="cb2-16" data-line-number="16"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(grid)</a>
+<a class="sourceLine" id="cb2-17" data-line-number="17"><span class="co">#library(bootLong)</span></a>
+<a class="sourceLine" id="cb2-18" data-line-number="18"><span class="co"># library(R.utils)</span></a>
+<a class="sourceLine" id="cb2-19" data-line-number="19">devtools<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/devtools/man/load_all.html">load_all</a></span>(<span class="st">"."</span>)</a></code></pre></div>
 </div>
 </div>
+<div id="set-the-computational-resources" class="section level1">
+<h1 class="hasAnchor">
+<a href="#set-the-computational-resources" class="anchor"></a>Set the computational resources</h1>
+<p>We need to specify the number of cores for subsampling method and block bootstrap method.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1">ncores &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/integer.html">as.integer</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/Sys.getenv.html">Sys.getenv</a></span>(<span class="st">"SLURM_NTASKS"</span>))</a>
+<a class="sourceLine" id="cb3-2" data-line-number="2"><span class="cf">if</span>(<span class="kw"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span>(ncores)) ncores &lt;-<span class="st"> </span>parallel<span class="op">::</span><span class="kw"><a href="https://rdrr.io/r/parallel/detectCores.html">detectCores</a></span>()</a>
+<a class="sourceLine" id="cb3-3" data-line-number="3">ncores</a></code></pre></div>
+<pre><code>## [1] 4</code></pre>
+<p>Specify <code>setting_name</code> to save the results.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1">setting_name &lt;-<span class="st"> "Sim"</span></a></code></pre></div>
+<p><code>lC1</code> and <code>lC2</code> are the minumum and the maximum block length for subsampling method.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1">lC1 &lt;-<span class="st"> </span>params<span class="op">$</span>lC1</a>
+<a class="sourceLine" id="cb6-2" data-line-number="2">lC1</a></code></pre></div>
+<pre><code>## [1] 2</code></pre>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1">lC2 &lt;-<span class="st"> </span>params<span class="op">$</span>lC2</a>
+<a class="sourceLine" id="cb8-2" data-line-number="2">lC2</a></code></pre></div>
+<pre><code>## [1] 2</code></pre>
+<p>The plots can be modified using your preferred theme, legends, etc. For example, <code>set.theme</code> can be changed to have point size 10.</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" data-line-number="1"><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/theme_get.html">theme_set</a></span>(<span class="kw"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span>())</a>
+<a class="sourceLine" id="cb10-2" data-line-number="2">set.theme &lt;-<span class="st"> </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/theme_get.html">theme_update</a></span>(<span class="dt">panel.border =</span> <span class="kw"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_blank</a></span>(),</a>
+<a class="sourceLine" id="cb10-3" data-line-number="3">                    <span class="dt">panel.grid =</span> <span class="kw"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_line</a></span>(<span class="dt">size =</span> <span class="fl">.8</span>),</a>
+<a class="sourceLine" id="cb10-4" data-line-number="4">                    <span class="dt">axis.ticks =</span> <span class="kw"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_blank</a></span>(),</a>
+<a class="sourceLine" id="cb10-5" data-line-number="5">                    <span class="dt">legend.title =</span> <span class="kw"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span>(<span class="dt">size =</span> <span class="dv">8</span>),</a>
+<a class="sourceLine" id="cb10-6" data-line-number="6">                    <span class="dt">legend.text =</span> <span class="kw"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span>(<span class="dt">size =</span> <span class="dv">8</span>),</a>
+<a class="sourceLine" id="cb10-7" data-line-number="7">                    <span class="dt">axis.text =</span> <span class="kw"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span>(<span class="dt">size =</span> <span class="dv">8</span>),</a>
+<a class="sourceLine" id="cb10-8" data-line-number="8">                    <span class="dt">axis.title =</span> <span class="kw"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span>(<span class="dt">size =</span> <span class="dv">8</span>),</a>
+<a class="sourceLine" id="cb10-9" data-line-number="9">                    <span class="dt">strip.background =</span> <span class="kw"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_blank</a></span>(),</a>
+<a class="sourceLine" id="cb10-10" data-line-number="10">                    <span class="dt">strip.text =</span> <span class="kw"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span>(<span class="dt">size =</span> <span class="dv">8</span>),</a>
+<a class="sourceLine" id="cb10-11" data-line-number="11">                    <span class="dt">legend.key =</span> <span class="kw"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_blank</a></span>(),</a>
+<a class="sourceLine" id="cb10-12" data-line-number="12">    <span class="dt">plot.title =</span> <span class="kw"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span>(<span class="dt">hjust =</span> <span class="fl">0.5</span>))</a></code></pre></div>
+</div>
+<div id="load-the-phyloseq-or-create-a-phyloseq" class="section level1">
+<h1 class="hasAnchor">
+<a href="#load-the-phyloseq-or-create-a-phyloseq" class="anchor"></a>Load the phyloseq or create a phyloseq</h1>
+<p>Follow the tutorials to <a href="http://joey711.github.io/phyloseq/import-data.html">creating phyloseq</a>.</p>
+<p>Load the example dataset stored as a <code>phyloseq</code> in this package (or use your own <code>phyloseq</code> or created as a <code>phyloseq</code>)</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1">ps &lt;-<span class="st"> </span>psSim</a></code></pre></div>
+</div>
+<div id="exploratory-analysis" class="section level1">
+<h1 class="hasAnchor">
+<a href="#exploratory-analysis" class="anchor"></a>Exploratory analysis</h1>
 <div id="summary" class="section level2">
 <h2 class="hasAnchor">
 <a href="#summary" class="anchor"></a>Summary</h2>
-<p>After loading the phyloseq, we recommend to check the variable names and some summary for each variable in the sample table. In the example data, we have SubjectID, SampleID, Time, Covariates (Preterm).</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/names">names</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/phyloseq/topics/sample_data-methods">sample_data</a></span>(ps))</code></pre></div>
+<p>After loading the <code>phyloseq</code>, we recommend to check the variable names and some summary for each variable in the sample table: <code><a href="https://rdrr.io/pkg/phyloseq/man/sample_data-methods.html">sample_data(ps)</a></code>.</p>
+<p>In the example data <code>psSim</code>, we have <code>SubjectID</code>, <code>SampleID</code>, <code>Time</code>, <code>Preterm</code> variables. <code>Preterm</code> is the covariate.</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/names.html">names</a></span>(<span class="kw"><a href="https://rdrr.io/pkg/phyloseq/man/sample_data-methods.html">sample_data</a></span>(ps))</a></code></pre></div>
 <pre><code>## [1] "SubjectID" "Group"     "SampleID"  "Time"</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/table">table</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/phyloseq/topics/sample_data-methods">sample_data</a></span>(ps)<span class="op">$</span>SubjectID, <span class="kw"><a href="https://www.rdocumentation.org/packages/phyloseq/topics/sample_data-methods">sample_data</a></span>(ps)<span class="op">$</span>Time)</code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb14-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/table.html">table</a></span>(<span class="kw"><a href="https://rdrr.io/pkg/phyloseq/man/sample_data-methods.html">sample_data</a></span>(ps)<span class="op">$</span>SubjectID, <span class="kw"><a href="https://rdrr.io/pkg/phyloseq/man/sample_data-methods.html">sample_data</a></span>(ps)<span class="op">$</span>Time)</a></code></pre></div>
 <pre><code>##        
 ##         1 2 3 4 5 6 7 8 9 10
 ##   Cas1  1 1 1 1 1 1 1 1 1  1
@@ -162,121 +193,130 @@ lC2</code></pre></div>
 ##   Con7  1 1 1 1 1 1 1 1 1  1
 ##   Con8  1 1 1 1 1 1 1 1 1  1
 ##   Con9  1 1 1 1 1 1 1 1 1  1</code></pre>
-<div id="sampling-schedule" class="section level3">
-<h3 class="hasAnchor">
-<a href="#sampling-schedule" class="anchor"></a>Sampling schedule</h3>
-<p>We can visualize the sampling schedule for each subject and facet by different conditions. This plot can be modified using your preferred theme, legends, etc. For example, <code>set.theme</code> can be changed to have point size 10, legend title can be changed from <code>Preterm</code> to <code>Group</code>, levels of <code>Preterm</code> can be changed to <code>Term</code> and <code>Preterm</code>, etc.</p>
-<p>The sampling schedlue will be used to choose the percentage of subsampling to find the optimal block szie.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/theme_get.html">theme_set</a></span>(<span class="kw"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span>())
-set.theme &lt;-<span class="st"> </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/theme_get.html">theme_update</a></span>(<span class="dt">panel.border =</span> <span class="kw"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_blank</a></span>(),
-                    <span class="dt">panel.grid =</span> <span class="kw"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_line</a></span>(<span class="dt">size =</span> .<span class="dv">8</span>),
-                    <span class="dt">axis.ticks =</span> <span class="kw"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_blank</a></span>(),
-                    <span class="dt">legend.title =</span> <span class="kw"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span>(<span class="dt">size =</span> <span class="dv">8</span>),
-                    <span class="dt">legend.text =</span> <span class="kw"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span>(<span class="dt">size =</span> <span class="dv">8</span>),
-                    <span class="dt">axis.text =</span> <span class="kw"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span>(<span class="dt">size =</span> <span class="dv">8</span>),
-                    <span class="dt">axis.title =</span> <span class="kw"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span>(<span class="dt">size =</span> <span class="dv">8</span>),
-                    <span class="dt">strip.background =</span> <span class="kw"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_blank</a></span>(),
-                    <span class="dt">strip.text =</span> <span class="kw"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span>(<span class="dt">size =</span> <span class="dv">8</span>),
-                    <span class="dt">legend.key =</span> <span class="kw"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_blank</a></span>(),
-    <span class="dt">plot.title =</span> <span class="kw"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span>(<span class="dt">hjust =</span> <span class="fl">0.5</span>))
-
-
-<span class="kw"><a href="https://www.rdocumentation.org/packages/phyloseq/topics/sample_data-methods">sample_data</a></span>(ps)<span class="op">$</span>Group &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/factor">as.factor</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/phyloseq/topics/sample_data-methods">sample_data</a></span>(ps)<span class="op">$</span>Group)
-
-p &lt;-<span class="st"> </span><span class="kw"><a href="../reference/plotSamplingSchedule.html">plotSamplingSchedule</a></span>(ps, <span class="dt">time_var =</span> <span class="st">"Time"</span>, <span class="dt">subjectID_var =</span> <span class="st">"SubjectID"</span>, <span class="dt">main_factor =</span> <span class="st">"Group"</span>, <span class="dt">theme_manual =</span> set.theme)
-
-p &lt;-<span class="st"> </span>p <span class="op">+</span><span class="st"> </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/scale_hue.html">scale_color_discrete</a></span>(<span class="dt">name  =</span><span class="st">"Group"</span>,<span class="dt">breaks=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"Case"</span>, <span class="st">"Control"</span>),<span class="dt">labels=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"Case"</span>, <span class="st">"Control"</span>))
-p</code></pre></div>
-<p><img src="bootLong_files/figure-html/unnamed-chunk-5-1.png" width="720"></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#ggsave("./Example_sampling_schedule.eps", plot = p, width = 8, height = 5.5)</span></code></pre></div>
-<p>In order to make at least 5 overlapping subsamples, we should choose <span class="math inline">\(\omega = .6\)</span> (<span class="math inline">\(\omega\)</span> cannot be more than .6). The maximum repeated observations from each subject for the subsample is <span class="math inline">\(10 \times .6 = 6\)</span>. Thus, the number of overlapping subsamples <span class="math inline">\(W = 10 - 6 + 1 = 5\)</span>.</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb16-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/pkg/DESeq2/man/summary.html">summary</a></span>(<span class="kw"><a href="https://rdrr.io/pkg/phyloseq/man/sample_data-methods.html">sample_data</a></span>(ps)<span class="op">$</span>Group)</a></code></pre></div>
+<pre><code>##    Case Control 
+##     100     100</code></pre>
 </div>
+<div id="sampling-schedule" class="section level2">
+<h2 class="hasAnchor">
+<a href="#sampling-schedule" class="anchor"></a>Sampling schedule</h2>
+<p>We can visualize the sampling schedule for each subject and facet by different conditions. The plot can be modified using your preferred theme. For example, the legend title can be changed from <code>Preterm</code> to <code>Group</code>, levels of <code>Preterm</code> can be changed to <code>Term</code> and <code>Preterm</code>, etc.</p>
+<p>The sampling schedule will be used to choose the <span class="math inline">\(\omega\)</span> repeated observations from each subject for the subsampling procedure. So that we can use <span class="math inline">\(W = q - \omega +1\)</span> overlapping subsamples to find the optimal block length for the full data with all repeated observations <span class="math inline">\(q\)</span>.</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb18-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/pkg/phyloseq/man/sample_data-methods.html">sample_data</a></span>(ps)<span class="op">$</span>Group &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/factor.html">as.factor</a></span>(<span class="kw"><a href="https://rdrr.io/pkg/phyloseq/man/sample_data-methods.html">sample_data</a></span>(ps)<span class="op">$</span>Group)</a>
+<a class="sourceLine" id="cb18-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb18-3" data-line-number="3">p &lt;-<span class="st"> </span><span class="kw"><a href="../reference/plotSamplingSchedule.html">plotSamplingSchedule</a></span>(ps, </a>
+<a class="sourceLine" id="cb18-4" data-line-number="4">  <span class="dt">time_var =</span> <span class="st">"Time"</span>, </a>
+<a class="sourceLine" id="cb18-5" data-line-number="5">  <span class="dt">subjectID_var =</span> <span class="st">"SubjectID"</span>, </a>
+<a class="sourceLine" id="cb18-6" data-line-number="6">  <span class="dt">main_factor =</span> <span class="st">"Group"</span>, </a>
+<a class="sourceLine" id="cb18-7" data-line-number="7">  <span class="dt">theme_manual =</span> set.theme)</a>
+<a class="sourceLine" id="cb18-8" data-line-number="8"></a>
+<a class="sourceLine" id="cb18-9" data-line-number="9">p &lt;-<span class="st"> </span>p <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb18-10" data-line-number="10"><span class="st">  </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/scale_hue.html">scale_color_discrete</a></span>(<span class="dt">name  =</span><span class="st">"Group"</span>, </a>
+<a class="sourceLine" id="cb18-11" data-line-number="11">    <span class="dt">breaks=</span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"Case"</span>, <span class="st">"Control"</span>), </a>
+<a class="sourceLine" id="cb18-12" data-line-number="12">    <span class="dt">labels=</span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"Case"</span>, <span class="st">"Control"</span>))</a>
+<a class="sourceLine" id="cb18-13" data-line-number="13">p <span class="op">+</span><span class="st"> </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ylab</a></span>(<span class="st">"Subject ID"</span>)</a></code></pre></div>
+<div class="figure">
+<img src="bootLong_files/figure-html/plot-sam-sch-1.png" alt="Sampling schedule" width="768"><p class="caption">
+Sampling schedule
+</p>
+</div>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb19-1" data-line-number="1"><span class="co"># fileN &lt;- paste0("sampling_schedule_", setting_name, ".eps")</span></a>
+<a class="sourceLine" id="cb19-2" data-line-number="2"><span class="co">#ggsave(fileN, plot = p, width = 8, height = 5.5)</span></a></code></pre></div>
+<p>Based on Figure @ref(fig:plot-sam-sch), in order to make at least five (<span class="math inline">\(W = 5\)</span>) overlapping subsamples, we should choose <span class="math inline">\(\omega = .6\)</span> (<span class="math inline">\(\omega\)</span> cannot be more than .6). The maximum repeated observations from each subject for the subsample is <span class="math inline">\(10 \times .6 = 6\)</span>. Thus, the number of overlapping subsamples <span class="math inline">\(W = 10 - 6 + 1 = 5\)</span>.</p>
 </div>
 <div id="preprocessing" class="section level2">
 <h2 class="hasAnchor">
 <a href="#preprocessing" class="anchor"></a>Preprocessing</h2>
-<p>Preprocessing will help to reduce unwanted noise.</p>
-<p><a href="https://joey711.github.io/phyloseq/preprocess.html">Tools</a></p>
-<p>Filter ASVs: for example, we remove ASVs with less than 10% prevalence in all samples.</p>
-<p>Before filtering, we will check whether ASVs are on rows and samples are on columns.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="cf">if</span> (<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/dim">dim</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/phyloseq/topics/otu_table-methods">otu_table</a></span>(ps))[<span class="dv">2</span>] <span class="op">!=</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/phyloseq/topics/nsamples-methods">nsamples</a></span>(ps)) {
-        <span class="kw"><a href="https://www.rdocumentation.org/packages/phyloseq/topics/otu_table-methods">otu_table</a></span>(ps) &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/phyloseq/topics/transpose-methods">t</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/phyloseq/topics/otu_table-methods">otu_table</a></span>(ps))
-    }
-threshold &lt;-<span class="st"> </span>.<span class="dv">1</span>
-keep_asv &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/apply">apply</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/phyloseq/topics/otu_table-methods">otu_table</a></span>(ps), <span class="dv">1</span>, <span class="cf">function</span>(x){
-    <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/sum">sum</a></span>(x <span class="op">&gt;</span><span class="st"> </span><span class="dv">0</span>)
-    }) <span class="op">&gt;</span><span class="st"> </span>threshold<span class="op">*</span><span class="kw"><a href="https://www.rdocumentation.org/packages/phyloseq/topics/nsamples-methods">nsamples</a></span>(ps)
-
-ps &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/phyloseq/topics/prune_taxa-methods">prune_taxa</a></span>(keep_asv, ps)
-
-### Better to save the ps after all filtering
-<span class="co"># fileN &lt;- paste0("ps", setting_name, ".rds")</span>
-<span class="co"># saveRDS(ps, fileN)</span></code></pre></div>
+<p>Check whether ASVs are on rows and samples are on columns.</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb20-1" data-line-number="1"><span class="cf">if</span> (<span class="kw"><a href="https://rdrr.io/r/base/dim.html">dim</a></span>(<span class="kw"><a href="https://rdrr.io/pkg/phyloseq/man/otu_table-methods.html">otu_table</a></span>(ps))[<span class="dv">2</span>] <span class="op">!=</span><span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/phyloseq/man/nsamples-methods.html">nsamples</a></span>(ps)) {</a>
+<a class="sourceLine" id="cb20-2" data-line-number="2">        <span class="kw"><a href="https://rdrr.io/pkg/phyloseq/man/otu_table-methods.html">otu_table</a></span>(ps) &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/phyloseq/man/transpose-methods.html">t</a></span>(<span class="kw"><a href="https://rdrr.io/pkg/phyloseq/man/otu_table-methods.html">otu_table</a></span>(ps))</a>
+<a class="sourceLine" id="cb20-3" data-line-number="3">    }</a></code></pre></div>
+<p>Preprocessing will help to reduce unwanted noise. Follow <a href="(https://joey711.github.io/phyloseq/preprocess.html)"><code>phyloseq</code> tutorial</a> for preprocessing.</p>
+<p>For example, we remove ASVs with less than 10% prevalence in all samples.</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb21-1" data-line-number="1">threshold &lt;-<span class="st"> </span><span class="fl">.1</span></a>
+<a class="sourceLine" id="cb21-2" data-line-number="2">keep_asv &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/apply.html">apply</a></span>(<span class="kw"><a href="https://rdrr.io/pkg/phyloseq/man/otu_table-methods.html">otu_table</a></span>(ps), <span class="dv">1</span>, <span class="cf">function</span>(x){</a>
+<a class="sourceLine" id="cb21-3" data-line-number="3">    <span class="kw"><a href="https://rdrr.io/r/base/sum.html">sum</a></span>(x <span class="op">&gt;</span><span class="st"> </span><span class="dv">0</span>)</a>
+<a class="sourceLine" id="cb21-4" data-line-number="4">    }) <span class="op">&gt;</span><span class="st"> </span>threshold<span class="op">*</span><span class="kw"><a href="https://rdrr.io/pkg/phyloseq/man/nsamples-methods.html">nsamples</a></span>(ps)</a>
+<a class="sourceLine" id="cb21-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb21-6" data-line-number="6">ps &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/phyloseq/man/prune_taxa-methods.html">prune_taxa</a></span>(keep_asv, ps)</a>
+<a class="sourceLine" id="cb21-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb21-8" data-line-number="8"><span class="co">## To save the ps after all filtering</span></a>
+<a class="sourceLine" id="cb21-9" data-line-number="9"><span class="co"># fileN &lt;- paste0("ps_", setting_name, ".rds")</span></a>
+<a class="sourceLine" id="cb21-10" data-line-number="10"><span class="co"># saveRDS(ps, fileN)</span></a></code></pre></div>
 </div>
-<div id="exploratory-analysis" class="section level2">
+<div id="visulaizing-within-subject-dependency" class="section level2">
 <h2 class="hasAnchor">
-<a href="#exploratory-analysis" class="anchor"></a>Exploratory analysis</h2>
-<p>Here we provide tools to explore the within-subject dependence. These tools will be used to decide the initial block size for the subsampling method.</p>
+<a href="#visulaizing-within-subject-dependency" class="anchor"></a>Visulaizing within-subject dependency</h2>
+<p>Here we provide tools to explore the within-subject dependency. These tools will be used to decide the initial block size for the subsampling method.</p>
 <ul>
-<li>Extract the common legend [<a href="https://github.com/hadley/ggplot2/wiki/Share-a-legend-between-two-ggplot2-graphs" class="uri">https://github.com/hadley/ggplot2/wiki/Share-a-legend-between-two-ggplot2-graphs</a>]</li>
+<li>Extract the common legend: <a href="https://github.com/hadley/ggplot2/wiki/Share-a-legend-between-two-ggplot2-graphs">reference here.</a>
+</li>
 </ul>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">plot_common_legend &lt;-<span class="st"> </span><span class="cf">function</span>(p){
-    ggplot_feature =<span class="st"> </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/ggplot_gtable.html">ggplot_gtable</a></span>(<span class="kw"><a href="https://ggplot2.tidyverse.org/reference/ggplot_build.html">ggplot_build</a></span>(p))
-    le &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/which">which</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/lapply">sapply</a></span>(ggplot_feature<span class="op">$</span>grobs, <span class="cf">function</span>(x) x<span class="op">$</span>name) <span class="op">==</span><span class="st"> "guide-box"</span>)
-    l &lt;-<span class="st"> </span>ggplot_feature<span class="op">$</span>grobs[[le]]
-    <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/function">return</a></span>(l)
-}</code></pre></div>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb22-1" data-line-number="1">plot_common_legend &lt;-<span class="st"> </span><span class="cf">function</span>(p){</a>
+<a class="sourceLine" id="cb22-2" data-line-number="2">    ggplot_feature =<span class="st"> </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/ggplot_gtable.html">ggplot_gtable</a></span>(<span class="kw"><a href="https://ggplot2.tidyverse.org/reference/ggplot_build.html">ggplot_build</a></span>(p))</a>
+<a class="sourceLine" id="cb22-3" data-line-number="3">    le &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/which.html">which</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/lapply.html">sapply</a></span>(ggplot_feature<span class="op">$</span>grobs, </a>
+<a class="sourceLine" id="cb22-4" data-line-number="4">      <span class="cf">function</span>(x) x<span class="op">$</span>name) <span class="op">==</span><span class="st"> "guide-box"</span>)</a>
+<a class="sourceLine" id="cb22-5" data-line-number="5">    l &lt;-<span class="st"> </span>ggplot_feature<span class="op">$</span>grobs[[le]]</a>
+<a class="sourceLine" id="cb22-6" data-line-number="6">    <span class="kw"><a href="https://rdrr.io/r/base/function.html">return</a></span>(l)</a>
+<a class="sourceLine" id="cb22-7" data-line-number="7">}</a></code></pre></div>
 <div id="pacf" class="section level3">
 <h3 class="hasAnchor">
 <a href="#pacf" class="anchor"></a>PACF</h3>
-<p>Partial autocorrelataion (PACF) at lag <span class="math inline">\(h\)</span> measures the correlation between repeated observations that are seperated by <span class="math inline">\(h\)</span> time units after adjusting for the correlation at shorter lags.</p>
+<p>Partial autocorrelataion function (PACF) at lag <span class="math inline">\(h\)</span> measures the correlation between repeated observations that are seperated by <span class="math inline">\(h\)</span> time units after adjusting for the correlation at shorter lags.</p>
 <ol style="list-style-type: decimal">
-<li>If you prefer to name strain number with the taxonomy (Species/Genus/Family/Order…) selected and be consistent with all the results, run the following with appropriate changes.</li>
+<li>If you prefer to name ASV with the taxonomy level (Species/Genus/Family/Order…) be consistent with all the results, run the following with appropriate changes.</li>
 </ol>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/phyloseq/topics/tax_table-methods">tax_table</a></span>(ps)[, <span class="st">"Genus"</span>] &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/paste">paste0</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/phyloseq/topics/tax_table-methods">tax_table</a></span>(ps)[, <span class="st">"Genus"</span>],<span class="st">"_st_"</span> ,<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/seq">seq</a></span>(<span class="dv">1</span>, <span class="kw"><a href="https://www.rdocumentation.org/packages/phyloseq/topics/ntaxa-methods">ntaxa</a></span>(ps)))</code></pre></div>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb23-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/pkg/phyloseq/man/tax_table-methods.html">tax_table</a></span>(ps)[, <span class="st">"Genus"</span>] &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span>(<span class="kw"><a href="https://rdrr.io/pkg/phyloseq/man/tax_table-methods.html">tax_table</a></span>(ps)[, <span class="st">"Genus"</span>],<span class="st">"_ASV_"</span> ,<span class="kw"><a href="https://rdrr.io/r/base/seq.html">seq</a></span>(<span class="dv">1</span>, <span class="kw"><a href="https://rdrr.io/pkg/phyloseq/man/ntaxa-methods.html">ntaxa</a></span>(ps)))</a></code></pre></div>
 <ol start="2" style="list-style-type: decimal">
-<li><p>We use <code><a href="../reference/psTransform.html">psTransform()</a></code> to get phyloseq objects with transformed count table and residuals after fitting a negative-binomial regression.</p></li>
-<li><p>We choose top six abundance ASVs (based on the total transformed abundance) to visualize the dependence within-subject. We can choose different ASVs by changing <code>starttaxa</code> and <code>endtaxa</code> arguments in <code><a href="../reference/longPACFMultiple.html">longPACFMultiple()</a></code>.</p></li>
+<li>We use <code><a href="../reference/psTransform.html">psTransform()</a></code> to get a phyloseq with Variance-stabilizing transformation of <code>otu table</code>.</li>
 </ol>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ps.tr &lt;-<span class="st"> </span><span class="kw"><a href="../reference/psTransform.html">psTransform</a></span>(ps, <span class="dt">main_factor =</span> <span class="st">"Group"</span>) 
-
-p.all &lt;-<span class="st"> </span><span class="kw"><a href="../reference/longPACFMultiple.html">longPACFMultiple</a></span>(<span class="dt">pstr  =</span> ps.tr[[<span class="dv">1</span>]],
-                             <span class="dt">psres =</span> ps.tr[[<span class="dv">1</span>]], 
-                             <span class="dt">main_factor =</span> <span class="st">"Group"</span>, 
-                             <span class="dt">time_var =</span> <span class="st">"Time"</span>, 
-                             <span class="dt">starttaxa =</span> <span class="dv">1</span>, 
-                             <span class="dt">endtaxa =</span> <span class="dv">6</span>,
-                             <span class="dt">taxlevel =</span> <span class="st">"Genus"</span>)
-
-<span class="co">#   Change the legend labels</span>
-p.all &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/lapply">lapply</a></span>(p.all, <span class="cf">function</span>(x){
-    x <span class="op">+</span><span class="st"> </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/scale_hue.html">scale_fill_discrete</a></span>(<span class="dt">name  =</span><span class="st">"Group"</span>, <span class="dt">breaks=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"Case"</span>, <span class="st">"Control"</span>), <span class="dt">labels=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"Case"</span>, <span class="st">"Control"</span>))
-    })
-
-<span class="co">#   extract the common legend for all taxa</span>
-leg &lt;-<span class="st"> </span><span class="kw">plot_common_legend</span>(p.all[[<span class="dv">1</span>]])
-
-plist &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/lapply">lapply</a></span>(p.all,<span class="cf">function</span>(x){
-    x <span class="op">+</span><span class="st"> </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span>(<span class="dt">legend.position =</span> <span class="st">"none"</span>)
-    })
-
-<span class="co"># p &lt;- grid.arrange(arrangeGrob(grobs=plist,nrow=2,widths=c(3,3,3)),</span>
-<span class="co">#                   leg,</span>
-<span class="co">#                   ncol=2,</span>
-<span class="co">#                   widths=c(10,2))</span>
-                   
-<span class="co"># ggsave("./Example_PAC.eps",plot=p,width = 8,height = 5.5)</span>
-
-<span class="kw"><a href="https://www.rdocumentation.org/packages/gridExtra/topics/arrangeGrob">grid.arrange</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/gridExtra/topics/arrangeGrob">arrangeGrob</a></span>(<span class="dt">grobs =</span> plist, <span class="dt">nrow=</span><span class="dv">2</span>, <span class="dt">widths=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">3</span>,<span class="dv">3</span>,<span class="dv">3</span>)),
-             leg,
-             <span class="dt">ncol =</span> <span class="dv">2</span>,
-             <span class="dt">widths =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">10</span>, <span class="dv">2</span>))</code></pre></div>
-<p><img src="bootLong_files/figure-html/pacf-1.png" width="720"></p>
-<p>The largest spike (|PAC| &gt; .25) is observed at lag-1 for both term and preterm in all ASVs. The spike at lag-2 is closer to .25 for ASV_30 and ASV_27 in case. The spike decreases at lag-3 and then, increases at lag-4 for all ASVs. Thus, We can assume that five consecutive observations make a block. We will choose an inital block size of 5.</p>
-<p>We can also check the lag-plot for each ASV and it is interpreted as follows:</p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb24-1" data-line-number="1">ps.tr &lt;-<span class="st"> </span><span class="kw"><a href="../reference/psTransform.html">psTransform</a></span>(ps, <span class="dt">main_factor =</span> <span class="st">"Group"</span>) </a></code></pre></div>
+<ol start="3" style="list-style-type: decimal">
+<li>We choose top six abundance ASVs (based on the sum of transformed values) to visualize the within-subject dependency. We can choose different ASVs by changing <code>starttaxa</code> and <code>endtaxa</code> arguments in <code><a href="../reference/longPACFMultiple.html">longPACFMultiple()</a></code>.</li>
+</ol>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb25-1" data-line-number="1">p.all &lt;-<span class="st"> </span><span class="kw"><a href="../reference/longPACFMultiple.html">longPACFMultiple</a></span>(<span class="dt">pstr  =</span> ps.tr,</a>
+<a class="sourceLine" id="cb25-2" data-line-number="2">  <span class="dt">main_factor =</span> <span class="st">"Group"</span>, </a>
+<a class="sourceLine" id="cb25-3" data-line-number="3">  <span class="dt">time_var =</span> <span class="st">"Time"</span>, </a>
+<a class="sourceLine" id="cb25-4" data-line-number="4">  <span class="dt">starttaxa =</span> <span class="dv">1</span>, </a>
+<a class="sourceLine" id="cb25-5" data-line-number="5">  <span class="dt">endtaxa =</span> <span class="dv">6</span>,</a>
+<a class="sourceLine" id="cb25-6" data-line-number="6">  <span class="dt">taxlevel =</span> <span class="st">"Genus"</span>)</a>
+<a class="sourceLine" id="cb25-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb25-8" data-line-number="8"><span class="co">#   Change the legend labels</span></a>
+<a class="sourceLine" id="cb25-9" data-line-number="9">p.all &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span>(p.all, <span class="cf">function</span>(x){</a>
+<a class="sourceLine" id="cb25-10" data-line-number="10">    x <span class="op">+</span><span class="st"> </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/scale_hue.html">scale_fill_discrete</a></span>(<span class="dt">name  =</span> <span class="st">"Group"</span>, </a>
+<a class="sourceLine" id="cb25-11" data-line-number="11">      <span class="dt">breaks =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"Case"</span>, <span class="st">"Control"</span>), </a>
+<a class="sourceLine" id="cb25-12" data-line-number="12">      <span class="dt">labels =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"Case"</span>, <span class="st">"Control"</span>))</a>
+<a class="sourceLine" id="cb25-13" data-line-number="13">    })</a>
+<a class="sourceLine" id="cb25-14" data-line-number="14"></a>
+<a class="sourceLine" id="cb25-15" data-line-number="15"><span class="co">#   extract the common legend </span></a>
+<a class="sourceLine" id="cb25-16" data-line-number="16">leg &lt;-<span class="st"> </span><span class="kw">plot_common_legend</span>(p.all[[<span class="dv">1</span>]])</a>
+<a class="sourceLine" id="cb25-17" data-line-number="17"></a>
+<a class="sourceLine" id="cb25-18" data-line-number="18">plist &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span>(p.all,<span class="cf">function</span>(x){</a>
+<a class="sourceLine" id="cb25-19" data-line-number="19">    x <span class="op">+</span><span class="st"> </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span>(<span class="dt">legend.position =</span> <span class="st">"none"</span>)</a>
+<a class="sourceLine" id="cb25-20" data-line-number="20">    })</a>
+<a class="sourceLine" id="cb25-21" data-line-number="21"></a>
+<a class="sourceLine" id="cb25-22" data-line-number="22"><span class="co"># p &lt;- grid.arrange(arrangeGrob(grobs = plist, nrow=2, widths = c(3,3,3)), leg, ncol=2, widths=c(10,2))</span></a>
+<a class="sourceLine" id="cb25-23" data-line-number="23">                   </a>
+<a class="sourceLine" id="cb25-24" data-line-number="24"><span class="co"># fileN &lt;- paste0("PACF_", setting_name, ".eps")</span></a>
+<a class="sourceLine" id="cb25-25" data-line-number="25"><span class="co"># ggsave(fileN, plot = p, width = 8, height = 5.5)</span></a>
+<a class="sourceLine" id="cb25-26" data-line-number="26"></a>
+<a class="sourceLine" id="cb25-27" data-line-number="27"><span class="kw"><a href="https://rdrr.io/pkg/gridExtra/man/arrangeGrob.html">grid.arrange</a></span>(<span class="kw"><a href="https://rdrr.io/pkg/gridExtra/man/arrangeGrob.html">arrangeGrob</a></span>(<span class="dt">grobs =</span> plist, <span class="dt">nrow=</span><span class="dv">2</span>, <span class="dt">widths=</span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">3</span>,<span class="dv">3</span>,<span class="dv">3</span>)),</a>
+<a class="sourceLine" id="cb25-28" data-line-number="28">             leg,</a>
+<a class="sourceLine" id="cb25-29" data-line-number="29">             <span class="dt">ncol =</span> <span class="dv">2</span>,</a>
+<a class="sourceLine" id="cb25-30" data-line-number="30">             <span class="dt">widths =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">10</span>, <span class="dv">2</span>))</a></code></pre></div>
+<div class="figure">
+<img src="bootLong_files/figure-html/pacf-1.png" alt="Partial autocorrelation within subject" width="768"><p class="caption">
+Partial autocorrelation within subject
+</p>
+</div>
+<p>Figure @ref(fig:pacf) shows that the largest spike (<span class="math inline">\(\left|\rho\left(h\right) \right| &gt; .25\)</span>) is observed at <span class="math inline">\(h = 1\)</span> for both case and control in all ASVs. The spike at <span class="math inline">\(h = 2\)</span> is closer to .25 for ASV_30 and ASV_27 in case. The spike decreases at <span class="math inline">\(h = 3\)</span> and then, increases at <span class="math inline">\(h = 4\)</span> for all ASVs. Thus, We can assume that five consecutive observations make a block. We will choose an inital block size of 5 (<span class="math inline">\(l_{I} = 5.\)</span>).</p>
+</div>
+<div id="longitudinal-data-lag-plots" class="section level3">
+<h3 class="hasAnchor">
+<a href="#longitudinal-data-lag-plots" class="anchor"></a>longitudinal data lag-plots</h3>
+<p>We can also check the lag-plot for each ASV. The interpretaion of lag plot is as follows:</p>
 <ol style="list-style-type: decimal">
-<li>
-<p>For each ASV, we plot transformed abundances at different lags. The lag-plot is interpreted as follows:</p>
+<li>For each ASV, we plot arcsinh transformation values at different lags. The lag-plot is interpreted as follows:
 <ol style="list-style-type: lower-roman">
 <li>lack of autocorrelation is implied by the absence of a pattern in the lag plot,</li>
 <li>weak to moderate autocorrelation is implied by less clustering of points along the diagonal, and</li>
@@ -284,124 +324,142 @@ plist &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocum
 </ol>
 </li>
 </ol>
+<p>Let us check the lag-plot for ASV_30 at lags <span class="math inline">\(1, \cdots, 8\)</span>. We need to specify the ASV index in the ‘taxon’ option. In this example, ‘taxon = 30’.</p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb26-1" data-line-number="1">lags &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/list.html">as.list</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/seq.html">seq</a></span>(<span class="dv">1</span>, <span class="dv">8</span>))</a>
+<a class="sourceLine" id="cb26-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb26-3" data-line-number="3">p.lags &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span>(lags,<span class="cf">function</span>(x){</a>
+<a class="sourceLine" id="cb26-4" data-line-number="4">    <span class="kw"><a href="../reference/longLagPlot.html">longLagPlot</a></span>(ps.tr, </a>
+<a class="sourceLine" id="cb26-5" data-line-number="5">        <span class="dt">main_factor =</span> <span class="st">"Group"</span>, </a>
+<a class="sourceLine" id="cb26-6" data-line-number="6">        <span class="dt">time_var =</span> <span class="st">"Time"</span>, </a>
+<a class="sourceLine" id="cb26-7" data-line-number="7">        <span class="dt">taxon =</span> <span class="dv">30</span>, </a>
+<a class="sourceLine" id="cb26-8" data-line-number="8">        x, </a>
+<a class="sourceLine" id="cb26-9" data-line-number="9">        <span class="dt">taxlevel =</span> <span class="st">"Genus"</span>)})</a>
+<a class="sourceLine" id="cb26-10" data-line-number="10"></a>
+<a class="sourceLine" id="cb26-11" data-line-number="11"><span class="co">#   Change the legend labels</span></a>
+<a class="sourceLine" id="cb26-12" data-line-number="12">p.lags &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span>(p.lags, <span class="cf">function</span>(x){</a>
+<a class="sourceLine" id="cb26-13" data-line-number="13">    x <span class="op">+</span><span class="st"> </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/scale_hue.html">scale_color_discrete</a></span>(<span class="dt">name  =</span> <span class="st">"Group"</span>, </a>
+<a class="sourceLine" id="cb26-14" data-line-number="14">      <span class="dt">breaks =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"Case"</span>, <span class="st">"Control"</span>), </a>
+<a class="sourceLine" id="cb26-15" data-line-number="15">      <span class="dt">labels =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"Case"</span>, <span class="st">"Control"</span>))</a>
+<a class="sourceLine" id="cb26-16" data-line-number="16">    })</a>
+<a class="sourceLine" id="cb26-17" data-line-number="17"></a>
+<a class="sourceLine" id="cb26-18" data-line-number="18">leg &lt;-<span class="st"> </span><span class="kw">plot_common_legend</span>(p.lags[[<span class="dv">1</span>]])</a>
+<a class="sourceLine" id="cb26-19" data-line-number="19"></a>
+<a class="sourceLine" id="cb26-20" data-line-number="20">plist &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span>(p.lags,<span class="cf">function</span>(x){</a>
+<a class="sourceLine" id="cb26-21" data-line-number="21">    x<span class="op">+</span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span>(<span class="dt">legend.position =</span> <span class="st">"none"</span>)</a>
+<a class="sourceLine" id="cb26-22" data-line-number="22">    })</a>
+<a class="sourceLine" id="cb26-23" data-line-number="23"></a>
+<a class="sourceLine" id="cb26-24" data-line-number="24"></a>
+<a class="sourceLine" id="cb26-25" data-line-number="25"><span class="co"># p &lt;- grid.arrange(arrangeGrob(grobs=plist,nrow=2,widths=c(3,3,3,3)),</span></a>
+<a class="sourceLine" id="cb26-26" data-line-number="26"><span class="co">#                   leg,</span></a>
+<a class="sourceLine" id="cb26-27" data-line-number="27"><span class="co">#                   ncol=2,</span></a>
+<a class="sourceLine" id="cb26-28" data-line-number="28"><span class="co">#                   widths=c(10,2))</span></a>
+<a class="sourceLine" id="cb26-29" data-line-number="29"><span class="co"># fileN &lt;- paste0("lag_plot_", setting_name, ".eps")</span></a>
+<a class="sourceLine" id="cb26-30" data-line-number="30"><span class="co"># ggsave(fileN, plot = p, width = 8, height = 5.5)</span></a>
+<a class="sourceLine" id="cb26-31" data-line-number="31"></a>
+<a class="sourceLine" id="cb26-32" data-line-number="32"><span class="kw"><a href="https://rdrr.io/pkg/gridExtra/man/arrangeGrob.html">grid.arrange</a></span>(<span class="kw"><a href="https://rdrr.io/pkg/gridExtra/man/arrangeGrob.html">arrangeGrob</a></span>(<span class="dt">grobs =</span> plist, </a>
+<a class="sourceLine" id="cb26-33" data-line-number="33">  <span class="dt">nrow =</span> <span class="dv">2</span>, </a>
+<a class="sourceLine" id="cb26-34" data-line-number="34">  <span class="dt">widths =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">3</span>, <span class="dv">3</span>, <span class="dv">3</span>, <span class="dv">3</span>)), </a>
+<a class="sourceLine" id="cb26-35" data-line-number="35">  leg, </a>
+<a class="sourceLine" id="cb26-36" data-line-number="36">  <span class="dt">ncol =</span> <span class="dv">2</span>, <span class="dt">widths =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">10</span>, <span class="dv">2</span>), </a>
+<a class="sourceLine" id="cb26-37" data-line-number="37">  <span class="dt">top =</span> <span class="kw"><a href="https://rdrr.io/r/grid/grid.text.html">textGrob</a></span>(<span class="st">"ASV 30"</span>, </a>
+<a class="sourceLine" id="cb26-38" data-line-number="38">    <span class="dt">gp =</span> <span class="kw"><a href="https://rdrr.io/r/grid/gpar.html">gpar</a></span>(<span class="dt">fontsize =</span> <span class="dv">8</span>, <span class="dt">font =</span> <span class="dv">3</span>)))</a></code></pre></div>
+<div class="figure">
+<img src="bootLong_files/figure-html/lag-plots-1.png" alt="Lag-plot for ASV_30" width="768"><p class="caption">
+Lag-plot for ASV_30
+</p>
 </div>
-<div id="longitudinal-data-lag-plots" class="section level3">
-<h3 class="hasAnchor">
-<a href="#longitudinal-data-lag-plots" class="anchor"></a>longitudinal data lag-plots</h3>
-<p>Let us check the lag-plot for ASV_30. We need to specify the ASV index in the ‘taxon’ option. In this example, ‘taxon = 30’.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">lags &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">as.list</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/seq">seq</a></span>(<span class="dv">1</span>, <span class="dv">8</span>))
-
-p.lags &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/lapply">lapply</a></span>(lags,<span class="cf">function</span>(x){
-    <span class="kw"><a href="../reference/longLagPlot.html">longLagPlot</a></span>(ps.tr[[<span class="dv">2</span>]], 
-        <span class="dt">main_factor =</span> <span class="st">"Group"</span>, 
-        <span class="dt">time_var =</span> <span class="st">"Time"</span>, 
-        <span class="dt">taxon =</span> <span class="dv">30</span>, 
-        x, 
-        <span class="dt">taxlevel =</span> <span class="st">"Genus"</span>)})
-
-<span class="co">#   Change the legend labels</span>
-p.lags &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/lapply">lapply</a></span>(p.lags, <span class="cf">function</span>(x){
-    x <span class="op">+</span><span class="st"> </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/scale_hue.html">scale_color_discrete</a></span>(<span class="dt">name  =</span> <span class="st">"Group"</span>, <span class="dt">breaks =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"Case"</span>, <span class="st">"Control"</span>), <span class="dt">labels =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"Case"</span>, <span class="st">"Control"</span>))
-    })
-
-leg &lt;-<span class="st"> </span><span class="kw">plot_common_legend</span>(p.lags[[<span class="dv">1</span>]])
-
-plist &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/lapply">lapply</a></span>(p.lags,<span class="cf">function</span>(x){
-    x<span class="op">+</span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span>(<span class="dt">legend.position =</span> <span class="st">"none"</span>)
-    })
-
-
-<span class="co"># p &lt;- grid.arrange(arrangeGrob(grobs=plist,nrow=2,widths=c(3,3,3,3)),</span>
-<span class="co">#                   leg,</span>
-<span class="co">#                   ncol=2,</span>
-<span class="co">#                   widths=c(10,2))</span>
-<span class="co"># </span>
-<span class="co"># ggsave("./Example_lag_plot.eps",plot=p,width = 8,height = 5.5)</span>
-
-<span class="kw"><a href="https://www.rdocumentation.org/packages/gridExtra/topics/arrangeGrob">grid.arrange</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/gridExtra/topics/arrangeGrob">arrangeGrob</a></span>(<span class="dt">grobs =</span> plist, <span class="dt">nrow =</span> <span class="dv">2</span>, <span class="dt">widths =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">3</span>, <span class="dv">3</span>, <span class="dv">3</span>, <span class="dv">3</span>)), 
-             leg, 
-             <span class="dt">ncol =</span> <span class="dv">2</span>, 
-             <span class="dt">widths =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">10</span>, <span class="dv">2</span>), <span class="dt">top =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/grid/topics/grid.text">textGrob</a></span>(<span class="st">"ASV 30"</span>, <span class="dt">gp =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/grid/topics/gpar">gpar</a></span>(<span class="dt">fontsize =</span> <span class="dv">8</span>, <span class="dt">font =</span> <span class="dv">3</span>)))</code></pre></div>
-<p><img src="bootLong_files/figure-html/lag-plots-1.png" width="720"></p>
-<p>For ASV 30, we observe that points are almost on the diagonal at lag-1. Then, points are less clustering along the diagonal at lag-3. We can either choose an initial block size of 4 according to lag-plot or 5 accroding to PAC plots. However, we visualized a lag-plot for one ASV but we visualized PAC for six ASVs. Thus, we will still choose <span class="math inline">\(l_{I} = 5.\)</span></p>
+<p>Figure @ref(fig:lag-plots) shows that (for ASV 30) that points are almost on the diagonal at <span class="math inline">\(h = 1\)</span>. Then, points are less clustering along the diagonal at <span class="math inline">\(h = 3\)</span>. We can either choose an initial block size of 4 according to lag-plot or 5 accroding to PACF. However, we visualized a lag-plot for one ASV but we visualized PAC for six ASVs. Thus, we will still choose <span class="math inline">\(l_{I} = 5.\)</span></p>
 <p>In practice, we can choose initial block size using PAC plots. If there are spurious effects at larger lags and suggesting to choose <code>BIG</code> initial block size, we can diagnose those using lag-plot for particular ASV. There might be a spurious higher autocorrelation at larger lags due to a small number of observations or abundances close to zero.</p>
 </div>
 <div id="correlogram" class="section level3">
 <h3 class="hasAnchor">
 <a href="#correlogram" class="anchor"></a>Correlogram</h3>
-<p>In practice, we can also choose <span class="math inline">\(l_{I}\)</span> using correlogram. First, we use the variance-stabilizing transformation on the original abundance table. Then, for each ASV, we compute the average transformed abundance at each time point. Finally, we plot within-subject autocorrelation for top six abundances ASVs. These top six ASVs are selected according to the sum of transformed abundances for each ASV. Using the autocorrelation plots, we consider the first occurrence of a lag with sufficiently close to zero autocorrelation as initial block size <span class="math inline">\(l_{I}\)</span>. There might be a spurious higher autocorrelation at larger lags due to a small number of observations or abundances close to zero.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">p.all &lt;-<span class="st"> </span><span class="kw"><a href="../reference/longCorreloMultiple.html">longCorreloMultiple</a></span>(ps.tr[[<span class="dv">1</span>]],
-                             ps.tr[[<span class="dv">1</span>]], 
-                             <span class="dt">main_factor =</span> <span class="st">"Group"</span>, 
-                             <span class="dt">time_var =</span> <span class="st">"Time"</span>, 
-                             <span class="dt">starttaxa =</span> <span class="dv">1</span>, 
-                             <span class="dt">endtaxa =</span> <span class="dv">6</span>,
-                             <span class="dt">taxlevel =</span> <span class="st">"Genus"</span>)
-
-<span class="co">#   Change the legend labels</span>
-p.all &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/lapply">lapply</a></span>(p.all, <span class="cf">function</span>(x){
-    x <span class="op">+</span><span class="st"> </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/scale_hue.html">scale_fill_discrete</a></span>(<span class="dt">name  =</span><span class="st">"Group"</span>,<span class="dt">breaks=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"Case"</span>, <span class="st">"Control"</span>),<span class="dt">labels=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"Case"</span>, <span class="st">"Control"</span>))
-    })
-
-<span class="co">#   extract the common legend for all taxa</span>
-leg &lt;-<span class="st"> </span><span class="kw">plot_common_legend</span>(p.all[[<span class="dv">1</span>]])
-
-plist &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/lapply">lapply</a></span>(p.all,<span class="cf">function</span>(x){
-    x <span class="op">+</span><span class="st"> </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span>(<span class="dt">legend.position =</span> <span class="st">"none"</span>)
-    })
-
-<span class="co"># p &lt;- grid.arrange(arrangeGrob(grobs=plist,nrow=2,widths=c(3,3,3)),</span>
-<span class="co">#                   leg,</span>
-<span class="co">#                   ncol=2,</span>
-<span class="co">#                   widths=c(10,2))</span>
-<span class="co"># ggsave("./Example_correlogram.eps",plot=p,width = 8,height = 5.5)</span>
-
-<span class="kw"><a href="https://www.rdocumentation.org/packages/gridExtra/topics/arrangeGrob">grid.arrange</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/gridExtra/topics/arrangeGrob">arrangeGrob</a></span>(<span class="dt">grobs =</span> plist, <span class="dt">nrow =</span> <span class="dv">2</span>, <span class="dt">widths =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">3</span>, <span class="dv">3</span>, <span class="dv">3</span>)),
-             leg,
-             <span class="dt">ncol =</span> <span class="dv">2</span>,
-             <span class="dt">widths=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">10</span>, <span class="dv">2</span>))</code></pre></div>
-<p><img src="bootLong_files/figure-html/corr-1.png" width="720"></p>
-<p>We observe that the correlogram tends to be sufficiently zero at lag-4 for almost all the ASVs. Therefore, the initial block size is 5.</p>
-<p>All other exploratory tools suggest an inital block size of 5.</p>
-<p>Now we have chosen the initial parameters for the subsampling method. <span class="math inline">\(\omega = .6\)</span> and <span class="math inline">\(l_{I} =5\)</span>.</p>
+<p>In practice, we can also choose <span class="math inline">\(l_{I}\)</span> using correlogram. First, we use the variance-stabilizing transformation on the original abundance table. Then, for each ASV, we compute the average transformed abundance at each time point. Finally, we plot within-subject autocorrelation for top six abundances ASVs. These top six ASVs are selected according to the sum of transformation values for each ASV. Using the autocorrelation plots, we consider the first occurrence of a lag with sufficiently close to zero autocorrelation as initial block size <span class="math inline">\(l_{I}\)</span>. There might be a spurious higher autocorrelation at larger lags due to a small number of observations or abundances close to zero.</p>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb27-1" data-line-number="1">p.all &lt;-<span class="st"> </span><span class="kw"><a href="../reference/longCorreloMultiple.html">longCorreloMultiple</a></span>(ps.tr,</a>
+<a class="sourceLine" id="cb27-2" data-line-number="2">  <span class="dt">main_factor =</span> <span class="st">"Group"</span>, </a>
+<a class="sourceLine" id="cb27-3" data-line-number="3">  <span class="dt">time_var =</span> <span class="st">"Time"</span>, </a>
+<a class="sourceLine" id="cb27-4" data-line-number="4">  <span class="dt">starttaxa =</span> <span class="dv">1</span>, </a>
+<a class="sourceLine" id="cb27-5" data-line-number="5">  <span class="dt">endtaxa =</span> <span class="dv">6</span>,</a>
+<a class="sourceLine" id="cb27-6" data-line-number="6">  <span class="dt">taxlevel =</span> <span class="st">"Genus"</span>)</a>
+<a class="sourceLine" id="cb27-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb27-8" data-line-number="8"><span class="co">#   Change the legend labels</span></a>
+<a class="sourceLine" id="cb27-9" data-line-number="9">p.all &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span>(p.all, <span class="cf">function</span>(x){</a>
+<a class="sourceLine" id="cb27-10" data-line-number="10">    x <span class="op">+</span><span class="st"> </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/scale_hue.html">scale_fill_discrete</a></span>(<span class="dt">name  =</span><span class="st">"Group"</span>, </a>
+<a class="sourceLine" id="cb27-11" data-line-number="11">      <span class="dt">breaks=</span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"Case"</span>, <span class="st">"Control"</span>), </a>
+<a class="sourceLine" id="cb27-12" data-line-number="12">      <span class="dt">labels=</span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"Case"</span>, <span class="st">"Control"</span>))</a>
+<a class="sourceLine" id="cb27-13" data-line-number="13">    })</a>
+<a class="sourceLine" id="cb27-14" data-line-number="14"></a>
+<a class="sourceLine" id="cb27-15" data-line-number="15"><span class="co">#   extract the common legend for all taxa</span></a>
+<a class="sourceLine" id="cb27-16" data-line-number="16">leg &lt;-<span class="st"> </span><span class="kw">plot_common_legend</span>(p.all[[<span class="dv">1</span>]])</a>
+<a class="sourceLine" id="cb27-17" data-line-number="17"></a>
+<a class="sourceLine" id="cb27-18" data-line-number="18">plist &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span>(p.all,<span class="cf">function</span>(x){</a>
+<a class="sourceLine" id="cb27-19" data-line-number="19">    x <span class="op">+</span><span class="st"> </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span>(<span class="dt">legend.position =</span> <span class="st">"none"</span>)</a>
+<a class="sourceLine" id="cb27-20" data-line-number="20">    })</a>
+<a class="sourceLine" id="cb27-21" data-line-number="21"></a>
+<a class="sourceLine" id="cb27-22" data-line-number="22"><span class="co"># p &lt;- grid.arrange(arrangeGrob(grobs=plist,nrow=2,widths=c(3,3,3)),</span></a>
+<a class="sourceLine" id="cb27-23" data-line-number="23"><span class="co">#                   leg,</span></a>
+<a class="sourceLine" id="cb27-24" data-line-number="24"><span class="co">#                   ncol=2,</span></a>
+<a class="sourceLine" id="cb27-25" data-line-number="25"><span class="co">#                   widths=c(10,2))</span></a>
+<a class="sourceLine" id="cb27-26" data-line-number="26">                  </a>
+<a class="sourceLine" id="cb27-27" data-line-number="27"><span class="co"># fileN &lt;- paste0("correlogram_", setting_name, ".eps")</span></a>
+<a class="sourceLine" id="cb27-28" data-line-number="28"><span class="co"># ggsave(fileN, plot = p, width = 8, height = 5.5)</span></a>
+<a class="sourceLine" id="cb27-29" data-line-number="29"><span class="co"># </span></a>
+<a class="sourceLine" id="cb27-30" data-line-number="30"><span class="kw"><a href="https://rdrr.io/pkg/gridExtra/man/arrangeGrob.html">grid.arrange</a></span>(<span class="kw"><a href="https://rdrr.io/pkg/gridExtra/man/arrangeGrob.html">arrangeGrob</a></span>(<span class="dt">grobs =</span> plist, </a>
+<a class="sourceLine" id="cb27-31" data-line-number="31">  <span class="dt">nrow =</span> <span class="dv">2</span>, </a>
+<a class="sourceLine" id="cb27-32" data-line-number="32">  <span class="dt">widths =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">3</span>, <span class="dv">3</span>, <span class="dv">3</span>)), </a>
+<a class="sourceLine" id="cb27-33" data-line-number="33">  leg, </a>
+<a class="sourceLine" id="cb27-34" data-line-number="34">  <span class="dt">ncol =</span> <span class="dv">2</span>,</a>
+<a class="sourceLine" id="cb27-35" data-line-number="35">  <span class="dt">widths=</span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">10</span>, <span class="dv">2</span>))</a></code></pre></div>
+<div class="figure">
+<img src="bootLong_files/figure-html/corr-1.png" alt="Correlogram" width="768"><p class="caption">
+Correlogram
+</p>
+</div>
+<p>In Figure @ref(fig:corr) we observe that the correlogram tends to be sufficiently zero at <span class="math inline">\(h = 4\)</span> for almost all the ASVs. Therefore, the initial block size is 5.</p>
+<p>All exploratory tools suggest an inital block size of 5.</p>
+<p>Now we have chosen the initial parameters for the subsampling method. <span class="math inline">\(\omega = .6\)</span> and <span class="math inline">\(l_{I} = 5\)</span>.</p>
+</div>
 </div>
 </div>
 <div id="the-block-bootstrap-method" class="section level1">
 <h1 class="hasAnchor">
 <a href="#the-block-bootstrap-method" class="anchor"></a>The block bootstrap method</h1>
-<p>First, we identify the opitmal block size for the subsample. We use the initial block size 5 (<span class="math inline">\(l_{I} = 5\)</span>) and subsampling proportion <span class="math inline">\(\omega = .6\)</span> to identify the opitmal block size.</p>
+<p>First, we identify the opitmal block size for the subsample. We use <span class="math inline">\(l_{I} = 5\)</span> and subsampling proportion <span class="math inline">\(\omega = .6\)</span> to identify the opitmal block size.</p>
 <div id="subsampling" class="section level2">
 <h2 class="hasAnchor">
 <a href="#subsampling" class="anchor"></a>Subsampling</h2>
 <ol style="list-style-type: decimal">
-<li>Compute <span class="math inline">\(\psi(q,l_{I})\)</span> and <span class="math inline">\(T_{i}\left(q, l_{I}\right)\)</span> using the initial block size and the full data.</li>
+<li>Compute <span class="math inline">\(\psi(q, l_{I})\)</span> and <span class="math inline">\(T_{i}\left(q, l_{I}\right)\)</span> using the initial block size and the full data.</li>
 </ol>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">#####Note: With 4 cores, this will take almost 18 hours
-R &lt;-<span class="st"> </span><span class="dv">200</span>
-RR &lt;-<span class="st"> </span><span class="dv">50</span>
-main_factor &lt;-<span class="st"> "Group"</span>
-time_var &lt;-<span class="st"> "Time"</span>
-subjectID_var =<span class="st"> "SubjectID"</span>
-sampleID_var =<span class="st"> "SampleID"</span>
-lI &lt;-<span class="st"> </span><span class="dv">5</span>
-omega &lt;-<span class="st"> </span>.<span class="dv">6</span>
-
-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/system.time">system.time</a></span>(
-    mse.results &lt;-<span class="st"> </span><span class="kw"><a href="../reference/bootLongSubsampling.html">bootLongSubsampling</a></span>(<span class="dt">ps =</span> ps, 
-        <span class="dt">main_factor =</span> main_factor, 
-        <span class="dt">time_var =</span> time_var, 
-        <span class="dt">subjectID_var =</span> subjectID_var, 
-        <span class="dt">sampleID_var =</span> sampleID_var, 
-        <span class="dt">lI =</span> lI, 
-        <span class="dt">R =</span> R, 
-        <span class="dt">RR =</span> RR, 
-        <span class="dt">omega =</span> omega, 
-        <span class="dt">lC1 =</span> lC1, <span class="dt">lC2 =</span> lC2, 
-        <span class="dt">ncores =</span> ncores, <span class="dt">psi.hat.lI =</span> <span class="ot">FALSE</span>, <span class="dt">psi.hat.lI.val =</span> <span class="ot">NULL</span>, <span class="dt">compStatParallel =</span> <span class="ot">FALSE</span>)
-)
-
-fileN &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/paste">paste0</a></span>(<span class="st">"./psi.hat.lI_"</span>, setting_name,<span class="st">".rds"</span>)
-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/readRDS">saveRDS</a></span>(mse.results, fileN) </code></pre></div>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb28-1" data-line-number="1"><span class="co">#####Note: With 4 cores, this will take almost 18 hours</span></a>
+<a class="sourceLine" id="cb28-2" data-line-number="2">R &lt;-<span class="st"> </span><span class="dv">200</span></a>
+<a class="sourceLine" id="cb28-3" data-line-number="3">RR &lt;-<span class="st"> </span><span class="dv">50</span></a>
+<a class="sourceLine" id="cb28-4" data-line-number="4">main_factor &lt;-<span class="st"> "Group"</span></a>
+<a class="sourceLine" id="cb28-5" data-line-number="5">time_var &lt;-<span class="st"> "Time"</span></a>
+<a class="sourceLine" id="cb28-6" data-line-number="6">subjectID_var =<span class="st"> "SubjectID"</span></a>
+<a class="sourceLine" id="cb28-7" data-line-number="7">sampleID_var =<span class="st"> "SampleID"</span></a>
+<a class="sourceLine" id="cb28-8" data-line-number="8">lI &lt;-<span class="st"> </span><span class="dv">5</span></a>
+<a class="sourceLine" id="cb28-9" data-line-number="9">omega &lt;-<span class="st"> </span><span class="fl">.6</span></a>
+<a class="sourceLine" id="cb28-10" data-line-number="10"></a>
+<a class="sourceLine" id="cb28-11" data-line-number="11"><span class="kw"><a href="https://rdrr.io/r/base/system.time.html">system.time</a></span>(</a>
+<a class="sourceLine" id="cb28-12" data-line-number="12">    mse.results &lt;-<span class="st"> </span><span class="kw"><a href="../reference/bootLongSubsampling.html">bootLongSubsampling</a></span>(<span class="dt">ps =</span> ps, </a>
+<a class="sourceLine" id="cb28-13" data-line-number="13">        <span class="dt">main_factor =</span> main_factor, </a>
+<a class="sourceLine" id="cb28-14" data-line-number="14">        <span class="dt">time_var =</span> time_var, </a>
+<a class="sourceLine" id="cb28-15" data-line-number="15">        <span class="dt">subjectID_var =</span> subjectID_var, </a>
+<a class="sourceLine" id="cb28-16" data-line-number="16">        <span class="dt">sampleID_var =</span> sampleID_var, </a>
+<a class="sourceLine" id="cb28-17" data-line-number="17">        <span class="dt">lI =</span> lI, </a>
+<a class="sourceLine" id="cb28-18" data-line-number="18">        <span class="dt">R =</span> R, </a>
+<a class="sourceLine" id="cb28-19" data-line-number="19">        <span class="dt">RR =</span> RR, </a>
+<a class="sourceLine" id="cb28-20" data-line-number="20">        <span class="dt">omega =</span> omega, </a>
+<a class="sourceLine" id="cb28-21" data-line-number="21">        <span class="dt">lC1 =</span> lC1, <span class="dt">lC2 =</span> lC2, </a>
+<a class="sourceLine" id="cb28-22" data-line-number="22">        <span class="dt">ncores =</span> ncores, </a>
+<a class="sourceLine" id="cb28-23" data-line-number="23">      <span class="dt">psi.hat.lI =</span> <span class="ot">FALSE</span>, </a>
+<a class="sourceLine" id="cb28-24" data-line-number="24">      <span class="dt">psi.hat.lI.val =</span> <span class="ot">NULL</span>, </a>
+<a class="sourceLine" id="cb28-25" data-line-number="25">      <span class="dt">compStatParallel =</span> <span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb28-26" data-line-number="26">)</a>
+<a class="sourceLine" id="cb28-27" data-line-number="27"></a>
+<a class="sourceLine" id="cb28-28" data-line-number="28">fileN &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span>(<span class="st">"./psi.hat.lI_"</span>, setting_name,<span class="st">".rds"</span>)</a>
+<a class="sourceLine" id="cb28-29" data-line-number="29"><span class="kw"><a href="https://rdrr.io/r/base/readRDS.html">saveRDS</a></span>(mse.results, fileN) </a></code></pre></div>
 <ol start="2" style="list-style-type: decimal">
 <li>We can run the following code parallel for each block sizes (lC1 = lC2) if we have already saved <code>psi.hat.lI</code>.
 <ul>
@@ -410,93 +468,93 @@ fileN &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocum
 </li>
 </ol>
 <p>Use <code>compStatParallel = TRUE</code> if you have more ASVs than <code>R</code>.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">##### <span class="al">NOTE</span>: With 4 cores, this will take almost 71 hours
- 
-<span class="co"># fileN &lt;- paste0("ps", setting_name, ".rds")</span>
-<span class="co"># ps &lt;- readRDS(fileN)</span>
-
-fileN &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/paste">paste0</a></span>(<span class="st">"./psi.hat.lI_"</span>, setting_name,<span class="st">".rds"</span>)
-psi.hat.lI.val &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/readRDS">readRDS</a></span>(fileN)
-
-R &lt;-<span class="st"> </span><span class="dv">200</span>
-RR &lt;-<span class="st"> </span><span class="dv">50</span>
-main_factor &lt;-<span class="st"> "Group"</span>
-time_var &lt;-<span class="st"> "Time"</span>
-subjectID_var =<span class="st"> "SubjectID"</span>
-sampleID_var =<span class="st"> "SampleID"</span>
-lI &lt;-<span class="st"> </span><span class="dv">5</span>
-omega &lt;-<span class="st"> </span>.<span class="dv">6</span>
-
-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/system.time">system.time</a></span>(
-    mse.results &lt;-<span class="st"> </span><span class="kw"><a href="../reference/bootLongSubsampling.html">bootLongSubsampling</a></span>(<span class="dt">ps =</span> ps, 
-        <span class="dt">main_factor =</span> main_factor, 
-        <span class="dt">time_var =</span> time_var, 
-        <span class="dt">subjectID_var =</span> subjectID_var, 
-        <span class="dt">sampleID_var =</span> sampleID_var, 
-        <span class="dt">lI =</span> lI, 
-        <span class="dt">R =</span> R, 
-        <span class="dt">RR =</span> RR, 
-        <span class="dt">omega =</span> omega, 
-        <span class="dt">lC1 =</span> lC1, <span class="dt">lC2 =</span> lC2, 
-        <span class="dt">ncores =</span> ncores, <span class="dt">psi.hat.lI =</span> <span class="ot">TRUE</span>, <span class="dt">psi.hat.lI.val =</span> psi.hat.lI.val, <span class="dt">compStatParallel =</span> <span class="ot">FALSE</span>)
-)
-
-fileN &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/paste">paste0</a></span>(<span class="st">"MSE_"</span>, setting_name, <span class="st">"_lC1"</span>, lC1,<span class="st">".rds"</span>)
-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/readRDS">saveRDS</a></span>(mse.results, fileN)</code></pre></div>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb29-1" data-line-number="1"><span class="co">##### </span><span class="al">NOTE</span><span class="co">: With 4 cores, this will take almost 71 hours</span></a>
+<a class="sourceLine" id="cb29-2" data-line-number="2"> </a>
+<a class="sourceLine" id="cb29-3" data-line-number="3"><span class="co"># fileN &lt;- paste0("ps", setting_name, ".rds")</span></a>
+<a class="sourceLine" id="cb29-4" data-line-number="4"><span class="co"># ps &lt;- readRDS(fileN)</span></a>
+<a class="sourceLine" id="cb29-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb29-6" data-line-number="6">fileN &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span>(<span class="st">"./psi.hat.lI_"</span>, setting_name,<span class="st">".rds"</span>)</a>
+<a class="sourceLine" id="cb29-7" data-line-number="7">psi.hat.lI.val &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/readRDS.html">readRDS</a></span>(fileN)</a>
+<a class="sourceLine" id="cb29-8" data-line-number="8"></a>
+<a class="sourceLine" id="cb29-9" data-line-number="9">R &lt;-<span class="st"> </span><span class="dv">200</span></a>
+<a class="sourceLine" id="cb29-10" data-line-number="10">RR &lt;-<span class="st"> </span><span class="dv">50</span></a>
+<a class="sourceLine" id="cb29-11" data-line-number="11">main_factor &lt;-<span class="st"> "Group"</span></a>
+<a class="sourceLine" id="cb29-12" data-line-number="12">time_var &lt;-<span class="st"> "Time"</span></a>
+<a class="sourceLine" id="cb29-13" data-line-number="13">subjectID_var =<span class="st"> "SubjectID"</span></a>
+<a class="sourceLine" id="cb29-14" data-line-number="14">sampleID_var =<span class="st"> "SampleID"</span></a>
+<a class="sourceLine" id="cb29-15" data-line-number="15">lI &lt;-<span class="st"> </span><span class="dv">5</span></a>
+<a class="sourceLine" id="cb29-16" data-line-number="16">omega &lt;-<span class="st"> </span><span class="fl">.6</span></a>
+<a class="sourceLine" id="cb29-17" data-line-number="17"></a>
+<a class="sourceLine" id="cb29-18" data-line-number="18"><span class="kw"><a href="https://rdrr.io/r/base/system.time.html">system.time</a></span>(</a>
+<a class="sourceLine" id="cb29-19" data-line-number="19">    mse.results &lt;-<span class="st"> </span><span class="kw"><a href="../reference/bootLongSubsampling.html">bootLongSubsampling</a></span>(<span class="dt">ps =</span> ps, </a>
+<a class="sourceLine" id="cb29-20" data-line-number="20">        <span class="dt">main_factor =</span> main_factor, </a>
+<a class="sourceLine" id="cb29-21" data-line-number="21">        <span class="dt">time_var =</span> time_var, </a>
+<a class="sourceLine" id="cb29-22" data-line-number="22">        <span class="dt">subjectID_var =</span> subjectID_var, </a>
+<a class="sourceLine" id="cb29-23" data-line-number="23">        <span class="dt">sampleID_var =</span> sampleID_var, </a>
+<a class="sourceLine" id="cb29-24" data-line-number="24">        <span class="dt">lI =</span> lI, </a>
+<a class="sourceLine" id="cb29-25" data-line-number="25">        <span class="dt">R =</span> R, </a>
+<a class="sourceLine" id="cb29-26" data-line-number="26">        <span class="dt">RR =</span> RR, </a>
+<a class="sourceLine" id="cb29-27" data-line-number="27">        <span class="dt">omega =</span> omega, </a>
+<a class="sourceLine" id="cb29-28" data-line-number="28">        <span class="dt">lC1 =</span> lC1, <span class="dt">lC2 =</span> lC2, </a>
+<a class="sourceLine" id="cb29-29" data-line-number="29">        <span class="dt">ncores =</span> ncores, <span class="dt">psi.hat.lI =</span> <span class="ot">TRUE</span>, <span class="dt">psi.hat.lI.val =</span> psi.hat.lI.val, <span class="dt">compStatParallel =</span> <span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb29-30" data-line-number="30">)</a>
+<a class="sourceLine" id="cb29-31" data-line-number="31"></a>
+<a class="sourceLine" id="cb29-32" data-line-number="32">fileN &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span>(<span class="st">"MSE_"</span>, setting_name, <span class="st">"_lC1"</span>, lC1,<span class="st">".rds"</span>)</a>
+<a class="sourceLine" id="cb29-33" data-line-number="33"><span class="kw"><a href="https://rdrr.io/r/base/readRDS.html">saveRDS</a></span>(mse.results, fileN)</a></code></pre></div>
 <div id="inspect-mse-plot" class="section level3">
 <h3 class="hasAnchor">
 <a href="#inspect-mse-plot" class="anchor"></a>Inspect MSE plot</h3>
 <p>We combine the results for all the possible <span class="math inline">\(lC1\)</span>. In this example, <span class="math inline">\(lC1 = 2, 3, 4\)</span></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">MSE.all &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>()
-<span class="cf">for</span>(lC1 <span class="cf">in</span> <span class="dv">2</span><span class="op">:</span><span class="dv">4</span>){
-  filename &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/paste">paste0</a></span>(<span class="st">"MSE_"</span>,setting_name,<span class="st">"_lC1"</span>, lC1,<span class="st">".rds"</span>)
-  MSE.all[(lC1<span class="op">-</span><span class="dv">1</span>)] &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/readRDS">readRDS</a></span>(filename)
-}
-
-fileN &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/paste">paste0</a></span>(<span class="st">"MSE_"</span>,setting_name,<span class="st">".rds"</span>)
-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/readRDS">saveRDS</a></span>(MSE.all, fileN)</code></pre></div>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb30-1" data-line-number="1">MSE.all &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>()</a>
+<a class="sourceLine" id="cb30-2" data-line-number="2"><span class="cf">for</span>(lC1 <span class="cf">in</span> <span class="dv">2</span><span class="op">:</span><span class="dv">4</span>){</a>
+<a class="sourceLine" id="cb30-3" data-line-number="3">  filename &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span>(<span class="st">"MSE_"</span>,setting_name,<span class="st">"_lC1"</span>, lC1,<span class="st">".rds"</span>)</a>
+<a class="sourceLine" id="cb30-4" data-line-number="4">  MSE.all[(lC1<span class="dv">-1</span>)] &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/readRDS.html">readRDS</a></span>(filename)</a>
+<a class="sourceLine" id="cb30-5" data-line-number="5">}</a>
+<a class="sourceLine" id="cb30-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb30-7" data-line-number="7">fileN &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span>(<span class="st">"MSE_"</span>,setting_name,<span class="st">".rds"</span>)</a>
+<a class="sourceLine" id="cb30-8" data-line-number="8"><span class="kw"><a href="https://rdrr.io/r/base/readRDS.html">saveRDS</a></span>(MSE.all, fileN)</a></code></pre></div>
 <ol style="list-style-type: decimal">
 <li><p>Find the optimal block size for the subsample (l_{}) using MSE plot.</p></li>
 <li><p>Find the optimal block size for the original data using the formula.</p></li>
 </ol>
 <p><span class="math display">\[l_{o} = \left(\frac{1}{\omega}\right)^{1/5}l_{\omega}\]</span>.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">lC1 &lt;-<span class="st"> </span><span class="dv">2</span>
-omega &lt;-<span class="st"> </span>.<span class="dv">6</span>
-fileN &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/paste">paste0</a></span>(<span class="st">"MSE_"</span>,setting_name,<span class="st">".rds"</span>)
-mse.results &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/readRDS">readRDS</a></span>(fileN)
-
-blks &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/length">length</a></span>(mse.results)
-mse &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>()
-
-<span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>blks){
-    mse[[i]] &lt;-<span class="st"> </span>mse.results[[i]]<span class="op">$</span>MSE_i
-    }
-
-mse.avg &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/lapply">lapply</a></span>(mse,<span class="cf">function</span>(x){<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/mean">mean</a></span>(x, <span class="dt">na.rm=</span>T)})
-mse.sum &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/lapply">lapply</a></span>(mse,<span class="cf">function</span>(x){<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/sum">sum</a></span>(x, <span class="dt">na.rm=</span>T)})
-
-mse &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/unlist">unlist</a></span>(mse.sum)
-lblk &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/seq">seq</a></span>(lC1, (<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/length">length</a></span>(mse)<span class="op">+</span><span class="dv">1</span>), <span class="dt">by=</span><span class="dv">1</span>)
-lblk.f &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/factor">as.factor</a></span>(lblk)
-dfp &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/data.frame">data.frame</a></span>(<span class="dt">mse =</span> mse,<span class="dt">lblk =</span> lblk.f)
-
-l.omega &lt;-<span class="st"> </span>lblk[mse<span class="op">==</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Extremes">min</a></span>(mse)]
-l.omega
-l.opt &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Round">round</a></span>((<span class="dv">100</span><span class="op">/</span>(omega<span class="op">*</span><span class="dv">100</span>))<span class="op">^</span>(<span class="dv">1</span><span class="op">/</span><span class="dv">5</span>)<span class="op">*</span>l.omega, <span class="dt">digits =</span> <span class="dv">0</span>) 
-l.opt
-
-p.mse &lt;-<span class="st"> </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span>(dfp, <span class="kw"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="dt">x=</span>lblk, <span class="dt">y=</span>mse, <span class="dt">group=</span><span class="dv">1</span>))<span class="op">+</span>
-<span class="st">    </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span>()<span class="op">+</span>
-<span class="st">    </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html">geom_line</a></span>()<span class="op">+</span>
-<span class="st">    </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/labs.html">xlab</a></span>(<span class="st">"block size"</span>)<span class="op">+</span>
-<span class="st">    </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ylab</a></span>(<span class="st">"Mean squared error"</span>)<span class="op">+</span>
-<span class="st">    </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ggtitle</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/paste">paste0</a></span>(<span class="st">"MSE for  "</span>, setting_name, <span class="st">" "</span>, omega<span class="op">*</span><span class="dv">100</span>,<span class="st">"%"</span>,<span class="st">" subsample"</span>)) <span class="op">+</span>
-<span class="st">  </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span>(<span class="dt">plot.title =</span> <span class="kw"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span>(<span class="dt">hjust =</span> <span class="fl">0.5</span>))
-
-p.mse
-
-fileN &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/paste">paste0</a></span>(<span class="st">"MSE_"</span>, setting_name, <span class="st">".eps"</span>)
-<span class="kw"><a href="https://ggplot2.tidyverse.org/reference/ggsave.html">ggsave</a></span>(fileN, <span class="dt">plot =</span> p.mse, <span class="dt">width =</span> <span class="dv">8</span>, <span class="dt">height =</span> <span class="fl">5.5</span>)</code></pre></div>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb31-1" data-line-number="1">lC1 &lt;-<span class="st"> </span><span class="dv">2</span></a>
+<a class="sourceLine" id="cb31-2" data-line-number="2">omega &lt;-<span class="st"> </span><span class="fl">.6</span></a>
+<a class="sourceLine" id="cb31-3" data-line-number="3">fileN &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span>(<span class="st">"MSE_"</span>,setting_name,<span class="st">".rds"</span>)</a>
+<a class="sourceLine" id="cb31-4" data-line-number="4">mse.results &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/readRDS.html">readRDS</a></span>(fileN)</a>
+<a class="sourceLine" id="cb31-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb31-6" data-line-number="6">blks &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/length.html">length</a></span>(mse.results)</a>
+<a class="sourceLine" id="cb31-7" data-line-number="7">mse &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>()</a>
+<a class="sourceLine" id="cb31-8" data-line-number="8"></a>
+<a class="sourceLine" id="cb31-9" data-line-number="9"><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>blks){</a>
+<a class="sourceLine" id="cb31-10" data-line-number="10">    mse[[i]] &lt;-<span class="st"> </span>mse.results[[i]]<span class="op">$</span>MSE_i</a>
+<a class="sourceLine" id="cb31-11" data-line-number="11">    }</a>
+<a class="sourceLine" id="cb31-12" data-line-number="12"></a>
+<a class="sourceLine" id="cb31-13" data-line-number="13">mse.avg &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span>(mse,<span class="cf">function</span>(x){<span class="kw"><a href="https://rdrr.io/r/base/mean.html">mean</a></span>(x, <span class="dt">na.rm=</span>T)})</a>
+<a class="sourceLine" id="cb31-14" data-line-number="14">mse.sum &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span>(mse,<span class="cf">function</span>(x){<span class="kw"><a href="https://rdrr.io/r/base/sum.html">sum</a></span>(x, <span class="dt">na.rm=</span>T)})</a>
+<a class="sourceLine" id="cb31-15" data-line-number="15"></a>
+<a class="sourceLine" id="cb31-16" data-line-number="16">mse &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/unlist.html">unlist</a></span>(mse.sum)</a>
+<a class="sourceLine" id="cb31-17" data-line-number="17">lblk &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/seq.html">seq</a></span>(lC1, (<span class="kw"><a href="https://rdrr.io/r/base/length.html">length</a></span>(mse)<span class="op">+</span><span class="dv">1</span>), <span class="dt">by=</span><span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb31-18" data-line-number="18">lblk.f &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/factor.html">as.factor</a></span>(lblk)</a>
+<a class="sourceLine" id="cb31-19" data-line-number="19">dfp &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(<span class="dt">mse =</span> mse,<span class="dt">lblk =</span> lblk.f)</a>
+<a class="sourceLine" id="cb31-20" data-line-number="20"></a>
+<a class="sourceLine" id="cb31-21" data-line-number="21">l.omega &lt;-<span class="st"> </span>lblk[mse<span class="op">==</span><span class="kw"><a href="https://rdrr.io/r/base/Extremes.html">min</a></span>(mse)]</a>
+<a class="sourceLine" id="cb31-22" data-line-number="22">l.omega</a>
+<a class="sourceLine" id="cb31-23" data-line-number="23">l.opt &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/Round.html">round</a></span>((<span class="dv">100</span><span class="op">/</span>(omega<span class="op">*</span><span class="dv">100</span>))<span class="op">^</span>(<span class="dv">1</span><span class="op">/</span><span class="dv">5</span>)<span class="op">*</span>l.omega, <span class="dt">digits =</span> <span class="dv">0</span>) </a>
+<a class="sourceLine" id="cb31-24" data-line-number="24">l.opt</a>
+<a class="sourceLine" id="cb31-25" data-line-number="25"></a>
+<a class="sourceLine" id="cb31-26" data-line-number="26">p.mse &lt;-<span class="st"> </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span>(dfp, <span class="kw"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="dt">x=</span>lblk, <span class="dt">y=</span>mse, <span class="dt">group=</span><span class="dv">1</span>))<span class="op">+</span></a>
+<a class="sourceLine" id="cb31-27" data-line-number="27"><span class="st">    </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span>()<span class="op">+</span></a>
+<a class="sourceLine" id="cb31-28" data-line-number="28"><span class="st">    </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html">geom_line</a></span>()<span class="op">+</span></a>
+<a class="sourceLine" id="cb31-29" data-line-number="29"><span class="st">    </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/labs.html">xlab</a></span>(<span class="st">"block size"</span>)<span class="op">+</span></a>
+<a class="sourceLine" id="cb31-30" data-line-number="30"><span class="st">    </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ylab</a></span>(<span class="st">"Mean squared error"</span>)<span class="op">+</span></a>
+<a class="sourceLine" id="cb31-31" data-line-number="31"><span class="st">    </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ggtitle</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span>(<span class="st">"MSE for  "</span>, setting_name, <span class="st">" "</span>, omega<span class="op">*</span><span class="dv">100</span>,<span class="st">"%"</span>,<span class="st">" subsample"</span>)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb31-32" data-line-number="32"><span class="st">  </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span>(<span class="dt">plot.title =</span> <span class="kw"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span>(<span class="dt">hjust =</span> <span class="fl">0.5</span>))</a>
+<a class="sourceLine" id="cb31-33" data-line-number="33"></a>
+<a class="sourceLine" id="cb31-34" data-line-number="34">p.mse</a>
+<a class="sourceLine" id="cb31-35" data-line-number="35"></a>
+<a class="sourceLine" id="cb31-36" data-line-number="36">fileN &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span>(<span class="st">"MSE_"</span>, setting_name, <span class="st">".eps"</span>)</a>
+<a class="sourceLine" id="cb31-37" data-line-number="37"><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/ggsave.html">ggsave</a></span>(fileN, <span class="dt">plot =</span> p.mse, <span class="dt">width =</span> <span class="dv">8</span>, <span class="dt">height =</span> <span class="fl">5.5</span>)</a></code></pre></div>
 </div>
 </div>
 <div id="run-the-block-bootstrap-method-with-the-optimal-block-size-l_o" class="section level2">
@@ -504,138 +562,138 @@ fileN &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocum
 <a href="#run-the-block-bootstrap-method-with-the-optimal-block-size-l_o" class="anchor"></a>Run the block bootstrap method with the optimal block size <span class="math inline">\(l_{o}\)</span>
 </h2>
 <p>Finally, we run the block bootstrap method with the optimal block size for differential abundance analysis.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">#### Note: With 4 cores, this will take 17 hours
-R &lt;-<span class="st"> </span><span class="dv">200</span>
-RR &lt;-<span class="st"> </span><span class="dv">50</span>
-main_factor &lt;-<span class="st"> "Group"</span>
-time_var &lt;-<span class="st"> "Time"</span>
-subjectID_var =<span class="st"> "SubjectID"</span>
-sampleID_var =<span class="st"> "SampleID"</span>
-
-<span class="kw"><a href="https://www.rdocumentation.org/packages/phyloseq/topics/sample_data-methods">sample_data</a></span>(ps)<span class="op">$</span>Group &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/factor">factor</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/phyloseq/topics/sample_data-methods">sample_data</a></span>(ps)<span class="op">$</span>Group)
-<span class="kw"><a href="https://www.rdocumentation.org/packages/phyloseq/topics/sample_data-methods">sample_data</a></span>(ps)<span class="op">$</span>Group &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/relevel">relevel</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/phyloseq/topics/sample_data-methods">sample_data</a></span>(ps)<span class="op">$</span>Group, <span class="dt">ref =</span> <span class="st">"Control"</span>)
-
-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/system.time">system.time</a></span>(
-    MBB.all &lt;-<span class="st"> </span><span class="kw"><a href="../reference/bootLongMethod.html">bootLongMethod</a></span>(ps, 
-        <span class="dt">main_factor =</span> main_factor, 
-        <span class="dt">time_var =</span> time_var,   
-        <span class="dt">sampleID_var =</span> sampleID_var,
-        <span class="dt">subjectID_var =</span> subjectID_var, 
-        <span class="dt">b =</span> l.opt, 
-        <span class="dt">R =</span> R, 
-        <span class="dt">RR =</span> RR, <span class="dt">FDR =</span> .<span class="dv">05</span>, <span class="dt">compStatParallel =</span> <span class="ot">FALSE</span>)
-    )
-
-fileN &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/paste">paste0</a></span>(<span class="st">"MBB_"</span>,setting_name,<span class="st">".rds"</span>)
-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/readRDS">saveRDS</a></span>(MBB.all, fileN)</code></pre></div>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb32-1" data-line-number="1"><span class="co">#### Note: With 4 cores, this will take 17 hours</span></a>
+<a class="sourceLine" id="cb32-2" data-line-number="2">R &lt;-<span class="st"> </span><span class="dv">200</span></a>
+<a class="sourceLine" id="cb32-3" data-line-number="3">RR &lt;-<span class="st"> </span><span class="dv">50</span></a>
+<a class="sourceLine" id="cb32-4" data-line-number="4">main_factor &lt;-<span class="st"> "Group"</span></a>
+<a class="sourceLine" id="cb32-5" data-line-number="5">time_var &lt;-<span class="st"> "Time"</span></a>
+<a class="sourceLine" id="cb32-6" data-line-number="6">subjectID_var =<span class="st"> "SubjectID"</span></a>
+<a class="sourceLine" id="cb32-7" data-line-number="7">sampleID_var =<span class="st"> "SampleID"</span></a>
+<a class="sourceLine" id="cb32-8" data-line-number="8"></a>
+<a class="sourceLine" id="cb32-9" data-line-number="9"><span class="kw"><a href="https://rdrr.io/pkg/phyloseq/man/sample_data-methods.html">sample_data</a></span>(ps)<span class="op">$</span>Group &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/factor.html">factor</a></span>(<span class="kw"><a href="https://rdrr.io/pkg/phyloseq/man/sample_data-methods.html">sample_data</a></span>(ps)<span class="op">$</span>Group)</a>
+<a class="sourceLine" id="cb32-10" data-line-number="10"><span class="kw"><a href="https://rdrr.io/pkg/phyloseq/man/sample_data-methods.html">sample_data</a></span>(ps)<span class="op">$</span>Group &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/stats/relevel.html">relevel</a></span>(<span class="kw"><a href="https://rdrr.io/pkg/phyloseq/man/sample_data-methods.html">sample_data</a></span>(ps)<span class="op">$</span>Group, <span class="dt">ref =</span> <span class="st">"Control"</span>)</a>
+<a class="sourceLine" id="cb32-11" data-line-number="11"></a>
+<a class="sourceLine" id="cb32-12" data-line-number="12"><span class="kw"><a href="https://rdrr.io/r/base/system.time.html">system.time</a></span>(</a>
+<a class="sourceLine" id="cb32-13" data-line-number="13">    MBB.all &lt;-<span class="st"> </span><span class="kw"><a href="../reference/bootLongMethod.html">bootLongMethod</a></span>(ps, </a>
+<a class="sourceLine" id="cb32-14" data-line-number="14">        <span class="dt">main_factor =</span> main_factor, </a>
+<a class="sourceLine" id="cb32-15" data-line-number="15">        <span class="dt">time_var =</span> time_var,   </a>
+<a class="sourceLine" id="cb32-16" data-line-number="16">        <span class="dt">sampleID_var =</span> sampleID_var,</a>
+<a class="sourceLine" id="cb32-17" data-line-number="17">        <span class="dt">subjectID_var =</span> subjectID_var, </a>
+<a class="sourceLine" id="cb32-18" data-line-number="18">        <span class="dt">b =</span> l.opt, </a>
+<a class="sourceLine" id="cb32-19" data-line-number="19">        <span class="dt">R =</span> R, </a>
+<a class="sourceLine" id="cb32-20" data-line-number="20">        <span class="dt">RR =</span> RR, <span class="dt">FDR =</span> <span class="fl">.05</span>, <span class="dt">compStatParallel =</span> <span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb32-21" data-line-number="21">    )</a>
+<a class="sourceLine" id="cb32-22" data-line-number="22"></a>
+<a class="sourceLine" id="cb32-23" data-line-number="23">fileN &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span>(<span class="st">"MBB_"</span>,setting_name,<span class="st">".rds"</span>)</a>
+<a class="sourceLine" id="cb32-24" data-line-number="24"><span class="kw"><a href="https://rdrr.io/r/base/readRDS.html">saveRDS</a></span>(MBB.all, fileN)</a></code></pre></div>
 <div id="inspect-the-mbb-results" class="section level3">
 <h3 class="hasAnchor">
 <a href="#inspect-the-mbb-results" class="anchor"></a>Inspect the MBB results</h3>
 <p>We can make a summary of differential abundance ASV.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fileN &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/paste">paste0</a></span>(<span class="st">"ps"</span>, setting_name, <span class="st">".rds"</span>)
-ps &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/readRDS">readRDS</a></span>(fileN)
-
-FDR &lt;-<span class="st"> </span>.<span class="dv">05</span>
-taxalevel &lt;-<span class="st"> "Genus"</span>
-
-fileN &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/paste">paste0</a></span>(<span class="st">"MBB_"</span>,setting_name,<span class="st">".rds"</span>)
-boot.res.all &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/readRDS">readRDS</a></span>(fileN) <span class="co"># list("summary", "beta.hat", "beta.hat.star", "beta.hat.star.star", "T.obs")</span>
-
-summ &lt;-<span class="st"> </span>boot.res.all<span class="op">$</span>summary
-
-### add strain number to interested taxonomy same as in EDA 
-<span class="kw"><a href="https://www.rdocumentation.org/packages/phyloseq/topics/tax_table-methods">tax_table</a></span>(ps)[, taxalevel] &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/paste">paste0</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/phyloseq/topics/tax_table-methods">tax_table</a></span>(ps)[, taxalevel],<span class="st">"_st_"</span>,<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/seq">seq</a></span>(<span class="dv">1</span>, <span class="kw"><a href="https://www.rdocumentation.org/packages/phyloseq/topics/ntaxa-methods">ntaxa</a></span>(ps)))
-
-### if we change FDR, wee need to adjust the confidence interval
-T.stars.and.obs &lt;-<span class="st"> </span>boot.res.all<span class="op">$</span>beta.hat.star  
-
-lcl &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/apply">apply</a></span>(T.stars.and.obs, <span class="dv">1</span>, <span class="dt">FUN=</span><span class="cf">function</span>(x){
-  <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/quantile">quantile</a></span>(x, <span class="dt">probs=</span>FDR<span class="op">/</span><span class="dv">2</span>, <span class="dt">na.rm=</span><span class="ot">TRUE</span>)
-  })
-ucl &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/apply">apply</a></span>(T.stars.and.obs, <span class="dv">1</span>, <span class="dt">FUN=</span><span class="cf">function</span>(x){
-  <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/quantile">quantile</a></span>(x, <span class="dt">probs=</span>(<span class="dv">1</span><span class="op">-</span>FDR<span class="op">/</span><span class="dv">2</span>), <span class="dt">na.rm=</span><span class="ot">TRUE</span>)
-  })
-
-summ<span class="op">$</span>lcl &lt;-<span class="st"> </span>lcl
-summ<span class="op">$</span>ucl &lt;-<span class="st"> </span>ucl
-
-summ.filt.FDR &lt;-<span class="st"> </span>dplyr<span class="op">::</span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(summ, pvalue.adj <span class="op">&lt;=</span><span class="st"> </span>FDR)
-summ.filt.FDR &lt;-<span class="st"> </span>dplyr<span class="op">::</span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span>(summ.filt.FDR, <span class="kw"><a href="https://dplyr.tidyverse.org/reference/reexports.html">one_of</a></span>(<span class="st">"ASV"</span>,<span class="st">"stat"</span>,<span class="st">"pvalue.adj"</span>,<span class="st">"lcl"</span>,<span class="st">"ucl"</span>))
-summ.filt.FDR &lt;-<span class="st"> </span>dplyr<span class="op">::</span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(summ.filt.FDR, <span class="op">!</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/NA">is.na</a></span>(pvalue.adj))
-summ.filt.FDR &lt;-<span class="st"> </span>dplyr<span class="op">::</span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span>(summ.filt.FDR, <span class="kw"><a href="https://dplyr.tidyverse.org/reference/desc.html">desc</a></span>(stat))
-
-### To save the results 
-summ.filt.FDR<span class="op">$</span>stat &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Round">round</a></span>(summ.filt.FDR<span class="op">$</span>stat, <span class="dt">digits =</span> <span class="dv">2</span>)
-summ.filt.FDR<span class="op">$</span>pvalue.adj &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Round">round</a></span>(summ.filt.FDR<span class="op">$</span>pvalue.adj, <span class="dt">digits =</span> <span class="dv">4</span>)
-summ.filt.FDR<span class="op">$</span>pvalue.adj[<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/which">which</a></span>(summ.filt.FDR<span class="op">$</span>pvalue.adj<span class="op">==</span><span class="dv">0</span>)] &lt;-<span class="st"> "&lt;.0001"</span>
-summ.filt.FDR<span class="op">$</span>lcl &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Round">round</a></span>(summ.filt.FDR<span class="op">$</span>lcl, <span class="dt">digits =</span> <span class="dv">2</span>)
-summ.filt.FDR<span class="op">$</span>ucl &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Round">round</a></span>(summ.filt.FDR<span class="op">$</span>ucl, <span class="dt">digits =</span> <span class="dv">2</span>)
-
-df.mbb &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/data.frame">data.frame</a></span>(<span class="dt">Taxa =</span> summ.filt.FDR<span class="op">$</span>ASV, <span class="dt">betahat =</span> summ.filt.FDR<span class="op">$</span>stat, <span class="dt">lcl =</span> summ.filt.FDR<span class="op">$</span>lcl, <span class="dt">ucl =</span> summ.filt.FDR<span class="op">$</span>ucl, <span class="dt">p.adj =</span> summ.filt.FDR<span class="op">$</span>pvalue.adj)
-
-df.mbb.write &lt;-<span class="st"> </span>df.mbb
-df.mbb.write<span class="op">$</span>Taxa &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/phyloseq/topics/tax_table-methods">tax_table</a></span>(ps)[<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/character">as.character</a></span>(df.mbb.write<span class="op">$</span>Taxa), taxalevel] <span class="op">%&gt;%</span><span class="st"> </span>as.character
-
-####if you would like to avoid completely the ASV with strain number only.
-
-<span class="co"># is.it.st &lt;- lapply(df.mbb.write$Taxa, function(x){(strsplit(x, "_") %&gt;% unlist)[1]}) %&gt;% unlist</span>
-<span class="co"># is.it.ind &lt;- which(is.it.st == "st")</span>
-<span class="co"># df.mbb.write &lt;- df.mbb.write[-is.it.ind, ]</span>
-
-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(xtable)
-fileN &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/paste">paste0</a></span>(<span class="st">"MBB_"</span>,setting_name,<span class="st">".tex"</span>)
-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/xtable/topics/xtable">xtable</a></span>(df.mbb.write, <span class="dt">type =</span> <span class="st">"latex"</span>, <span class="dt">digits =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">2</span>,<span class="dv">2</span>,<span class="dv">2</span>,<span class="dv">4</span>)), <span class="dt">file =</span> fileN)</code></pre></div>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb33-1" data-line-number="1">fileN &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span>(<span class="st">"ps"</span>, setting_name, <span class="st">".rds"</span>)</a>
+<a class="sourceLine" id="cb33-2" data-line-number="2">ps &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/readRDS.html">readRDS</a></span>(fileN)</a>
+<a class="sourceLine" id="cb33-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb33-4" data-line-number="4">FDR &lt;-<span class="st"> </span><span class="fl">.05</span></a>
+<a class="sourceLine" id="cb33-5" data-line-number="5">taxalevel &lt;-<span class="st"> "Genus"</span></a>
+<a class="sourceLine" id="cb33-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb33-7" data-line-number="7">fileN &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span>(<span class="st">"MBB_"</span>,setting_name,<span class="st">".rds"</span>)</a>
+<a class="sourceLine" id="cb33-8" data-line-number="8">boot.res.all &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/readRDS.html">readRDS</a></span>(fileN) <span class="co"># list("summary", "beta.hat", "beta.hat.star", "beta.hat.star.star", "T.obs")</span></a>
+<a class="sourceLine" id="cb33-9" data-line-number="9"></a>
+<a class="sourceLine" id="cb33-10" data-line-number="10">summ &lt;-<span class="st"> </span>boot.res.all<span class="op">$</span>summary</a>
+<a class="sourceLine" id="cb33-11" data-line-number="11"></a>
+<a class="sourceLine" id="cb33-12" data-line-number="12"><span class="co">### add strain number to interested taxonomy same as in EDA </span></a>
+<a class="sourceLine" id="cb33-13" data-line-number="13"><span class="kw"><a href="https://rdrr.io/pkg/phyloseq/man/tax_table-methods.html">tax_table</a></span>(ps)[, taxalevel] &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span>(<span class="kw"><a href="https://rdrr.io/pkg/phyloseq/man/tax_table-methods.html">tax_table</a></span>(ps)[, taxalevel],<span class="st">"_st_"</span>,<span class="kw"><a href="https://rdrr.io/r/base/seq.html">seq</a></span>(<span class="dv">1</span>, <span class="kw"><a href="https://rdrr.io/pkg/phyloseq/man/ntaxa-methods.html">ntaxa</a></span>(ps)))</a>
+<a class="sourceLine" id="cb33-14" data-line-number="14"></a>
+<a class="sourceLine" id="cb33-15" data-line-number="15"><span class="co">### if we change FDR, wee need to adjust the confidence interval</span></a>
+<a class="sourceLine" id="cb33-16" data-line-number="16">T.stars.and.obs &lt;-<span class="st"> </span>boot.res.all<span class="op">$</span>beta.hat.star  </a>
+<a class="sourceLine" id="cb33-17" data-line-number="17"></a>
+<a class="sourceLine" id="cb33-18" data-line-number="18">lcl &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/apply.html">apply</a></span>(T.stars.and.obs, <span class="dv">1</span>, <span class="dt">FUN=</span><span class="cf">function</span>(x){</a>
+<a class="sourceLine" id="cb33-19" data-line-number="19">  <span class="kw"><a href="https://rdrr.io/r/stats/quantile.html">quantile</a></span>(x, <span class="dt">probs=</span>FDR<span class="op">/</span><span class="dv">2</span>, <span class="dt">na.rm=</span><span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb33-20" data-line-number="20">  })</a>
+<a class="sourceLine" id="cb33-21" data-line-number="21">ucl &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/apply.html">apply</a></span>(T.stars.and.obs, <span class="dv">1</span>, <span class="dt">FUN=</span><span class="cf">function</span>(x){</a>
+<a class="sourceLine" id="cb33-22" data-line-number="22">  <span class="kw"><a href="https://rdrr.io/r/stats/quantile.html">quantile</a></span>(x, <span class="dt">probs=</span>(<span class="dv">1</span><span class="op">-</span>FDR<span class="op">/</span><span class="dv">2</span>), <span class="dt">na.rm=</span><span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb33-23" data-line-number="23">  })</a>
+<a class="sourceLine" id="cb33-24" data-line-number="24"></a>
+<a class="sourceLine" id="cb33-25" data-line-number="25">summ<span class="op">$</span>lcl &lt;-<span class="st"> </span>lcl</a>
+<a class="sourceLine" id="cb33-26" data-line-number="26">summ<span class="op">$</span>ucl &lt;-<span class="st"> </span>ucl</a>
+<a class="sourceLine" id="cb33-27" data-line-number="27"></a>
+<a class="sourceLine" id="cb33-28" data-line-number="28">summ.filt.FDR &lt;-<span class="st"> </span>dplyr<span class="op">::</span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(summ, pvalue.adj <span class="op">&lt;=</span><span class="st"> </span>FDR)</a>
+<a class="sourceLine" id="cb33-29" data-line-number="29">summ.filt.FDR &lt;-<span class="st"> </span>dplyr<span class="op">::</span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span>(summ.filt.FDR, <span class="kw"><a href="https://dplyr.tidyverse.org/reference/reexports.html">one_of</a></span>(<span class="st">"ASV"</span>,<span class="st">"stat"</span>,<span class="st">"pvalue.adj"</span>,<span class="st">"lcl"</span>,<span class="st">"ucl"</span>))</a>
+<a class="sourceLine" id="cb33-30" data-line-number="30">summ.filt.FDR &lt;-<span class="st"> </span>dplyr<span class="op">::</span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(summ.filt.FDR, <span class="op">!</span><span class="kw"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span>(pvalue.adj))</a>
+<a class="sourceLine" id="cb33-31" data-line-number="31">summ.filt.FDR &lt;-<span class="st"> </span>dplyr<span class="op">::</span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span>(summ.filt.FDR, <span class="kw"><a href="https://dplyr.tidyverse.org/reference/desc.html">desc</a></span>(stat))</a>
+<a class="sourceLine" id="cb33-32" data-line-number="32"></a>
+<a class="sourceLine" id="cb33-33" data-line-number="33"><span class="co">### To save the results </span></a>
+<a class="sourceLine" id="cb33-34" data-line-number="34">summ.filt.FDR<span class="op">$</span>stat &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/Round.html">round</a></span>(summ.filt.FDR<span class="op">$</span>stat, <span class="dt">digits =</span> <span class="dv">2</span>)</a>
+<a class="sourceLine" id="cb33-35" data-line-number="35">summ.filt.FDR<span class="op">$</span>pvalue.adj &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/Round.html">round</a></span>(summ.filt.FDR<span class="op">$</span>pvalue.adj, <span class="dt">digits =</span> <span class="dv">4</span>)</a>
+<a class="sourceLine" id="cb33-36" data-line-number="36">summ.filt.FDR<span class="op">$</span>pvalue.adj[<span class="kw"><a href="https://rdrr.io/r/base/which.html">which</a></span>(summ.filt.FDR<span class="op">$</span>pvalue.adj<span class="op">==</span><span class="dv">0</span>)] &lt;-<span class="st"> "&lt;.0001"</span></a>
+<a class="sourceLine" id="cb33-37" data-line-number="37">summ.filt.FDR<span class="op">$</span>lcl &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/Round.html">round</a></span>(summ.filt.FDR<span class="op">$</span>lcl, <span class="dt">digits =</span> <span class="dv">2</span>)</a>
+<a class="sourceLine" id="cb33-38" data-line-number="38">summ.filt.FDR<span class="op">$</span>ucl &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/Round.html">round</a></span>(summ.filt.FDR<span class="op">$</span>ucl, <span class="dt">digits =</span> <span class="dv">2</span>)</a>
+<a class="sourceLine" id="cb33-39" data-line-number="39"></a>
+<a class="sourceLine" id="cb33-40" data-line-number="40">df.mbb &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(<span class="dt">Taxa =</span> summ.filt.FDR<span class="op">$</span>ASV, <span class="dt">betahat =</span> summ.filt.FDR<span class="op">$</span>stat, <span class="dt">lcl =</span> summ.filt.FDR<span class="op">$</span>lcl, <span class="dt">ucl =</span> summ.filt.FDR<span class="op">$</span>ucl, <span class="dt">p.adj =</span> summ.filt.FDR<span class="op">$</span>pvalue.adj)</a>
+<a class="sourceLine" id="cb33-41" data-line-number="41"></a>
+<a class="sourceLine" id="cb33-42" data-line-number="42">df.mbb.write &lt;-<span class="st"> </span>df.mbb</a>
+<a class="sourceLine" id="cb33-43" data-line-number="43">df.mbb.write<span class="op">$</span>Taxa &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/phyloseq/man/tax_table-methods.html">tax_table</a></span>(ps)[<span class="kw"><a href="https://rdrr.io/r/base/character.html">as.character</a></span>(df.mbb.write<span class="op">$</span>Taxa), taxalevel] <span class="op">%&gt;%</span><span class="st"> </span>as.character</a>
+<a class="sourceLine" id="cb33-44" data-line-number="44"></a>
+<a class="sourceLine" id="cb33-45" data-line-number="45"><span class="co">####if you would like to avoid completely the ASV with strain number only.</span></a>
+<a class="sourceLine" id="cb33-46" data-line-number="46"></a>
+<a class="sourceLine" id="cb33-47" data-line-number="47"><span class="co"># is.it.st &lt;- lapply(df.mbb.write$Taxa, function(x){(strsplit(x, "_") %&gt;% unlist)[1]}) %&gt;% unlist</span></a>
+<a class="sourceLine" id="cb33-48" data-line-number="48"><span class="co"># is.it.ind &lt;- which(is.it.st == "st")</span></a>
+<a class="sourceLine" id="cb33-49" data-line-number="49"><span class="co"># df.mbb.write &lt;- df.mbb.write[-is.it.ind, ]</span></a>
+<a class="sourceLine" id="cb33-50" data-line-number="50"></a>
+<a class="sourceLine" id="cb33-51" data-line-number="51"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(xtable)</a>
+<a class="sourceLine" id="cb33-52" data-line-number="52">fileN &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span>(<span class="st">"MBB_"</span>,setting_name,<span class="st">".tex"</span>)</a>
+<a class="sourceLine" id="cb33-53" data-line-number="53"><span class="kw"><a href="https://rdrr.io/r/base/print.html">print</a></span>(<span class="kw"><a href="https://rdrr.io/pkg/xtable/man/xtable.html">xtable</a></span>(df.mbb.write, <span class="dt">type =</span> <span class="st">"latex"</span>, <span class="dt">digits =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">2</span>,<span class="dv">2</span>,<span class="dv">2</span>,<span class="dv">4</span>)), <span class="dt">file =</span> fileN)</a></code></pre></div>
 </div>
 <div id="plot-significant-asvs" class="section level3">
 <h3 class="hasAnchor">
 <a href="#plot-significant-asvs" class="anchor"></a>Plot significant ASVs</h3>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">####if you would like to avoid completely the ASV with strain number only.
-<span class="co">#df.mbb &lt;- df.mbb[-is.it.ind, ]</span>
-<span class="co">#</span>
-df.mbb &lt;-<span class="st"> </span>dplyr<span class="op">::</span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(df.mbb, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/MathFun">abs</a></span>(beta) <span class="op">&gt;</span><span class="st"> </span><span class="dv">1</span>)
-ps.tr &lt;-<span class="st"> </span><span class="kw"><a href="../reference/psTransform.html">psTransform</a></span>(ps, <span class="dt">main_factor =</span> <span class="st">"Group"</span>)[[<span class="dv">1</span>]] 
-
-taxaName &lt;-<span class="st">  </span><span class="kw"><a href="https://www.rdocumentation.org/packages/phyloseq/topics/tax_table-methods">tax_table</a></span>(ps.tr)[, taxalevel] <span class="op">%&gt;%</span><span class="st"> </span>as.character
-ind &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/which">which</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/phyloseq/topics/taxa_names-methods">taxa_names</a></span>(ps) <span class="op">%in%</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/character">as.character</a></span>(df.mbb<span class="op">$</span>Taxa))
-tax.plot &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/phyloseq/topics/taxa_names-methods">taxa_names</a></span>(ps.tr)[ind]
-
-
-otu.df &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/phyloseq/topics/otu_table-methods">otu_table</a></span>(ps.tr) <span class="op">%&gt;%</span><span class="st"> </span>t <span class="op">%&gt;%</span><span class="st"> </span>data.frame
-samdf &lt;-<span class="st">  </span><span class="kw"><a href="https://www.rdocumentation.org/packages/phyloseq/topics/sample_data-methods">sample_data</a></span>(ps.tr) <span class="op">%&gt;%</span><span class="st"> </span>data.frame
-otu.df &lt;-<span class="st"> </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/bind.html">bind_cols</a></span>(otu.df, samdf)
-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/colnames">colnames</a></span>(otu.df)[<span class="dv">1</span><span class="op">:</span><span class="kw"><a href="https://www.rdocumentation.org/packages/phyloseq/topics/ntaxa-methods">ntaxa</a></span>(ps.tr)] &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/phyloseq/topics/taxa_names-methods">taxa_names</a></span>(ps.tr)
-
-otu.df.l &lt;-<span class="st"> </span><span class="kw"><a href="https://tidyr.tidyverse.org/reference/gather.html">gather</a></span>(otu.df, <span class="dt">key=</span>taxa, <span class="dt">value=</span>abund, <span class="dv">1</span><span class="op">:</span><span class="kw"><a href="https://www.rdocumentation.org/packages/phyloseq/topics/ntaxa-methods">ntaxa</a></span>(ps.tr))
-otu.df.l<span class="op">$</span>taxa &lt;-<span class="st"> </span>otu.df.l<span class="op">$</span>taxa <span class="op">%&gt;%</span><span class="st"> </span>factor
-otu.df.l<span class="op">$</span>Time &lt;-<span class="st"> </span>otu.df.l<span class="op">$</span>Time <span class="op">%&gt;%</span><span class="st"> </span>factor
-
-otu.df.l &lt;-<span class="st"> </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(otu.df.l,taxa <span class="op">%in%</span><span class="st"> </span>tax.plot)
-otu.df.l<span class="op">$</span>taxa &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/droplevels">droplevels</a></span>(otu.df.l<span class="op">$</span>taxa)
-
-txname &lt;-<span class="st"> </span>taxaName[ind]
-
-match.tax.name &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/data.frame">data.frame</a></span>(<span class="dt">taxa =</span> tax.plot, <span class="dt">nam =</span> txname)
-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/colnames">rownames</a></span>(match.tax.name) &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/character">as.character</a></span>(match.tax.name<span class="op">$</span>taxa)
-repl.tax.n &lt;-<span class="st"> </span>match.tax.name[<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/levels">levels</a></span>(otu.df.l<span class="op">$</span>taxa),<span class="st">"nam"</span>]
-
-otu.df.l<span class="op">$</span>taxa &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/factor">factor</a></span>(otu.df.l<span class="op">$</span>taxa,<span class="dt">labels  =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/character">as.character</a></span>(repl.tax.n))
-
-otu.df.l<span class="op">$</span>Time &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/numeric">as.numeric</a></span>(otu.df.l<span class="op">$</span>Time)
-
-p &lt;-<span class="st"> </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span>(otu.df.l)<span class="op">+</span>
-<span class="st">    </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html">geom_line</a></span>(<span class="kw"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="dt">x =</span> Time, <span class="dt">y =</span> abund, <span class="dt">linetype =</span> Group, <span class="dt">col =</span> SubjectID, <span class="dt">group =</span> SubjectID))<span class="op">+</span>
-<span class="st">    </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html">facet_wrap</a></span>(<span class="op">~</span>taxa,<span class="dt">scales =</span> <span class="st">"fixed"</span>)<span class="op">+</span>
-<span class="st">    </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ylab</a></span>(<span class="st">"asinh"</span>)<span class="op">+</span>
-<span class="st">  </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/labs.html">xlab</a></span>(<span class="st">"Gestational Week"</span>) <span class="op">+</span><span class="st"> </span>
-<span class="st">  </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ggtitle</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/paste">paste0</a></span>(<span class="st">"Differentially Abundant Taxa (MBB) in "</span>, setting_name)) <span class="op">+</span>
-<span class="st">    </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span>(<span class="dt">strip.text.x =</span> <span class="kw"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span>(<span class="dt">size =</span> <span class="dv">10</span>, <span class="dt">face=</span><span class="st">"italic"</span>, <span class="dt">margin =</span> <span class="kw"><a href="https://ggplot2.tidyverse.org/reference/element.html">margin</a></span>(.<span class="dv">1</span>, <span class="dv">0</span>, .<span class="dv">05</span>, <span class="dv">0</span>, <span class="st">"cm"</span>)), <span class="dt">axis.text=</span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span>(<span class="dt">size=</span><span class="dv">8</span>, <span class="dt">face =</span> <span class="st">"bold"</span>), <span class="dt">plot.title =</span> <span class="kw"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span>(<span class="dt">hjust =</span> <span class="fl">0.5</span>)) <span class="op">+</span><span class="st"> </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/scale_hue.html">scale_color_discrete</a></span>(<span class="dt">guide =</span> <span class="ot">FALSE</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/scale_linetype.html">scale_linetype_discrete</a></span>(<span class="dt">name  =</span><span class="st">""</span>,<span class="dt">breaks=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"Control"</span>, <span class="st">"Case"</span>),<span class="dt">labels=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"Control"</span>, <span class="st">"Case"</span>)) <span class="op">+</span>
-<span class="st">  </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/stat_summary.html">stat_summary</a></span>(<span class="kw"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="dt">x =</span> Time,<span class="dt">y =</span> abund, <span class="dt">linetype=</span> Group),<span class="dt">fun.y =</span> mean, <span class="dt">geom =</span> <span class="st">"line"</span>)
-
-p
-
-fileN &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/paste">paste0</a></span>(<span class="st">"Inspect_diff_abun_"</span>, setting_name, <span class="st">".eps"</span>)
-<span class="kw"><a href="https://ggplot2.tidyverse.org/reference/ggsave.html">ggsave</a></span>(fileN, <span class="dt">plot=</span>p, <span class="dt">width =</span> <span class="dv">12</span>, <span class="dt">height =</span> <span class="dv">8</span>)</code></pre></div>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb34-1" data-line-number="1"><span class="co">####if you would like to avoid completely the ASV with strain number only.</span></a>
+<a class="sourceLine" id="cb34-2" data-line-number="2"><span class="co">#df.mbb &lt;- df.mbb[-is.it.ind, ]</span></a>
+<a class="sourceLine" id="cb34-3" data-line-number="3"><span class="co">#</span></a>
+<a class="sourceLine" id="cb34-4" data-line-number="4">df.mbb &lt;-<span class="st"> </span>dplyr<span class="op">::</span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(df.mbb, <span class="kw"><a href="https://rdrr.io/r/base/MathFun.html">abs</a></span>(beta) <span class="op">&gt;</span><span class="st"> </span><span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb34-5" data-line-number="5">ps.tr &lt;-<span class="st"> </span><span class="kw"><a href="../reference/psTransform.html">psTransform</a></span>(ps, <span class="dt">main_factor =</span> <span class="st">"Group"</span>)[[<span class="dv">1</span>]] </a>
+<a class="sourceLine" id="cb34-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb34-7" data-line-number="7">taxaName &lt;-<span class="st">  </span><span class="kw"><a href="https://rdrr.io/pkg/phyloseq/man/tax_table-methods.html">tax_table</a></span>(ps.tr)[, taxalevel] <span class="op">%&gt;%</span><span class="st"> </span>as.character</a>
+<a class="sourceLine" id="cb34-8" data-line-number="8">ind &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/which.html">which</a></span>(<span class="kw"><a href="https://rdrr.io/pkg/phyloseq/man/taxa_names-methods.html">taxa_names</a></span>(ps) <span class="op">%in%</span><span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/character.html">as.character</a></span>(df.mbb<span class="op">$</span>Taxa))</a>
+<a class="sourceLine" id="cb34-9" data-line-number="9">tax.plot &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/phyloseq/man/taxa_names-methods.html">taxa_names</a></span>(ps.tr)[ind]</a>
+<a class="sourceLine" id="cb34-10" data-line-number="10"></a>
+<a class="sourceLine" id="cb34-11" data-line-number="11"></a>
+<a class="sourceLine" id="cb34-12" data-line-number="12">otu.df &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/phyloseq/man/otu_table-methods.html">otu_table</a></span>(ps.tr) <span class="op">%&gt;%</span><span class="st"> </span>t <span class="op">%&gt;%</span><span class="st"> </span>data.frame</a>
+<a class="sourceLine" id="cb34-13" data-line-number="13">samdf &lt;-<span class="st">  </span><span class="kw"><a href="https://rdrr.io/pkg/phyloseq/man/sample_data-methods.html">sample_data</a></span>(ps.tr) <span class="op">%&gt;%</span><span class="st"> </span>data.frame</a>
+<a class="sourceLine" id="cb34-14" data-line-number="14">otu.df &lt;-<span class="st"> </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/bind.html">bind_cols</a></span>(otu.df, samdf)</a>
+<a class="sourceLine" id="cb34-15" data-line-number="15"><span class="kw"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span>(otu.df)[<span class="dv">1</span><span class="op">:</span><span class="kw"><a href="https://rdrr.io/pkg/phyloseq/man/ntaxa-methods.html">ntaxa</a></span>(ps.tr)] &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/phyloseq/man/taxa_names-methods.html">taxa_names</a></span>(ps.tr)</a>
+<a class="sourceLine" id="cb34-16" data-line-number="16"></a>
+<a class="sourceLine" id="cb34-17" data-line-number="17">otu.df.l &lt;-<span class="st"> </span><span class="kw"><a href="https://tidyr.tidyverse.org/reference/gather.html">gather</a></span>(otu.df, <span class="dt">key=</span>taxa, <span class="dt">value=</span>abund, <span class="dv">1</span><span class="op">:</span><span class="kw"><a href="https://rdrr.io/pkg/phyloseq/man/ntaxa-methods.html">ntaxa</a></span>(ps.tr))</a>
+<a class="sourceLine" id="cb34-18" data-line-number="18">otu.df.l<span class="op">$</span>taxa &lt;-<span class="st"> </span>otu.df.l<span class="op">$</span>taxa <span class="op">%&gt;%</span><span class="st"> </span>factor</a>
+<a class="sourceLine" id="cb34-19" data-line-number="19">otu.df.l<span class="op">$</span>Time &lt;-<span class="st"> </span>otu.df.l<span class="op">$</span>Time <span class="op">%&gt;%</span><span class="st"> </span>factor</a>
+<a class="sourceLine" id="cb34-20" data-line-number="20"></a>
+<a class="sourceLine" id="cb34-21" data-line-number="21">otu.df.l &lt;-<span class="st"> </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(otu.df.l,taxa <span class="op">%in%</span><span class="st"> </span>tax.plot)</a>
+<a class="sourceLine" id="cb34-22" data-line-number="22">otu.df.l<span class="op">$</span>taxa &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/droplevels.html">droplevels</a></span>(otu.df.l<span class="op">$</span>taxa)</a>
+<a class="sourceLine" id="cb34-23" data-line-number="23"></a>
+<a class="sourceLine" id="cb34-24" data-line-number="24">txname &lt;-<span class="st"> </span>taxaName[ind]</a>
+<a class="sourceLine" id="cb34-25" data-line-number="25"></a>
+<a class="sourceLine" id="cb34-26" data-line-number="26">match.tax.name &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(<span class="dt">taxa =</span> tax.plot, <span class="dt">nam =</span> txname)</a>
+<a class="sourceLine" id="cb34-27" data-line-number="27"><span class="kw"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span>(match.tax.name) &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/character.html">as.character</a></span>(match.tax.name<span class="op">$</span>taxa)</a>
+<a class="sourceLine" id="cb34-28" data-line-number="28">repl.tax.n &lt;-<span class="st"> </span>match.tax.name[<span class="kw"><a href="https://rdrr.io/r/base/levels.html">levels</a></span>(otu.df.l<span class="op">$</span>taxa),<span class="st">"nam"</span>]</a>
+<a class="sourceLine" id="cb34-29" data-line-number="29"></a>
+<a class="sourceLine" id="cb34-30" data-line-number="30">otu.df.l<span class="op">$</span>taxa &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/factor.html">factor</a></span>(otu.df.l<span class="op">$</span>taxa,<span class="dt">labels  =</span> <span class="kw"><a href="https://rdrr.io/r/base/character.html">as.character</a></span>(repl.tax.n))</a>
+<a class="sourceLine" id="cb34-31" data-line-number="31"></a>
+<a class="sourceLine" id="cb34-32" data-line-number="32">otu.df.l<span class="op">$</span>Time &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span>(otu.df.l<span class="op">$</span>Time)</a>
+<a class="sourceLine" id="cb34-33" data-line-number="33"></a>
+<a class="sourceLine" id="cb34-34" data-line-number="34">p &lt;-<span class="st"> </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span>(otu.df.l)<span class="op">+</span></a>
+<a class="sourceLine" id="cb34-35" data-line-number="35"><span class="st">    </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html">geom_line</a></span>(<span class="kw"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="dt">x =</span> Time, <span class="dt">y =</span> abund, <span class="dt">linetype =</span> Group, <span class="dt">col =</span> SubjectID, <span class="dt">group =</span> SubjectID))<span class="op">+</span></a>
+<a class="sourceLine" id="cb34-36" data-line-number="36"><span class="st">    </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html">facet_wrap</a></span>(<span class="op">~</span>taxa,<span class="dt">scales =</span> <span class="st">"fixed"</span>)<span class="op">+</span></a>
+<a class="sourceLine" id="cb34-37" data-line-number="37"><span class="st">    </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ylab</a></span>(<span class="st">"asinh"</span>)<span class="op">+</span></a>
+<a class="sourceLine" id="cb34-38" data-line-number="38"><span class="st">  </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/labs.html">xlab</a></span>(<span class="st">"Gestational Week"</span>) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb34-39" data-line-number="39"><span class="st">  </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ggtitle</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span>(<span class="st">"Differentially Abundant Taxa (MBB) in "</span>, setting_name)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb34-40" data-line-number="40"><span class="st">    </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span>(<span class="dt">strip.text.x =</span> <span class="kw"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span>(<span class="dt">size =</span> <span class="dv">10</span>, <span class="dt">face=</span><span class="st">"italic"</span>, <span class="dt">margin =</span> <span class="kw"><a href="https://ggplot2.tidyverse.org/reference/element.html">margin</a></span>(.<span class="dv">1</span>, <span class="dv">0</span>, <span class="fl">.05</span>, <span class="dv">0</span>, <span class="st">"cm"</span>)), <span class="dt">axis.text=</span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span>(<span class="dt">size=</span><span class="dv">8</span>, <span class="dt">face =</span> <span class="st">"bold"</span>), <span class="dt">plot.title =</span> <span class="kw"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span>(<span class="dt">hjust =</span> <span class="fl">0.5</span>)) <span class="op">+</span><span class="st"> </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/scale_hue.html">scale_color_discrete</a></span>(<span class="dt">guide =</span> <span class="ot">FALSE</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb34-41" data-line-number="41"><span class="st">  </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/scale_linetype.html">scale_linetype_discrete</a></span>(<span class="dt">name  =</span><span class="st">""</span>,<span class="dt">breaks=</span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"Control"</span>, <span class="st">"Case"</span>),<span class="dt">labels=</span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"Control"</span>, <span class="st">"Case"</span>)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb34-42" data-line-number="42"><span class="st">  </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/stat_summary.html">stat_summary</a></span>(<span class="kw"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="dt">x =</span> Time,<span class="dt">y =</span> abund, <span class="dt">linetype=</span> Group),<span class="dt">fun.y =</span> mean, <span class="dt">geom =</span> <span class="st">"line"</span>)</a>
+<a class="sourceLine" id="cb34-43" data-line-number="43"></a>
+<a class="sourceLine" id="cb34-44" data-line-number="44">p</a>
+<a class="sourceLine" id="cb34-45" data-line-number="45"></a>
+<a class="sourceLine" id="cb34-46" data-line-number="46">fileN &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span>(<span class="st">"Inspect_diff_abun_"</span>, setting_name, <span class="st">".eps"</span>)</a>
+<a class="sourceLine" id="cb34-47" data-line-number="47"><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/ggsave.html">ggsave</a></span>(fileN, <span class="dt">plot=</span>p, <span class="dt">width =</span> <span class="dv">12</span>, <span class="dt">height =</span> <span class="dv">8</span>)</a></code></pre></div>
 </div>
 </div>
 </div>
@@ -646,10 +704,22 @@ fileN &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocum
       <h2 class="hasAnchor">
 <a href="#tocnav" class="anchor"></a>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
-<li><a href="#load-the-phyloseq">Load the phyloseq</a></li>
-      <li><a href="#summary">Summary</a></li>
+<li>
+<a href="#install-and-load-required-packages">Install and load required packages</a><ul class="nav nav-pills nav-stacked">
+<li><a href="#install">Install</a></li>
+      <li><a href="#load">load</a></li>
+      </ul>
+</li>
+      <li><a href="#set-the-computational-resources">Set the computational resources</a></li>
+      <li><a href="#load-the-phyloseq-or-create-a-phyloseq">Load the phyloseq or create a phyloseq</a></li>
+      <li>
+<a href="#exploratory-analysis">Exploratory analysis</a><ul class="nav nav-pills nav-stacked">
+<li><a href="#summary">Summary</a></li>
+      <li><a href="#sampling-schedule">Sampling schedule</a></li>
       <li><a href="#preprocessing">Preprocessing</a></li>
-      <li><a href="#exploratory-analysis">Exploratory analysis</a></li>
+      <li><a href="#visulaizing-within-subject-dependency">Visulaizing within-subject dependency</a></li>
+      </ul>
+</li>
       <li>
 <a href="#the-block-bootstrap-method">The block bootstrap method</a><ul class="nav nav-pills nav-stacked">
 <li><a href="#subsampling">Subsampling</a></li>
@@ -663,17 +733,20 @@ fileN &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocum
 </div>
 
 
+
       <footer><div class="copyright">
   <p>Developed by Jeganathan Pratheepa, Holmes, Susan.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.3.0.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.3.0.9100.</p>
 </div>
+
       </footer>
 </div>
 
   
+
 
   </body>
 </html>
