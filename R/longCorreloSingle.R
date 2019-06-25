@@ -6,10 +6,15 @@
 #'
 #' @return \code{ggplot2} object of correlogram for one taxon according to the taxon index.
 #' @export
-longCorreloSingle <- function(ps, main_factor, time_var, taxon, taxlevel = "Species") {
+longCorreloSingle <- function(ps,
+    main_factor,
+    time_var,
+    taxon,
+    taxlevel = "Species") {
 
     taxon_name <- tax_table(ps)[taxon, taxlevel]
-    df.taxa <- data.frame(sample_data(ps), otu = as.numeric(t(otu_table(ps)[taxon,
+    df.taxa <- data.frame(sample_data(ps),
+        otu = as.numeric(t(otu_table(ps)[taxon,
         ])))
     names(df.taxa)[names(df.taxa) == main_factor] <- "Group"
     names(df.taxa)[names(df.taxa) == time_var] <- "Time"

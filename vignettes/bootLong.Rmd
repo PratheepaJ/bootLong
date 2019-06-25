@@ -164,7 +164,7 @@ p <- p +
     labels=c("Case", "Control"))
 p + ylab("Subject ID")
 
-# fileN <- paste0("sampling_schedule", setting_name, ".eps")
+# fileN <- paste0("sampling_schedule_", setting_name, ".eps")
 #ggsave(fileN, plot = p, width = 8, height = 5.5)
 ```
 
@@ -194,29 +194,21 @@ keep_asv <- apply(otu_table(ps), 1, function(x){
 ps <- prune_taxa(keep_asv, ps)
 
 ## To save the ps after all filtering
-# fileN <- paste0("ps", setting_name, ".rds")
+# fileN <- paste0("ps_", setting_name, ".rds")
 # saveRDS(ps, fileN)
-```
-
-```{r include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, 
-  warning = FALSE, 
-  message = FALSE, 
-  fig.width = 8, 
-  fig.height = 6,
-  eval = FALSE)
 ```
 
 ##  Visulaizing within-subject dependency
 
 Here we provide tools to explore the within-subject dependency. These tools will be used to decide the initial block size for the subsampling method.
 
-- Extract the common legend: (reference here.)[https://github.com/hadley/ggplot2/wiki/Share-a-legend-between-two-ggplot2-graphs]
+- Extract the common legend: [reference here.](https://github.com/hadley/ggplot2/wiki/Share-a-legend-between-two-ggplot2-graphs)
 
 ```{r common-legend}
 plot_common_legend <- function(p){
     ggplot_feature = ggplot_gtable(ggplot_build(p))
-    le <- which(sapply(ggplot_feature$grobs, function(x) x$name) == "guide-box")
+    le <- which(sapply(ggplot_feature$grobs, 
+      function(x) x$name) == "guide-box")
     l <- ggplot_feature$grobs[[le]]
     return(l)
 }
@@ -225,49 +217,51 @@ plot_common_legend <- function(p){
 
 ###  PACF
 
-Partial autocorrelataion (PACF) at lag $h$ measures the correlation between repeated observations that are seperated by $h$ time units after adjusting for the correlation at shorter lags.  
+Partial autocorrelataion function (PACF) at lag $h$ measures the correlation between repeated observations that are seperated by $h$ time units after adjusting for the correlation at shorter lags.  
 
-1) If you prefer to name strain number with the taxonomy (Species/Genus/Family/Order...) selected and be consistent with all the results, run the following with appropriate changes.
+1) If you prefer to name ASV with the taxonomy level (Species/Genus/Family/Order...) be consistent with all the results, run the following with appropriate changes.
 
-```{r eval=FALSE}
-tax_table(ps)[, "Genus"] <- paste0(tax_table(ps)[, "Genus"],"_st_" ,seq(1, ntaxa(ps)))
+```{r eval = FALSE}
+tax_table(ps)[, "Genus"] <- paste0(tax_table(ps)[, "Genus"],"_ASV_" ,seq(1, ntaxa(ps)))
 
 ```
 
-2) We use `psTransform()` to get phyloseq objects with transformed count table and residuals after fitting a negative-binomial regression.
+2) We use `psTransform()` to get a phyloseq with Variance-stabilizing transformation of `otu table`.
 
-3) We choose top six abundance ASVs (based on the total transformed abundance) to visualize the dependence within-subject. We can choose different ASVs by changing `starttaxa` and `endtaxa`  arguments in `longPACFMultiple()`.
-
-
-```{r pacf}
+```{r}
 ps.tr <- psTransform(ps, main_factor = "Group") 
+```
 
-p.all <- longPACFMultiple(pstr  = ps.tr[[1]],
-                             psres = ps.tr[[1]], 
-                             main_factor = "Group", 
-                             time_var = "Time", 
-                             starttaxa = 1, 
-                             endtaxa = 6,
-                             taxlevel = "Genus")
+
+3) We choose top six abundance ASVs (based on the sum of transformed values) to visualize the within-subject dependency. We can choose different ASVs by changing `starttaxa` and `endtaxa`  arguments in `longPACFMultiple()`.
+
+
+```{r pacf, fig.cap = "Partial autocorrelation within subject"}
+p.all <- longPACFMultiple(pstr  = ps.tr,
+  main_factor = "Group", 
+  time_var = "Time", 
+  starttaxa = 1, 
+  endtaxa = 6,
+  taxlevel = "Genus")
 
 #   Change the legend labels
 p.all <- lapply(p.all, function(x){
-    x + scale_fill_discrete(name  ="Group", breaks=c("Case", "Control"), labels=c("Case", "Control"))
+    x + scale_fill_discrete(name  = "Group", 
+      breaks = c("Case", "Control"), 
+      labels = c("Case", "Control"))
     })
 
-#   extract the common legend for all taxa
+#   extract the common legend 
 leg <- plot_common_legend(p.all[[1]])
 
 plist <- lapply(p.all,function(x){
     x + theme(legend.position = "none")
     })
 
-# p <- grid.arrange(arrangeGrob(grobs=plist,nrow=2,widths=c(3,3,3)),
-#                   leg,
-#                   ncol=2,
-#                   widths=c(10,2))
+# p <- grid.arrange(arrangeGrob(grobs = plist, nrow=2, widths = c(3,3,3)), leg, ncol=2, widths=c(10,2))
                    
-# ggsave("./Example_PAC.eps",plot=p,width = 8,height = 5.5)
+# fileN <- paste0("PACF_", setting_name, ".eps")
+# ggsave(fileN, plot = p, width = 8, height = 5.5)
 
 grid.arrange(arrangeGrob(grobs = plist, nrow=2, widths=c(3,3,3)),
              leg,
@@ -275,25 +269,25 @@ grid.arrange(arrangeGrob(grobs = plist, nrow=2, widths=c(3,3,3)),
              widths = c(10, 2))
 ```
 
-The largest spike (|PAC| > .25) is observed at lag-1 for both term and preterm in all ASVs. The spike at lag-2 is closer to .25 for ASV_30 and ASV_27 in case. The spike decreases at lag-3 and then, increases at lag-4 for all ASVs. Thus, We can assume that five consecutive observations make a block. We will choose an inital block size of 5. 
 
-We can also check the lag-plot for each ASV and it is interpreted as follows:
+Figure \@ref(fig:pacf) shows that the largest spike ($\left|\rho\left(h\right) \right| > .25$) is observed at $h = 1$ for both case and control in all ASVs. The spike at $h = 2$ is closer to .25 for ASV_30 and ASV_27 in case. The spike decreases at $h = 3$ and then, increases at $h = 4$ for all ASVs. Thus, We can assume that five consecutive observations make a block. We will choose an inital block size of 5 ($l_{I} = 5.$). 
 
-1) For each ASV, we plot transformed abundances at different lags. The lag-plot is interpreted as follows: 
+### longitudinal data lag-plots
 
+We can also check the lag-plot for each ASV.  The interpretaion of lag plot is as follows:
+
+1) For each ASV, we plot arcsinh transformation values at different lags. The lag-plot is interpreted as follows: 
     (i) lack of autocorrelation is implied by the absence of a pattern in the lag plot,
     (ii) weak to moderate autocorrelation is implied by less clustering of points along the diagonal, and
     (iii) high autocorrelation is implied by tight clustering of points along the diagonal.
 
-### longitudinal data lag-plots
+Let us check the lag-plot for ASV_30 at lags $1, \cdots, 8$. We need to specify the ASV index in the 'taxon' option. In this example, 'taxon = 30'.
 
-Let us check the lag-plot for ASV_30. We need to specify the ASV index in the 'taxon' option. In this example, 'taxon = 30'.
-
-```{r lag-plots, message=FALSE,warning=FALSE}
+```{r lag-plots, fig.cap = "Lag-plot for ASV_30"}
 lags <- as.list(seq(1, 8))
 
 p.lags <- lapply(lags,function(x){
-    longLagPlot(ps.tr[[2]], 
+    longLagPlot(ps.tr, 
         main_factor = "Group", 
         time_var = "Time", 
         taxon = 30, 
@@ -302,7 +296,9 @@ p.lags <- lapply(lags,function(x){
 
 #   Change the legend labels
 p.lags <- lapply(p.lags, function(x){
-    x + scale_color_discrete(name  = "Group", breaks = c("Case", "Control"), labels = c("Case", "Control"))
+    x + scale_color_discrete(name  = "Group", 
+      breaks = c("Case", "Control"), 
+      labels = c("Case", "Control"))
     })
 
 leg <- plot_common_legend(p.lags[[1]])
@@ -316,37 +312,42 @@ plist <- lapply(p.lags,function(x){
 #                   leg,
 #                   ncol=2,
 #                   widths=c(10,2))
-# 
-# ggsave("./Example_lag_plot.eps",plot=p,width = 8,height = 5.5)
+# fileN <- paste0("lag_plot_", setting_name, ".eps")
+# ggsave(fileN, plot = p, width = 8, height = 5.5)
 
-grid.arrange(arrangeGrob(grobs = plist, nrow = 2, widths = c(3, 3, 3, 3)), 
-             leg, 
-             ncol = 2, 
-             widths = c(10, 2), top = textGrob("ASV 30", gp = gpar(fontsize = 8, font = 3)))
+grid.arrange(arrangeGrob(grobs = plist, 
+  nrow = 2, 
+  widths = c(3, 3, 3, 3)), 
+  leg, 
+  ncol = 2, widths = c(10, 2), 
+  top = textGrob("ASV 30", 
+    gp = gpar(fontsize = 8, font = 3)))
 
 ```
 
-For ASV 30, we observe that points are almost on the diagonal at lag-1. Then, points are less clustering along the diagonal at lag-3. We can either choose an initial block size of 4 according to lag-plot or 5 accroding to PAC plots. However, we visualized a lag-plot for one ASV but we visualized PAC for six ASVs. Thus, we will still choose $l_{I} = 5.$
+
+Figure \@ref(fig:lag-plots) shows that (for ASV 30) that points are almost on the diagonal at $h = 1$. Then, points are less clustering along the diagonal at $h = 3$. We can either choose an initial block size of 4 according to lag-plot or 5 accroding to PACF. However, we visualized a lag-plot for one ASV but we visualized PAC for six ASVs. Thus, we will still choose $l_{I} = 5.$
 
 In practice, we can choose initial block size using PAC plots. If there are spurious effects at larger lags and suggesting to choose `BIG` initial block size, we can diagnose those using lag-plot for particular ASV. There might be a spurious higher autocorrelation at larger lags due to a small number of observations or abundances close to zero.
 
 
 ###  Correlogram
 
-In practice, we can also choose $l_{I}$ using correlogram. First, we use the variance-stabilizing transformation on the original abundance table. Then, for each ASV, we compute the average transformed abundance at each time point. Finally, we plot within-subject autocorrelation for top six abundances ASVs. These top six ASVs are selected according to the sum of transformed abundances for each ASV. Using the autocorrelation plots, we consider the first occurrence of a lag with sufficiently close to zero autocorrelation as initial block size $l_{I}$. There might be a spurious higher autocorrelation at larger lags due to a small number of observations or abundances close to zero.
+In practice, we can also choose $l_{I}$ using correlogram. First, we use the variance-stabilizing transformation on the original abundance table. Then, for each ASV, we compute the average transformed abundance at each time point. Finally, we plot within-subject autocorrelation for top six abundances ASVs. These top six ASVs are selected according to the sum of transformation values for each ASV. Using the autocorrelation plots, we consider the first occurrence of a lag with sufficiently close to zero autocorrelation as initial block size $l_{I}$. There might be a spurious higher autocorrelation at larger lags due to a small number of observations or abundances close to zero.
 
-```{r corr, message=FALSE, warning=FALSE}
-p.all <- longCorreloMultiple(ps.tr[[1]],
-                             ps.tr[[1]], 
-                             main_factor = "Group", 
-                             time_var = "Time", 
-                             starttaxa = 1, 
-                             endtaxa = 6,
-                             taxlevel = "Genus")
+```{r corr, fig.cap = "Correlogram"}
+p.all <- longCorreloMultiple(ps.tr,
+  main_factor = "Group", 
+  time_var = "Time", 
+  starttaxa = 1, 
+  endtaxa = 6,
+  taxlevel = "Genus")
 
 #   Change the legend labels
 p.all <- lapply(p.all, function(x){
-    x + scale_fill_discrete(name  ="Group",breaks=c("Case", "Control"),labels=c("Case", "Control"))
+    x + scale_fill_discrete(name  ="Group", 
+      breaks=c("Case", "Control"), 
+      labels=c("Case", "Control"))
     })
 
 #   extract the common legend for all taxa
@@ -360,29 +361,44 @@ plist <- lapply(p.all,function(x){
 #                   leg,
 #                   ncol=2,
 #                   widths=c(10,2))
-# ggsave("./Example_correlogram.eps",plot=p,width = 8,height = 5.5)
-
-grid.arrange(arrangeGrob(grobs = plist, nrow = 2, widths = c(3, 3, 3)),
-             leg,
-             ncol = 2,
-             widths=c(10, 2))
+                  
+# fileN <- paste0("correlogram_", setting_name, ".eps")
+# ggsave(fileN, plot = p, width = 8, height = 5.5)
+# 
+grid.arrange(arrangeGrob(grobs = plist, 
+  nrow = 2, 
+  widths = c(3, 3, 3)), 
+  leg, 
+  ncol = 2,
+  widths=c(10, 2))
 ```
 
-We observe that the correlogram tends to be sufficiently zero at lag-4 for almost all the ASVs. Therefore, the initial block size is 5.
+In Figure \@ref(fig:corr) we observe that the correlogram tends to be sufficiently zero at $h = 4$ for almost all the ASVs. Therefore, the initial block size is 5.
 
-All other exploratory tools suggest an inital block size of 5.
+All exploratory tools suggest an inital block size of 5.
 
-Now we have chosen the initial parameters for the subsampling method. $\omega = .6$ and $l_{I} =5$. 
+Now we have chosen the initial parameters for the subsampling method. $\omega = .6$ and $l_{I} = 5$. 
+
+
+```{r include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, 
+  warning = FALSE, 
+  message = FALSE, 
+  fig.width = 8, 
+  fig.height = 6,
+  eval = FALSE)
+```
+
 
 #   The block bootstrap method
 
-First, we identify the opitmal block size for the subsample. We use the initial block size 5 ($l_{I} = 5$) and subsampling proportion $\omega = .6$ to identify the opitmal block size. 
+First, we identify the opitmal block size for the subsample. We use $l_{I} = 5$ and subsampling proportion $\omega = .6$ to identify the opitmal block size. 
 
 ## Subsampling
 
-1) Compute $\psi(q,l_{I})$ and $T_{i}\left(q, l_{I}\right)$ using the initial block size and the full data.
+1) Compute $\psi(q, l_{I})$ and $T_{i}\left(q, l_{I}\right)$ using the initial block size and the full data.
 
-```{r eval=FALSE}
+```{r }
 #####Note: With 4 cores, this will take almost 18 hours
 R <- 200
 RR <- 50
@@ -404,7 +420,10 @@ system.time(
         RR = RR, 
         omega = omega, 
         lC1 = lC1, lC2 = lC2, 
-        ncores = ncores, psi.hat.lI = FALSE, psi.hat.lI.val = NULL, compStatParallel = FALSE)
+        ncores = ncores, 
+      psi.hat.lI = FALSE, 
+      psi.hat.lI.val = NULL, 
+      compStatParallel = FALSE)
 )
 
 fileN <- paste0("./psi.hat.lI_", setting_name,".rds")
@@ -416,7 +435,7 @@ saveRDS(mse.results, fileN)
     
 Use `compStatParallel = TRUE` if you have more ASVs than `R`.
 
-```{r eval=FALSE}
+```{r }
 ##### NOTE: With 4 cores, this will take almost 71 hours
  
 # fileN <- paste0("ps", setting_name, ".rds")
@@ -456,7 +475,7 @@ saveRDS(mse.results, fileN)
 
 We combine the results for all the possible $lC1$. In this example, $lC1 = 2, 3, 4$
 
-```{r eval = FALSE}
+```{r }
 MSE.all <- list()
 for(lC1 in 2:4){
   filename <- paste0("MSE_",setting_name,"_lC1", lC1,".rds")
@@ -474,7 +493,7 @@ saveRDS(MSE.all, fileN)
 $$l_{o} = \left(\frac{1}{\omega}\right)^{1/5}l_{\omega}$$.
 
 
-```{r eval=FALSE}
+```{r }
 lC1 <- 2
 omega <- .6
 fileN <- paste0("MSE_",setting_name,".rds")
@@ -520,7 +539,7 @@ ggsave(fileN, plot = p.mse, width = 8, height = 5.5)
 Finally, we run the block bootstrap method with the optimal block size for differential abundance analysis.
 
 
-```{r eval=FALSE}
+```{r }
 #### Note: With 4 cores, this will take 17 hours
 R <- 200
 RR <- 50
@@ -551,7 +570,7 @@ saveRDS(MBB.all, fileN)
 
 We can make a summary of differential abundance ASV.
 
-```{r eval=FALSE}
+```{r }
 fileN <- paste0("ps", setting_name, ".rds")
 ps <- readRDS(fileN)
 
@@ -609,7 +628,7 @@ print(xtable(df.mbb.write, type = "latex", digits = c(0,0,2,2,2,4)), file = file
 
 ### Plot significant ASVs
 
-```{r eval=FALSE}
+```{r }
 ####if you would like to avoid completely the ASV with strain number only.
 #df.mbb <- df.mbb[-is.it.ind, ]
 #

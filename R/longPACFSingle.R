@@ -1,3 +1,5 @@
+#' Plot PACF for each taxon.
+#'
 #' Plots the PACF (Partial Autocorrelation Function) given the taxon index.
 #'
 #' @param taxon Numeric. The index of taxon to get the correlogram.
@@ -7,10 +9,16 @@
 #'
 #' @return \code{ggplot2} object of PACF for one taxon according to the taxon index.
 #' @export
-longPACFSingle <- function(ps, main_factor, time_var, taxon, taxlevel = "Species", lag.max = 10) {
+longPACFSingle <- function(ps,
+    main_factor,
+    time_var,
+    taxon,
+    taxlevel = "Species",
+    lag.max = 10) {
 
     taxon_name <- tax_table(ps)[taxon, taxlevel]
-    df.taxa <- data.frame(sample_data(ps), otu = as.numeric(t(otu_table(ps)[taxon,
+    df.taxa <- data.frame(sample_data(ps),
+        otu = as.numeric(t(otu_table(ps)[taxon,
         ])))
     names(df.taxa)[names(df.taxa) == main_factor] <- "Group"
     names(df.taxa)[names(df.taxa) == time_var] <- "Time"

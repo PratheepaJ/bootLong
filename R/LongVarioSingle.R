@@ -6,8 +6,13 @@
 #'
 #' @return \code{ggplot} object of variogram
 #' @export
-longVarioSingle <- function(ps, main_factor, time_var, subjectID_var, taxon,
-    point = FALSE, taxlevel = "Species") {
+longVarioSingle <- function(ps,
+    main_factor,
+    time_var,
+    subjectID_var,
+    taxon,
+    point = FALSE,
+    taxlevel = "Species") {
 
     taxon_name = tax_table(ps)[taxon, taxlevel]
     df.taxa = data.frame(sample_data(ps), otu = as.numeric(t(otu_table(ps)[taxon,
