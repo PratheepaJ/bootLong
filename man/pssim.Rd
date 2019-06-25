@@ -3,8 +3,8 @@
 \docType{data}
 \name{psSim}
 \alias{psSim}
-\title{Simulated \code{'phyloseq'} object.}
-\format{An object of class \code{'phyloseq'}.
+\title{Simulated as \code{\link{phyloseq-class}}.}
+\format{An object of class \code{\link{phyloseq-class}}.
 \describe{
   \item{SubjectID}{IDs of individuals}
   \item{Group}{A factor variable with two levels Case or Control}
@@ -12,13 +12,13 @@
   \item{Time}{Time at repeated biological sample}
 }}
 \source{
-Simulated based on the pregnancy data. Paper on \href{http://www.pnas.org/content/112/35/11060.short}{where}
+Simulated based on the StanfordA pregnancy data. Paper on \href{http://www.pnas.org/content/112/35/11060.short}{where}
 }
 \usage{
 psSim
 }
 \description{
-A \code{'phyloseq'} class object with 50 taxa from 200 biological samples.
+A \code{\link{phyloseq-class}} with 50 taxa from 200 biological samples.
 }
 \examples{
 \dontrun{sample_data(psSim)

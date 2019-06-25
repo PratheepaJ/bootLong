@@ -2,13 +2,13 @@
 % Please edit documentation in R/plotSamplingSchedule.R
 \name{plotSamplingSchedule}
 \alias{plotSamplingSchedule}
-\title{plot_sampling_schedule}
+\title{Plot sampling schedule}
 \usage{
 plotSamplingSchedule(ps, time_var, subjectID_var, main_factor,
   theme_manual = set.theme)
 }
 \arguments{
-\item{ps}{phyloseq object.}
+\item{ps}{(Required).  A \code{\link{phyloseq-class}}.}
 
 \item{time_var}{Character string. The name of the variable to map time in the plot (integer vector).}
 
@@ -19,7 +19,7 @@ plotSamplingSchedule(ps, time_var, subjectID_var, main_factor,
 \item{theme_manual}{Character string. Specifying the object of \link[ggplot2]{theme_update}.}
 }
 \value{
-an object of ggplot that displays the sampling schedule.
+\code{\link{ggplot2-class}} that displays the sampling schedule.
 }
 \description{
 This function plots the sampling schedule.

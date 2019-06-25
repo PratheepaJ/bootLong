@@ -7,7 +7,7 @@
 longCorreloSingle(ps, main_factor, time_var, taxon, taxlevel = "Species")
 }
 \arguments{
-\item{ps}{phyloseq object.}
+\item{ps}{(Required).  A \code{\link{phyloseq-class}}.}
 
 \item{main_factor}{Character string. The name of the variable to map main factor in the plot (factor vector).}
 

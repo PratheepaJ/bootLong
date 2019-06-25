@@ -1,23 +1,24 @@
 ---
 title: "Vignette for bootLong: The Block Bootstrap Method for Longitudinal Microbiome Data"
+shorttitle: "bootLong"
 author:
   name: Pratheepa Jeganathan and Susan Holmes
   email: jpratheepa31@gmail.com
-date: "`r Sys.Date()`"
+package: bootLong
 output: 
     BiocStyle::html_document:
-        toc:  true
+        toc_float: true
 vignette: >
-  %\VignetteIndexEntry{Vignette Title}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
+    %\VignetteIndexEntry{Vignette for bootLong: The Block Bootstrap Method for Longitudinal Microbiome Data}
+    %\VignetteEngine{knitr::rmarkdown}
+    %\VignetteEncoding{UTF-8}
 bibliography: bootLong.bib
 params:
   lC1: 2
   lC2: 2
 ---
 
-Microbiome data consist of the frequency of higher resolution amplicon sequence variants (ASVs) \citep{CMRHJH2016} in each biological sample, clinical and demographic information about biological samples, phylogenetic tree, taxonomy table. Our `bootLong` package requires [phyloseq](https://joey711.github.io/phyloseq/) for the entire workflow.
+Microbiome data consist of the frequency of higher resolution amplicon sequence variants (ASVs) \citep{CMRHJH2016} in each biological sample, clinical and demographic information about biological samples, phylogenetic tree, taxonomy table. Our `r Githubpkg("PratheepaJ/bootLong")` package requires `r Biocpkg("phyloseq")` for the entire workflow.
 
 In this workflow, we provide differential abundance analysis for longitudinal microbiome data. In addition, we provide statistical tools to explore the sampling schedule and within-subject dependency for each ASV. 
 
@@ -118,9 +119,9 @@ set.theme <- theme_update(panel.border = element_blank(),
 
 #  Load the phyloseq or create a phyloseq 
 
-- Follow the tutorials to [creating `phyloseq`](http://joey711.github.io/phyloseq/import-data.html).
+Follow the tutorials to [creating phyloseq](http://joey711.github.io/phyloseq/import-data.html).
 
-## Load the example dataset stored as a `phyloseq` in this package (or use your own `phyloseq` or created as a `phyloseq`)
+Load the example dataset stored as a `phyloseq` in this package (or use your own `phyloseq` or created as a `phyloseq`)
 
 ```{r }
 ps <- psSim
@@ -131,7 +132,7 @@ ps <- psSim
 
 ## Summary 
 
-After loading the phyloseq, we recommend to check the variable names and some summary for each variable in the sample table: `sample_data(ps)`. 
+After loading the `phyloseq`, we recommend to check the variable names and some summary for each variable in the sample table: `sample_data(ps)`. 
 
 In the example data `psSim`, we have `SubjectID`, `SampleID`, `Time`, `Preterm` variables. `Preterm` is the covariate.
 
@@ -148,7 +149,7 @@ We can visualize the sampling schedule for each subject and facet by different c
 
 The sampling schedule will be used to choose the $\omega$ repeated observations from each subject for the subsampling procedure. So that we can use $W = q - \omega +1$ overlapping subsamples to find the optimal block length for the full data with all repeated observations $q$.
 
-```{r }
+```{r plot-sam-sch, fig.cap = "Sampling schedule"}
 sample_data(ps)$Group <- as.factor(sample_data(ps)$Group)
 
 p <- plotSamplingSchedule(ps, 
@@ -163,34 +164,28 @@ p <- p +
     labels=c("Case", "Control"))
 p + ylab("Subject ID")
 
-#ggsave("./Example_sampling_schedule.eps", plot = p, width = 8, height = 5.5)
-```
-
-```{r include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, 
-  warning = FALSE, 
-  message = FALSE, 
-  fig.width = 8, fig.height = 6, eval = FALSE)
+# fileN <- paste0("sampling_schedule", setting_name, ".eps")
+#ggsave(fileN, plot = p, width = 8, height = 5.5)
 ```
 
 
-In order to make at least 5 overlapping subsamples, we should choose $\omega = .6$ ($\omega$ cannot be more than .6). The maximum repeated observations from each subject for the subsample is $10 \times .6 = 6$. Thus, the number of overlapping subsamples $W = 10 - 6 + 1 = 5$.
-
+Based on Figure \@ref(fig:plot-sam-sch), in order to make at least five ($W = 5$) overlapping subsamples, we should choose $\omega = .6$ ($\omega$ cannot be more than .6). The maximum repeated observations from each subject for the subsample is $10 \times .6 = 6$. Thus, the number of overlapping subsamples $W = 10 - 6 + 1 = 5$.
 
 ##   Preprocessing
 
-Preprocessing will help to reduce unwanted noise. 
+Check whether ASVs are on rows and samples are on columns.
 
-[Tools](https://joey711.github.io/phyloseq/preprocess.html)
-
-Filter ASVs: for example, we remove ASVs with less than 10% prevalence in all samples.  
-
-Before filtering, we will check whether ASVs are on rows and samples are on columns.
-
-```{r }
+```{r}
 if (dim(otu_table(ps))[2] != nsamples(ps)) {
         otu_table(ps) <- t(otu_table(ps))
     }
+```
+
+Preprocessing will help to reduce unwanted noise. Follow [`phyloseq` tutorial]((https://joey711.github.io/phyloseq/preprocess.html)) for preprocessing.
+
+For example, we remove ASVs with less than 10\% prevalence in all samples.  
+
+```{r }
 threshold <- .1
 keep_asv <- apply(otu_table(ps), 1, function(x){
     sum(x > 0)
@@ -198,16 +193,25 @@ keep_asv <- apply(otu_table(ps), 1, function(x){
 
 ps <- prune_taxa(keep_asv, ps)
 
-### Better to save the ps after all filtering
+## To save the ps after all filtering
 # fileN <- paste0("ps", setting_name, ".rds")
 # saveRDS(ps, fileN)
 ```
 
-##  Exploratory analysis
+```{r include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, 
+  warning = FALSE, 
+  message = FALSE, 
+  fig.width = 8, 
+  fig.height = 6,
+  eval = FALSE)
+```
 
-Here we provide tools to explore the within-subject dependence. These tools will be used to decide the initial block size for the subsampling method.
+##  Visulaizing within-subject dependency
 
-- Extract the common legend [https://github.com/hadley/ggplot2/wiki/Share-a-legend-between-two-ggplot2-graphs]
+Here we provide tools to explore the within-subject dependency. These tools will be used to decide the initial block size for the subsampling method.
+
+- Extract the common legend: (reference here.)[https://github.com/hadley/ggplot2/wiki/Share-a-legend-between-two-ggplot2-graphs]
 
 ```{r common-legend}
 plot_common_legend <- function(p){
