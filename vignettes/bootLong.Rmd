@@ -6,7 +6,7 @@ author:
   email: jpratheepa31@gmail.com
 date: "`r Sys.Date()`"
 output: 
-    rmarkdown::html_vignette:
+    BiocStyle::html_vignette:
         toc:  true
 vignette: >
   %\VignetteIndexEntry{Vignette Title}
@@ -20,24 +20,27 @@ params:
 
 Microbiome data consist of the frequency of higher resolution amplicon sequence variants (ASVs) \citep{CMRHJH2016} in each biological sample, clinical and demographic information about biological samples, phylogenetic tree, taxonomy table. Our `bootLong` package requires (phyloseq)[https://joey711.github.io/phyloseq/] for the entire workflow.
 
-In this workflow, we provide differential abundance analysis for longitudinal microbiome data. In addition, we provide statistical tools to explore the sampling schedule and within-subject dependence for each ASV. 
+In this workflow, we provide differential abundance analysis for longitudinal microbiome data. In addition, we provide statistical tools to explore the sampling schedule and within-subject dependency for each ASV. 
 
-The manuscript is under revision and it's available in (stat arXiv) [https://arxiv.org/abs/1809.01832]. 
+A preprint describing the method is available in (stat arXiv)[https://arxiv.org/abs/1809.01832]. 
 
 Install [R](https://www.r-project.org/) and [RStudio](https://www.rstudio.com/). Open this `Rmd` file in RStudio. Then run the following code to install all required packages.
 
 
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, fig.width = 7.5, fig.height = 5.5)
+knitr::opts_chunk$set(echo = TRUE, 
+  warning = FALSE, 
+  message = FALSE, 
+  fig.width = 8, fig.height = 6)
 ```
 
 
 Install packages: 
 ```{r }
-pkgs <- c("ggplot2","dplyr","tidyr",
-          "phyloseq", "limma","ashr",
-          "gridExtra","MASS",
+pkgs <- c("ggplot2", "dplyr", "tidyr",
+          "phyloseq", "limma", "ashr",
+          "gridExtra", "MASS",
           "geeM", "BiocParallel",
           "doParallel", "parallel","magrittr",
           "joineR", "DESeq2", "grid", "devtools")
@@ -66,21 +69,24 @@ library(magrittr)
 library(joineR)
 library(DESeq2)
 library(grid)
-library(bootLong)
+#library(bootLong)
 # library(R.utils)
-# devtools::load_all(".")
+devtools::load_all(".")
 ```
 
 Set the computational resources: we need to specify the number of cores for subsampling method and block bootstrap method. 
 ```{r}
-ncores = as.integer(Sys.getenv("SLURM_NTASKS"))
+ncores <- as.integer(Sys.getenv("SLURM_NTASKS"))
 if(is.na(ncores)) ncores <- parallel::detectCores()
 ncores
+```
 
+Specify `setting_name` to save the results.
+```{r}
 setting_name <- "Sim"
 ```
 
-
+`lC1` and `lC2` are the minumum and the maximum block length for subsampling method. 
 ```{r read_arg}
 lC1 <- params$lC1
 lC1
