@@ -4,13 +4,11 @@
 \alias{longCorreloMultiple}
 \title{Plots the correlogram given the multiple taxa indices.}
 \usage{
-longCorreloMultiple(pstr, psres, main_factor, time_var, starttaxa = 1,
+longCorreloMultiple(pstr, main_factor, time_var, starttaxa = 1,
   endtaxa = 4, taxlevel = "Species")
 }
 \arguments{
-\item{pstr}{phyloseq object. The asinh transfomed of the otu_table.}
-
-\item{psres}{phyloseq object. The asinh transformed of the response residuals.}
+\item{pstr}{(Required).  A \code{\link{phyloseq-class}}. The arcsinh transformation of the otu table.}
 
 \item{main_factor}{Character string. The name of the variable to map main factor in the plot (factor vector).}
 

@@ -4,13 +4,11 @@
 \alias{longVarioMultiple}
 \title{Plots the variogram for multiple taxa given the indices.}
 \usage{
-longVarioMultiple(pstr, psres, main_factor, time_var, subjectID_var,
+longVarioMultiple(pstr, main_factor, time_var, subjectID_var,
   starttaxa = 1, endtaxa = 4, point = FALSE, taxlevel = "Species")
 }
 \arguments{
-\item{pstr}{phyloseq object. The asinh transfomed of the otu_table.}
-
-\item{psres}{phyloseq object. The asinh transformed of the response residuals.}
+\item{pstr}{(Required).  A \code{\link{phyloseq-class}}. The arcsinh transformation of the otu table.}
 
 \item{main_factor}{Character string. The name of the variable to map main factor in the plot (factor vector).}
 

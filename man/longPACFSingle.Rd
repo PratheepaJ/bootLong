@@ -2,13 +2,13 @@
 % Please edit documentation in R/longPACFSingle.R
 \name{longPACFSingle}
 \alias{longPACFSingle}
-\title{Plots the PACF (Partial Autocorrelation Function) given the taxon index.}
+\title{Plot PACF for each taxon.}
 \usage{
 longPACFSingle(ps, main_factor, time_var, taxon, taxlevel = "Species",
   lag.max = 10)
 }
 \arguments{
-\item{ps}{(Required).  A \code{\link{phyloseq-class}}.}
+\item{ps}{(Required). A \code{\link{phyloseq-class}}.}
 
 \item{main_factor}{Character string. The name of the variable to map main factor in the plot (factor vector).}
 

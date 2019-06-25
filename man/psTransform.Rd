@@ -2,18 +2,18 @@
 % Please edit documentation in R/psTransform.R
 \name{psTransform}
 \alias{psTransform}
-\title{psTransform}
+\title{arcsinh transformation of counts}
 \usage{
 psTransform(ps, main_factor)
 }
 \arguments{
-\item{ps}{(Required).  A \code{\link{phyloseq-class}}.}
+\item{ps}{(Required). A \code{\link{phyloseq-class}}.}
 
 \item{main_factor}{Character string. The name of the variable to map main factor in the plot (factor vector).}
 }
 \value{
-A list of phyloseq objects. The first phyloseq element contains the arcsinh transformed of otu_table and the second phyloseq element contains the residuals of \code{\link[MASS]{glm.nb}} fit in otu table.
+A \code{\link{phyloseq-class}} with arcsinh transformed of otu_table.
 }
 \description{
-Variance-stablized values of otu table and residuals of glm.nb fit.
+Variance-stabilizing transformation of otu table.
 }

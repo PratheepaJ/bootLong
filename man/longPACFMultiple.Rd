@@ -4,13 +4,11 @@
 \alias{longPACFMultiple}
 \title{Plots the PACF given the multiple taxa indices.}
 \usage{
-longPACFMultiple(pstr, psres, main_factor, time_var, starttaxa = 1,
+longPACFMultiple(pstr, main_factor, time_var, starttaxa = 1,
   endtaxa = 4, taxlevel = "Species", lag.max = 10)
 }
 \arguments{
-\item{pstr}{phyloseq object. The asinh transfomed of the otu_table.}
-
-\item{psres}{phyloseq object. The asinh transformed of the response residuals.}
+\item{pstr}{(Required).  A \code{\link{phyloseq-class}}. The arcsinh transformation of the otu table.}
 
 \item{main_factor}{Character string. The name of the variable to map main factor in the plot (factor vector).}
 
@@ -25,7 +23,7 @@ longPACFMultiple(pstr, psres, main_factor, time_var, starttaxa = 1,
 \item{lag.max}{Numeric. The maximum lags that PACF to be computed.}
 }
 \value{
-\code{ggplot2} object of PACF for multiple taxa.
+\code{\link{ggplot2-class}} object of PACF for multiple taxa.
 }
 \description{
 Plots the PACF given the multiple taxa indices.

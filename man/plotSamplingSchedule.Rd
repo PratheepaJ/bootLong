@@ -8,7 +8,7 @@ plotSamplingSchedule(ps, time_var, subjectID_var, main_factor,
   theme_manual = set.theme)
 }
 \arguments{
-\item{ps}{(Required).  A \code{\link{phyloseq-class}}.}
+\item{ps}{(Required). A \code{\link{phyloseq-class}}.}
 
 \item{time_var}{Character string. The name of the variable to map time in the plot (integer vector).}
 
