@@ -1,12 +1,11 @@
 ---
-title: "Workflow : The Block Bootstrap Method for Longitudinal Microbiome Data"
+title: "Vignette for bootLong: The Block Bootstrap Method for Longitudinal Microbiome Data"
 author:
-  name: Pratheepa Jeganathan
-  affiliation: Department of Statistics, Stanford University
-  email: jpratheepa31@gmail.com
+  name: Pratheepa Jeganathan and Susan Holmes
+  email: pjeganat@stanford.edu
 date: "`r Sys.Date()`"
 output: 
-    BiocStyle::html_vignette:
+    BiocStyle::html_document:
         toc:  true
 vignette: >
   %\VignetteIndexEntry{Vignette Title}
@@ -18,15 +17,16 @@ params:
   lC2: 2
 ---
 
-Microbiome data consist of the frequency of higher resolution amplicon sequence variants (ASVs) \citep{CMRHJH2016} in each biological sample, clinical and demographic information about biological samples, phylogenetic tree, taxonomy table. Our `bootLong` package requires (phyloseq)[https://joey711.github.io/phyloseq/] for the entire workflow.
+Microbiome data consist of the frequency of higher resolution amplicon sequence variants (ASVs) \citep{CMRHJH2016} in each biological sample, clinical and demographic information about biological samples, phylogenetic tree, taxonomy table. Our `bootLong` package requires [phyloseq](https://joey711.github.io/phyloseq/) for the entire workflow.
 
 In this workflow, we provide differential abundance analysis for longitudinal microbiome data. In addition, we provide statistical tools to explore the sampling schedule and within-subject dependency for each ASV. 
 
-A preprint describing the method is available in (stat arXiv)[https://arxiv.org/abs/1809.01832]. 
+A preprint describing the method is available in [stat arXiv](https://arxiv.org/abs/1809.01832). 
 
 Install [R](https://www.r-project.org/) and [RStudio](https://www.rstudio.com/). Open this `Rmd` file in RStudio. Then run the following code to install all required packages.
 
 
+# Install and load required packages
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, 
@@ -35,8 +35,7 @@ knitr::opts_chunk$set(echo = TRUE,
   fig.width = 8, fig.height = 6)
 ```
 
-
-Install packages: 
+## Install
 ```{r }
 pkgs <- c("ggplot2", "dplyr", "tidyr",
           "phyloseq", "limma", "ashr",
@@ -51,7 +50,7 @@ BiocManager::install(setdiff(pkgs, installed.packages()), update = TRUE)
 #devtools::install_github("PratheepaJ/bootLong")
 ```
 
-load packages:
+## load
 ```{r load_packages}
 library(ggplot2)
 library(dplyr)
@@ -74,7 +73,10 @@ library(grid)
 devtools::load_all(".")
 ```
 
-Set the computational resources: we need to specify the number of cores for subsampling method and block bootstrap method. 
+# Set the computational resources
+
+We need to specify the number of cores for subsampling method and block bootstrap method. 
+
 ```{r}
 ncores <- as.integer(Sys.getenv("SLURM_NTASKS"))
 if(is.na(ncores)) ncores <- parallel::detectCores()
@@ -82,11 +84,13 @@ ncores
 ```
 
 Specify `setting_name` to save the results.
+
 ```{r}
 setting_name <- "Sim"
 ```
 
 `lC1` and `lC2` are the minumum and the maximum block length for subsampling method. 
+
 ```{r read_arg}
 lC1 <- params$lC1
 lC1
@@ -94,30 +98,9 @@ lC2 <- params$lC2
 lC2
 ```
 
-##  Load the phyloseq
+The plot can be modified using your preferred theme, legends, etc. For example, `set.theme` can be changed to have point size 10. 
 
-### Load the example dataset stored as a phyloseq object in the ``bootLong`` package (or use your own data stored as a phyloseq object)
-
-```{r }
-ps <- psSim
-```
-
-##  Summary
-
-After loading the phyloseq, we recommend to check the variable names and some summary for each variable in the sample table. In the example data, we have SubjectID, SampleID, Time, Covariates (Preterm).
-
-```{r }
-names(sample_data(ps))
-table(sample_data(ps)$SubjectID, sample_data(ps)$Time)
-```
-
-###   Sampling schedule
-
-We can visualize the sampling schedule for each subject and facet by different conditions. This plot can be modified using your preferred theme, legends, etc. For example, `set.theme` can be changed to have point size 10, legend title can be changed from `Preterm` to `Group`, levels of `Preterm` can be changed to `Term` and `Preterm`, etc. 
-
-The sampling schedlue will be used to choose the percentage of subsampling to find the optimal block szie.
-
-```{r }
+```{r}
 theme_set(theme_bw())
 set.theme <- theme_update(panel.border = element_blank(),
                     panel.grid = element_line(size = .8),
@@ -131,6 +114,49 @@ set.theme <- theme_update(panel.border = element_blank(),
                     legend.key = element_blank(),
     plot.title = element_text(hjust = 0.5))
 
+```
+
+#  Load the phyloseq or create a phyloseq 
+
+- Follow the tutorials to [creating `phyloseq`](http://joey711.github.io/phyloseq/import-data.html).
+
+## Load the example dataset stored as a `phyloseq` in this package (or use your own `phyloseq` stored or created as a `phyloseq`)
+
+```{r }
+ps <- psSim
+```
+
+
+#  Exploratory analysis
+
+## Summary 
+
+After loading the phyloseq, we recommend to check the variable names and some summary for each variable in the sample table: `sample_data(ps)`. 
+
+In the example data, we have `SubjectID`, `SampleID`, `Time`, `Preterm` variables. `Preterm` is the covariate.
+
+```{r }
+names(sample_data(ps))
+table(sample_data(ps)$SubjectID, sample_data(ps)$Time)
+summary(sample_data(ps)$Preterm)
+```
+
+
+##   Sampling schedule
+
+We can visualize the sampling schedule for each subject and facet by different conditions. The plot can be modified using your preferred theme. For example, the legend title can be changed from `Preterm` to `Group`, levels of `Preterm` can be changed to `Term` and `Preterm`, etc. 
+
+The sampling schedule will be used to choose the $\omega$ repeated observations from each subject for the subsampling procedure. So that we can use $W = q - \omega +1$ overlapping subsamples to find the optimal block length for the full data with all repeated observations $q$.
+
+```{r include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, 
+  warning = FALSE, 
+  message = FALSE, 
+  fig.width = 8, fig.height = 6, eval = FALSE)
+```
+
+
+```{r }
 
 sample_data(ps)$Group <- as.factor(sample_data(ps)$Group)
 

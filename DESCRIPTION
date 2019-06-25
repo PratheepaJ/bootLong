@@ -32,8 +32,6 @@ Imports:
     phyloseq,
     tidyr
 RoxygenNote: 6.1.1
-Suggests: 
-    knitr,
-    rmarkdown
+Suggests: knitr, rmarkdown, BiocStyle
 VignetteBuilder: knitr
 BugReports: https://github.com/PratheepaJ/bootLong/issues
