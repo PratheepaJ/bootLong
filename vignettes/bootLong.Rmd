@@ -2,7 +2,7 @@
 title: "Vignette for bootLong: The Block Bootstrap Method for Longitudinal Microbiome Data"
 author:
   name: Pratheepa Jeganathan and Susan Holmes
-  email: pjeganat@stanford.edu
+  email: jpratheepa31@gmail.com
 date: "`r Sys.Date()`"
 output: 
     BiocStyle::html_document:
@@ -98,7 +98,7 @@ lC2 <- params$lC2
 lC2
 ```
 
-The plot can be modified using your preferred theme, legends, etc. For example, `set.theme` can be changed to have point size 10. 
+The plots can be modified using your preferred theme, legends, etc. For example, `set.theme` can be changed to have point size 10. 
 
 ```{r}
 theme_set(theme_bw())
@@ -120,7 +120,7 @@ set.theme <- theme_update(panel.border = element_blank(),
 
 - Follow the tutorials to [creating `phyloseq`](http://joey711.github.io/phyloseq/import-data.html).
 
-## Load the example dataset stored as a `phyloseq` in this package (or use your own `phyloseq` stored or created as a `phyloseq`)
+## Load the example dataset stored as a `phyloseq` in this package (or use your own `phyloseq` or created as a `phyloseq`)
 
 ```{r }
 ps <- psSim
@@ -133,12 +133,12 @@ ps <- psSim
 
 After loading the phyloseq, we recommend to check the variable names and some summary for each variable in the sample table: `sample_data(ps)`. 
 
-In the example data, we have `SubjectID`, `SampleID`, `Time`, `Preterm` variables. `Preterm` is the covariate.
+In the example data `psSim`, we have `SubjectID`, `SampleID`, `Time`, `Preterm` variables. `Preterm` is the covariate.
 
 ```{r }
 names(sample_data(ps))
 table(sample_data(ps)$SubjectID, sample_data(ps)$Time)
-summary(sample_data(ps)$Preterm)
+summary(sample_data(ps)$Group)
 ```
 
 
@@ -148,6 +148,24 @@ We can visualize the sampling schedule for each subject and facet by different c
 
 The sampling schedule will be used to choose the $\omega$ repeated observations from each subject for the subsampling procedure. So that we can use $W = q - \omega +1$ overlapping subsamples to find the optimal block length for the full data with all repeated observations $q$.
 
+```{r }
+sample_data(ps)$Group <- as.factor(sample_data(ps)$Group)
+
+p <- plotSamplingSchedule(ps, 
+  time_var = "Time", 
+  subjectID_var = "SubjectID", 
+  main_factor = "Group", 
+  theme_manual = set.theme)
+
+p <- p + 
+  scale_color_discrete(name  ="Group", 
+    breaks=c("Case", "Control"), 
+    labels=c("Case", "Control"))
+p + ylab("Subject ID")
+
+#ggsave("./Example_sampling_schedule.eps", plot = p, width = 8, height = 5.5)
+```
+
 ```{r include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, 
   warning = FALSE, 
@@ -155,17 +173,6 @@ knitr::opts_chunk$set(echo = TRUE,
   fig.width = 8, fig.height = 6, eval = FALSE)
 ```
 
-
-```{r }
-
-sample_data(ps)$Group <- as.factor(sample_data(ps)$Group)
-
-p <- plotSamplingSchedule(ps, time_var = "Time", subjectID_var = "SubjectID", main_factor = "Group", theme_manual = set.theme)
-
-p <- p + scale_color_discrete(name  ="Group",breaks=c("Case", "Control"),labels=c("Case", "Control"))
-p
-#ggsave("./Example_sampling_schedule.eps", plot = p, width = 8, height = 5.5)
-```
 
 In order to make at least 5 overlapping subsamples, we should choose $\omega = .6$ ($\omega$ cannot be more than .6). The maximum repeated observations from each subject for the subsample is $10 \times .6 = 6$. Thus, the number of overlapping subsamples $W = 10 - 6 + 1 = 5$.
 
