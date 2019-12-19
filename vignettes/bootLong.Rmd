@@ -37,7 +37,7 @@ knitr::opts_chunk$set(echo = TRUE,
 ```
 
 ## Install
-```{r }
+```{r}
 pkgs <- c("ggplot2", "dplyr", "tidyr",
           "phyloseq", "limma", "ashr",
           "gridExtra", "MASS",
@@ -48,7 +48,7 @@ pkgs <- c("ggplot2", "dplyr", "tidyr",
 
 BiocManager::install(setdiff(pkgs, installed.packages()), update = TRUE)
 
-#devtools::install_github("PratheepaJ/bootLong")
+devtools::install_github("PratheepaJ/bootLong")
 ```
 
 ## load
@@ -69,9 +69,9 @@ library(magrittr)
 library(joineR)
 library(DESeq2)
 library(grid)
-#library(bootLong)
-# library(R.utils)
-devtools::load_all(".")
+library(bootLong)
+# # library(R.utils)
+# devtools::load_all(".")
 ```
 
 # Set the computational resources
@@ -398,7 +398,7 @@ First, we identify the opitmal block size for the subsample. We use $l_{I} = 5$ 
 
 1) Compute $\psi(q, l_{I})$ and $T_{i}\left(q, l_{I}\right)$ using the initial block size and the full data.
 
-```{r }
+```{r}
 #####Note: With 4 cores, this will take almost 18 hours
 R <- 200
 RR <- 50
@@ -435,7 +435,7 @@ saveRDS(mse.results, fileN)
     
 Use `compStatParallel = TRUE` if you have more ASVs than `R`.
 
-```{r }
+```{r}
 ##### NOTE: With 4 cores, this will take almost 71 hours
  
 # fileN <- paste0("ps", setting_name, ".rds")
@@ -475,7 +475,7 @@ saveRDS(mse.results, fileN)
 
 We combine the results for all the possible $lC1$. In this example, $lC1 = 2, 3, 4$
 
-```{r }
+```{r}
 MSE.all <- list()
 for(lC1 in 2:4){
   filename <- paste0("MSE_",setting_name,"_lC1", lC1,".rds")
@@ -493,7 +493,7 @@ saveRDS(MSE.all, fileN)
 $$l_{o} = \left(\frac{1}{\omega}\right)^{1/5}l_{\omega}$$.
 
 
-```{r }
+```{r}
 lC1 <- 2
 omega <- .6
 fileN <- paste0("MSE_",setting_name,".rds")
@@ -510,7 +510,7 @@ mse.avg <- lapply(mse,function(x){mean(x, na.rm=T)})
 mse.sum <- lapply(mse,function(x){sum(x, na.rm=T)})
 
 mse <- unlist(mse.sum)
-lblk <- seq(lC1, (length(mse)+1), by=1)
+lblk <- seq(lC1, (length(mse)+1), 1)
 lblk.f <- as.factor(lblk)
 dfp <- data.frame(mse = mse,lblk = lblk.f)
 
@@ -539,7 +539,7 @@ ggsave(fileN, plot = p.mse, width = 8, height = 5.5)
 Finally, we run the block bootstrap method with the optimal block size for differential abundance analysis.
 
 
-```{r }
+```{r}
 #### Note: With 4 cores, this will take 17 hours
 R <- 200
 RR <- 50
@@ -570,9 +570,9 @@ saveRDS(MBB.all, fileN)
 
 We can make a summary of differential abundance ASV.
 
-```{r }
-fileN <- paste0("ps", setting_name, ".rds")
-ps <- readRDS(fileN)
+```{r}
+# fileN <- paste0("ps", setting_name, ".rds")
+# ps <- readRDS(fileN)
 
 FDR <- .05
 taxalevel <- "Genus"
