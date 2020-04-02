@@ -37,7 +37,7 @@ knitr::opts_chunk$set(echo = TRUE,
 ```
 
 ## Install
-```{r}
+```{r packages_to_install}
 pkgs <- c("ggplot2", "dplyr", "tidyr",
           "phyloseq", "limma", "ashr",
           "gridExtra", "MASS",
@@ -123,7 +123,7 @@ Follow the tutorials to [creating phyloseq](http://joey711.github.io/phyloseq/im
 
 Load the example dataset stored as a `phyloseq` in this package (or use your own `phyloseq` or created as a `phyloseq`)
 
-```{r }
+```{r}
 ps <- psSim
 ```
 
@@ -136,7 +136,7 @@ After loading the `phyloseq`, we recommend to check the variable names and some 
 
 In the example data `psSim`, we have `SubjectID`, `SampleID`, `Time`, `Preterm` variables. `Preterm` is the covariate.
 
-```{r }
+```{r summary}
 names(sample_data(ps))
 table(sample_data(ps)$SubjectID, sample_data(ps)$Time)
 summary(sample_data(ps)$Group)
@@ -223,7 +223,6 @@ Partial autocorrelataion function (PACF) at lag $h$ measures the correlation bet
 
 ```{r eval = FALSE}
 tax_table(ps)[, "Genus"] <- paste0(tax_table(ps)[, "Genus"],"_ASV_" ,seq(1, ntaxa(ps)))
-
 ```
 
 2) We use `psTransform()` to get a phyloseq with Variance-stabilizing transformation of `otu table`.
@@ -380,16 +379,6 @@ All exploratory tools suggest an inital block size of 5.
 Now we have chosen the initial parameters for the subsampling method. $\omega = .6$ and $l_{I} = 5$. 
 
 
-```{r include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, 
-  warning = FALSE, 
-  message = FALSE, 
-  fig.width = 8, 
-  fig.height = 6,
-  eval = FALSE)
-```
-
-
 #   The block bootstrap method
 
 First, we identify the opitmal block size for the subsample. We use $l_{I} = 5$ and subsampling proportion $\omega = .6$ to identify the opitmal block size. 
@@ -398,7 +387,7 @@ First, we identify the opitmal block size for the subsample. We use $l_{I} = 5$ 
 
 1) Compute $\psi(q, l_{I})$ and $T_{i}\left(q, l_{I}\right)$ using the initial block size and the full data.
 
-```{r}
+```{r subsampling, eval=FALSE}
 #####Note: With 4 cores, this will take almost 18 hours
 R <- 200
 RR <- 50
@@ -435,7 +424,7 @@ saveRDS(mse.results, fileN)
     
 Use `compStatParallel = TRUE` if you have more ASVs than `R`.
 
-```{r}
+```{r eval=FALSE}
 ##### NOTE: With 4 cores, this will take almost 71 hours
  
 # fileN <- paste0("ps", setting_name, ".rds")
@@ -503,7 +492,7 @@ blks <- length(mse.results)
 mse <- list()
 
 for(i in 1:blks){
-    mse[[i]] <- mse.results[[i]]$MSE_i
+    mse[[i]] <- mse.results[[i]][[1]]$MSE_i
     }
 
 mse.avg <- lapply(mse,function(x){mean(x, na.rm=T)})
@@ -539,7 +528,7 @@ ggsave(fileN, plot = p.mse, width = 8, height = 5.5)
 Finally, we run the block bootstrap method with the optimal block size for differential abundance analysis.
 
 
-```{r}
+```{r eval=FALSE}
 #### Note: With 4 cores, this will take 17 hours
 R <- 200
 RR <- 50
@@ -580,13 +569,13 @@ taxalevel <- "Genus"
 fileN <- paste0("MBB_",setting_name,".rds")
 boot.res.all <- readRDS(fileN) # list("summary", "beta.hat", "beta.hat.star", "beta.hat.star.star", "T.obs")
 
-summ <- boot.res.all$summary
+summ <- boot.res.all[[1]]$summary
 
 ### add strain number to interested taxonomy same as in EDA 
 tax_table(ps)[, taxalevel] <- paste0(tax_table(ps)[, taxalevel],"_st_",seq(1, ntaxa(ps)))
 
 ### if we change FDR, wee need to adjust the confidence interval
-T.stars.and.obs <- boot.res.all$beta.hat.star  
+T.stars.and.obs <- boot.res.all[[1]]$beta.hat.star  
 
 lcl <- apply(T.stars.and.obs, 1, FUN=function(x){
   quantile(x, probs=FDR/2, na.rm=TRUE)
@@ -628,12 +617,12 @@ print(xtable(df.mbb.write, type = "latex", digits = c(0,0,2,2,2,4)), file = file
 
 ### Plot significant ASVs
 
-```{r }
+```{r}
 ####if you would like to avoid completely the ASV with strain number only.
 #df.mbb <- df.mbb[-is.it.ind, ]
 #
-df.mbb <- dplyr::filter(df.mbb, abs(beta) > 1)
-ps.tr <- psTransform(ps, main_factor = "Group")[[1]] 
+df.mbb <- dplyr::filter(df.mbb, abs(betahat) > 1)
+ps.tr <- psTransform(ps, main_factor = "Group") 
 
 taxaName <-  tax_table(ps.tr)[, taxalevel] %>% as.character
 ind <- which(taxa_names(ps) %in% as.character(df.mbb$Taxa))
